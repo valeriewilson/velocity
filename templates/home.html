@@ -1,12 +1,7 @@
-<!doctype html>
-<html>
-<head>
-    <title>Log In</title>
-</head>
-<body>
-    <h1>Bike Route Generator</h1>
+{% extends 'base.html' %}
+{% block title %}Bike Route Generator{% endblock %}
+{% block content %}
     <p>Logged in as {{ email }}</p>
     <!-- Placeholder image until Google Maps route map is created -->
     <img src="http://www.drodd.com/images15/maps10.jpg" width=500>
-</body>
-</html>
+{% endblock %}
