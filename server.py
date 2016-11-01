@@ -28,12 +28,14 @@ def log_in_user():
     if user_entry:
         actual_email, actual_password = user_entry
         if actual_password == password:
-            session['useremail'] = actual_email
-            return redirect('/home.html')
+            session['user_email'] = actual_email
+            flash('Successfully logged in')
+            return redirect('/')
         else:
             flash('Incorrect password')
             return redirect('/login')
     else:
+        print session
         flash('Invalid email address')
         return redirect('/login')
 
@@ -68,24 +70,24 @@ def register_login_user():
                     email=email, phone=phone, password=password)
     db.session.add(new_user)
     db.session.commit()
-    session['useremail'] = email
+    session['user_email'] = email
 
     flash('Successfully registered')
-    return redirect('/home.html')
+    return redirect('/')
 
 
 @app.route('/')
 def display_home_page():
     """ Display homepage of the app """
 
-    email = session['useremail']
+    email = session['user_email']
 
     return render_template("home.html", email=email)
 
 
 @app.route('/logout')
 def log_user_out():
-    del session['useremail']
+    del session['user_email']
     flash('Logged out')
     return redirect('/login')
 

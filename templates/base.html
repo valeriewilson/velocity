@@ -2,9 +2,16 @@
 <html>
 <head>
     <title>{% block title %}Bike Route Generator{% endblock %}</title>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+              <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 </head>
 <body>
     <h1>Bike Route Generator</h1>
-    {% block content %}Body content{% endblock %}
+    {% block content %}{% endblock %}
 </body>
 </html>
