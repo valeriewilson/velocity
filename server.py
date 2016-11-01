@@ -20,21 +20,22 @@ def log_in_user():
     email = request.form.get('email')
     password = request.form.get('password')
 
-    # Find the user with this email address
+    # Find user (if any) with this email address
     user_entry = db.session.query(User.email, User.password).filter_by(email=email).first()
-    provided_email, provided_password = user_entry
 
     # Check if user already exists and if password is correct; logs user in and
-    #  redirects to homepage
-    if user_entry and provided_password == password:
-        session['useremail'] = provided_email
-        return redirect('/')
-
-    # For incorrect password, return flash message
-    flash('Incorrect email or password')
-    return redirect('/login')
-
-    return render_template('/home.html')
+    #  redirects to homepage, or returns an error message
+    if user_entry:
+        actual_email, actual_password = user_entry
+        if actual_password == password:
+            session['useremail'] = actual_email
+            return redirect('/home.html')
+        else:
+            flash('Incorrect password')
+            return redirect('/login')
+    else:
+        flash('Invalid email address')
+        return redirect('/login')
 
 
 @app.route('/register', methods=['GET'])
@@ -82,8 +83,14 @@ def display_home_page():
     return render_template("home.html", email=email)
 
 
+@app.route('/logout')
+def log_user_out():
+    del session['useremail']
+    flash('Logged out')
+    return redirect('/login')
+
 if __name__ == "__main__":
-    app.debug = True
+    app.debug = False
 
     connect_to_db(app)
 
