@@ -34,7 +34,7 @@ def log_in_user():
     flash('Incorrect email or password')
     return redirect('/login')
 
-    return render_template('/')
+    return render_template('/home.html')
 
 
 @app.route('/register', methods=['GET'])
@@ -70,7 +70,16 @@ def register_login_user():
     session['useremail'] = email
 
     flash('Successfully registered')
-    return redirect('/')
+    return redirect('/home.html')
+
+
+@app.route('/')
+def display_home_page():
+    """ Display homepage of the app """
+
+    email = session['useremail']
+
+    return render_template("home.html", email=email)
 
 
 if __name__ == "__main__":
