@@ -76,13 +76,49 @@ def register_login_user():
     return redirect('/')
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def display_home_page():
     """ Display homepage of the app """
 
     email = session['user_email']
 
     return render_template("home.html", email=email)
+
+
+@app.route('/', methods=['POST'])
+def return_to_home_page():
+    """ Return to homepage (for yes/no) """
+
+    email = session['user_email']
+
+    return render_template("home.html", email=email)
+
+
+@app.route('/results', methods=['POST'])
+def select_preference():
+    """ Display results based on form inputs """
+
+    email = session['user_email']
+
+    return render_template("map_results.html", email=email)
+
+
+@app.route('/saved_routes')
+def display_saved_routes():
+    """ Display routes saved by user """
+
+    email = session['user_email']
+
+    return render_template("saved_routes.html", email=email)
+
+
+@app.route('/rejected_routes')
+def display_rejected_routes():
+    """ Display routes rejected by user """
+
+    email = session['user_email']
+
+    return render_template("rejected_routes.html", email=email)
 
 
 @app.route('/logout')

@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>{% block title %}Bike Route Generator{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}

@@ -1,8 +1,19 @@
 {% extends 'base.html' %}
-{% block title %}Bike Route Generator{% endblock %}
 {% block content %}
     <p>Logged in as {{ email }}</p>
     <p><a href="/logout">Log Out</a></p>
-    <!-- Placeholder image until Google Maps route map is created -->
-    <img src="http://www.drodd.com/images15/maps10.jpg" width=500>
+
+    <div>
+        <form action="/results" method="POST" id="route-form">
+            <label for="start-address"></label>
+            <input type="start-address" id="start-address" class="address" name="start-address" value="Enter start address" required>
+            <select>
+                <option>Pick a type of route</option>
+                <option value="loop">Loop</option>
+                <option value="midpoint">To midpoint and back</option>
+            </select>
+            <input type="submit" value="Let's ride!">
+        </form>
+    </div>
+
 {% endblock %}
