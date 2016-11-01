@@ -30,6 +30,7 @@ class Address(db.Model):
     __tablename__ = "addresses"
 
     address_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     label = db.Column(db.String(20), nullable=False)
     address_str = db.Column(db.String(100), nullable=False)
     latitude = db.Column(db.Float, nullable=False)
@@ -47,6 +48,7 @@ class Route(db.Model):
     __tablename__ = "routes"
 
     route_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     total_ascent = db.Column(db.Float, nullable=False)
     total_descent = db.Column(db.Float, nullable=False)
     is_accepted = db.Column(db.Boolean, nullable=False)
@@ -67,6 +69,7 @@ class Ride(db.Model):
     __tablename__ = "rides"
 
     ride_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    route_id = db.Column(db.Integer, db.ForeignKey('routes.route_id'), nullable=False)
     time_of_ride = db.Column(db.DateTime, nullable=False)
     comments = db.Column(db.UnicodeText, nullable=True)
 
@@ -81,8 +84,29 @@ class Waypoint(db.Model):
     __tablename__ = "waypoints"
 
     waypoint_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    route_id = db.Column(db.Integer, db.ForeignKey('routes.route_id'), nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
 
     def __repr__(self):
         return "<Waypoint id=%s route=%s>" % (self.waypoint_id, self.route.route_id)
+
+
+def connect_to_db(app):
+    """Connect the database to our Flask app."""
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///bike_routes'
+    app.config['SQLALCHEMY_ECHO'] = True
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.app = app
+    db.init_app(app)
+
+
+if __name__ == "__main__":
+
+    from server import app
+    connect_to_db(app)
+
+    db.create_all()
+
+    print "Connected to DB."
