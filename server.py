@@ -1,9 +1,14 @@
 from flask import Flask, request, redirect, flash, session, render_template
 from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User
+import googlemaps
+import os
 
 app = Flask(__name__)
 app.secret_key = 'ABCSECRETABC'
+
+google_api_key = os.environ["GOOGLE_API_KEY"]
+gmaps = googlemaps.Client(key=google_api_key)
 
 
 @app.route('/login', methods=['GET'])
@@ -62,7 +67,7 @@ def register_login_user():
 
     # Check if user already exists, redirect to login page if so
     if user_email:
-        flash('User with that email address already exists')
+        flash('A user with that email address already exists')
         return redirect('/login')
 
     # Creates new user in users table, logs user in, redirects to homepage
@@ -99,8 +104,18 @@ def select_preference():
     """ Display results based on form inputs """
 
     email = session['user_email']
+    address = request.form.get('start-address')
+    route_type = request.form.get('route-type')
 
-    return render_template("map_results.html", email=email)
+    geocoded_start = gmaps.geocode(address)
+
+    if route_type == "midpoint":
+        print "Midpoint!"
+    elif route_type == "loop":
+        print "Loop!"
+
+    return render_template("map_results.html", email=email, address=address,
+                           geocoded_start=geocoded_start)
 
 
 @app.route('/saved_routes')
@@ -127,8 +142,9 @@ def log_user_out():
     flash('Logged out')
     return redirect('/login')
 
+
 if __name__ == "__main__":
-    app.debug = False
+    app.debug = True
 
     connect_to_db(app)
 
