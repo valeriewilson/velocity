@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
-    {{ address }}
-    {{ route_type }}
-    {{ latitude }}
-    {{ longitude }}
+    {% if route_type == "loop" %}
+        <p>Start:</p>
+        <p>{{ lat_1 }}, {{ lon_1 }}</p>
+        <p>Midpoint 1:</p>
+        <p>{{ lat_2 }}, {{ lon_2 }}</p>
+        <p>Midpoint 2:</p>
+        <p>{{ lat_3 }}, {{ lon_3 }}</p>
+    {% endif %}
+
+    <!-- <p>{{ directions }}</p> -->
     <div>
         <p>Do you want to save this route?</p>
         <form action="/" id="selected-route-form">

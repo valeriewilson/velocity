@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, flash, session, render_template
 from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User
+from math import cos, sin, radians
 import googlemaps
 import os
 
@@ -9,6 +10,9 @@ app.secret_key = 'ABCSECRETABC'
 
 google_api_key = os.environ["GOOGLE_API_KEY"]
 gmaps = googlemaps.Client(key=google_api_key)
+
+MILES_BETWEEN_LATS = 69
+MILES_BETWEEN_LONS = 55
 
 
 @app.route('/login', methods=['GET'])
@@ -106,16 +110,32 @@ def select_preference():
     email = session['user_email']
     address = request.form.get('start-address')
     route_type = request.form.get('route-type')
+    total_miles = float(request.form.get('total-miles'))
 
+    # Geocode start address, extract latitude & longitude for route calculations
     geocoded_start = gmaps.geocode(address)
+    lat_1 = geocoded_start[0]['geometry']['location']['lat']
+    lon_1 = geocoded_start[0]['geometry']['location']['lng']
 
-    if route_type == "midpoint":
-        print "Midpoint!"
-    elif route_type == "loop":
-        print "Loop!"
+    if route_type == "loop":
+        # Given the unpredictable results of Google Maps API, miles / 4 as buffer
+        miles_leg = total_miles / 4
+        angle = 0
 
-    return render_template("map_results.html", email=email, address=address,
-                           geocoded_start=geocoded_start)
+        lat_2 = lat_1 + (sin(radians(angle))*miles_leg)/MILES_BETWEEN_LATS
+        lon_2 = lon_1 + (cos(radians(angle))*miles_leg)/MILES_BETWEEN_LONS
+
+        lat_3 = lat_2 + (sin(radians(angle+120))*miles_leg)/MILES_BETWEEN_LATS
+        lon_3 = lon_2 + (cos(radians(angle+120))*miles_leg)/MILES_BETWEEN_LONS
+
+        return render_template("map_results.html", email=email, address=address,
+                               lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2,
+                               lat_3=lat_3, lon_3=lon_3, route_type=route_type)
+
+    elif route_type == "midpoint":
+
+        return render_template("map_results.html", email=email, address=address,
+                               route_type=route_type)
 
 
 @app.route('/saved_routes')

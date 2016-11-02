@@ -3,12 +3,14 @@
     <div>
         <form action="/results" method="POST" id="route-form">
             <label for="start-address"></label>
-            <input type="start-address" id="start-address" class="address" name="start-address" value="Enter start address" required>
+            <input type="start-address" id="start-address" class="address" name="start-address" required>
             <select name="route-type">
                 <option>Pick a type of route</option>
                 <option value="loop">Loop</option>
                 <option value="midpoint">To midpoint and back</option>
             </select>
+            <label for="total-miles">How many miles?</label>
+            <input type="total-miles" id="total-miles" name="total-miles" required>
             <input type="submit" value="Let's ride!">
         </form>
     </div>
