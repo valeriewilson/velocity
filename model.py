@@ -59,8 +59,8 @@ class Route(db.Model):
     rides = db.relationship('Ride', backref=db.backref('route'))
 
     def __repr__(self):
-        return "<Route id=%s accepted=%s date/time:%s>" % \
-            (self.route_id, self.is_accepted, self.time_of_ride)
+        return "<Route id=%s accepted=%s>" % \
+            (self.route_id, self.is_accepted)
 
 
 class Ride(db.Model):

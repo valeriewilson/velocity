@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, flash, session, render_template
 from flask_debugtoolbar import DebugToolbarExtension
-from model import connect_to_db, db, User
+from model import connect_to_db, db, User, Route, Waypoint
 from math import cos, sin, radians
 from random import randrange, choice
 import googlemaps
@@ -45,7 +45,6 @@ def log_in_user():
             flash('Incorrect password')
             return redirect('/login')
     else:
-        print session
         flash('Invalid email address')
         return redirect('/login')
 
@@ -109,6 +108,7 @@ def select_preference():
     """ Display results based on form inputs """
 
     email = session['user_email']
+    user_id = db.session.query(User.user_id).filter_by(email=email).first()
     address = request.form.get('start-address')
     route_type = request.form.get('route-type')
     total_miles = float(request.form.get('total-miles'))
@@ -142,10 +142,18 @@ def select_preference():
         midpoint_address = request.form.get('midpoint-address')
         geocoded_midpoint = gmaps.geocode(midpoint_address)
 
-        print "\n\n\n", geocoded_midpoint, "\n\n\n"
-
         lat_2 = geocoded_midpoint[0]['geometry']['location']['lat']
         lon_2 = geocoded_midpoint[0]['geometry']['location']['lng']
+
+        route = Route(total_ascent=0, total_descent=0, is_accepted=True, user_id=user_id)
+        db.session.add(route)
+        db.session.commit()
+
+        waypoint_1 = Waypoint(route_id=route.route_id, latitude=lat_1, longitude=lon_1)
+        waypoint_2 = Waypoint(route_id=route.route_id, latitude=lat_2, longitude=lon_2)
+        db.session.add(waypoint_1)
+        db.session.add(waypoint_2)
+        db.session.commit()
 
         return render_template("map_results.html", email=email, route_type=route_type,
                                lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2)
