@@ -132,6 +132,18 @@ def select_preference():
         lat_3 = lat_2 + (sin(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LATS
         lon_3 = lon_2 + (cos(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LONS
 
+        route = Route(total_ascent=0, total_descent=0, is_accepted=True, user_id=user_id)
+        db.session.add(route)
+        db.session.commit()
+
+        waypoint_1 = Waypoint(route_id=route.route_id, latitude=lat_1, longitude=lon_1)
+        waypoint_2 = Waypoint(route_id=route.route_id, latitude=lat_2, longitude=lon_2)
+        waypoint_3 = Waypoint(route_id=route.route_id, latitude=lat_3, longitude=lon_3)
+        db.session.add(waypoint_1)
+        db.session.add(waypoint_2)
+        db.session.add(waypoint_3)
+        db.session.commit()
+
         return render_template("map_results.html", email=email, route_type=route_type,
                                lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2,
                                lat_3=lat_3, lon_3=lon_3)
