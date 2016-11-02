@@ -2,6 +2,7 @@ from flask import Flask, request, redirect, flash, session, render_template
 from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User
 from math import cos, sin, radians
+from random import randrange, choice
 import googlemaps
 import os
 
@@ -120,22 +121,34 @@ def select_preference():
     if route_type == "loop":
         # Given the unpredictable results of Google Maps API, miles / 4 as buffer
         miles_leg = total_miles / 4
-        angle = 0
+        # Random direction for first leg of route
+        angle = randrange(0, 360)
+        # Randomly choice of clockwise vs. count-clockwise loop
+        angle_diff = choice([-120, 120])
 
         lat_2 = lat_1 + (sin(radians(angle))*miles_leg)/MILES_BETWEEN_LATS
         lon_2 = lon_1 + (cos(radians(angle))*miles_leg)/MILES_BETWEEN_LONS
 
-        lat_3 = lat_2 + (sin(radians(angle+120))*miles_leg)/MILES_BETWEEN_LATS
-        lon_3 = lon_2 + (cos(radians(angle+120))*miles_leg)/MILES_BETWEEN_LONS
+        lat_3 = lat_2 + (sin(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LATS
+        lon_3 = lon_2 + (cos(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LONS
 
-        return render_template("map_results.html", email=email, address=address,
+        return render_template("map_results.html", email=email, route_type=route_type,
                                lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2,
-                               lat_3=lat_3, lon_3=lon_3, route_type=route_type)
+                               lat_3=lat_3, lon_3=lon_3)
 
     elif route_type == "midpoint":
+        # Geocoding address as proof of concept, will likely change with
+        #  addition of GMaps Directions API
+        midpoint_address = request.form.get('midpoint-address')
+        geocoded_midpoint = gmaps.geocode(midpoint_address)
 
-        return render_template("map_results.html", email=email, address=address,
-                               route_type=route_type)
+        print "\n\n\n", geocoded_midpoint, "\n\n\n"
+
+        lat_2 = geocoded_midpoint[0]['geometry']['location']['lat']
+        lon_2 = geocoded_midpoint[0]['geometry']['location']['lng']
+
+        return render_template("map_results.html", email=email, route_type=route_type,
+                               lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2)
 
 
 @app.route('/saved_routes')

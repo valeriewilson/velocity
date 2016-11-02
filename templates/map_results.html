@@ -7,6 +7,11 @@
         <p>{{ lat_2 }}, {{ lon_2 }}</p>
         <p>Midpoint 2:</p>
         <p>{{ lat_3 }}, {{ lon_3 }}</p>
+    {% elif route_type == "midpoint" %}
+        <p>Start:</p>
+        <p>{{ lat_1 }}, {{ lon_1 }}</p>
+        <p>Midpoint:</p>
+        <p>{{ lat_2 }}, {{ lon_2 }}</p>
     {% endif %}
 
     <!-- <p>{{ directions }}</p> -->
