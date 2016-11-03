@@ -4,6 +4,7 @@ from model import connect_to_db, db, User, Route, Waypoint
 from math import cos, sin, radians
 from random import randrange, choice
 import googlemaps
+import requests
 import os
 
 app = Flask(__name__)
@@ -120,17 +121,41 @@ def select_preference():
 
     if route_type == "loop":
         # Given the unpredictable results of Google Maps API, miles / 4 as buffer
-        miles_leg = total_miles / 4
+        miles_leg = total_miles / 4.0
+        elevation_sample_size = int(total_miles * 5)
         # Random direction for first leg of route
         angle = randrange(0, 360)
-        # Randomly choice of clockwise vs. count-clockwise loop
+        # Random choice of clockwise vs. count-clockwise loop
         angle_diff = choice([-120, 120])
 
         lat_2 = lat_1 + (sin(radians(angle))*miles_leg)/MILES_BETWEEN_LATS
         lon_2 = lon_1 + (cos(radians(angle))*miles_leg)/MILES_BETWEEN_LONS
-
         lat_3 = lat_2 + (sin(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LATS
         lon_3 = lon_2 + (cos(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LONS
+
+        print lat_2, lon_2
+
+        r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s,%s|%s,%s|%s,%s|%s,%s&samples=%s&key=AIzaSyBlY0gdpn-82bFjwWdaAPdQ_oOtJwd9Y3s"
+                         % (lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, lat_1, lon_1, elevation_sample_size))
+
+        elevation_data = r.json()
+        elevation_list = elevation_data["results"]
+
+        ascent = 0
+        descent = 0
+
+        for index, elevation_point in enumerate(elevation_list):
+            if index > 0:
+                last_ele = elevation_point["elevation"]
+                this_ele = elevation_list[index-1]["elevation"]
+                if this_ele > last_ele:
+                    ascent += (this_ele - last_ele)
+                    print "Before: ", last_ele, "After: ", this_ele
+                    print "Ascent", ascent
+                else:
+                    descent += (last_ele - this_ele)
+                    print "Before: ", last_ele, "After: ", this_ele
+                    print "Descent", descent
 
         route = Route(total_ascent=0, total_descent=0, is_accepted=True, user_id=user_id)
         db.session.add(route)
