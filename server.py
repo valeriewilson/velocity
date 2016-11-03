@@ -151,14 +151,10 @@ def select_preference():
                 this_ele = elevation_list[index-1]["elevation"]
                 if this_ele > last_ele:
                     ascent += (this_ele - last_ele)
-                    print "Before: ", last_ele, "After: ", this_ele
-                    print "Ascent", ascent
                 else:
                     descent += (last_ele - this_ele)
-                    print "Before: ", last_ele, "After: ", this_ele
-                    print "Descent", descent
 
-        route = Route(total_ascent=0, total_descent=0, is_accepted=True, user_id=user_id)
+        route = Route(total_ascent=ascent, total_descent=descent, is_accepted=True, user_id=user_id)
         db.session.add(route)
         db.session.commit()
 
