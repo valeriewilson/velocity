@@ -135,8 +135,9 @@ def select_preference():
 
         print lat_2, lon_2
 
-        r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s,%s|%s,%s|%s,%s|%s,%s&samples=%s&key=AIzaSyBlY0gdpn-82bFjwWdaAPdQ_oOtJwd9Y3s"
-                         % (lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, lat_1, lon_1, elevation_sample_size))
+        r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s,%s|%s,%s|%s,%s|%s,%s&samples=%s&key=%s"
+                         % (lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, lat_1,
+                            lon_1, elevation_sample_size, google_api_key))
 
         elevation_data = r.json()
         elevation_list = elevation_data["results"]
