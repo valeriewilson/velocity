@@ -3,15 +3,32 @@
     <div>
         <form action="/results" method="POST" id="route-form">
             <label for="start-address">Start address:</label>
-            <input type="start-address" id="start-address" class="address" name="start-address" required>
+            <select name="address-options">
+                {% if addresses %}
+                    {% for address in addresses %}
+                        {% if address.is_default %}
+                            <option class="address">{{ address.label }}*</option>
+                        {% else %}
+                            <option class="address">{{ address.label }}</option>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <option value="blank-address-option"></option>
+                {% endif %}
+                <option value="create-new-address">+ add new address</option>
+            </select>
+
+            <!-- <input type="start-address" id="start-address" class="address" name="start-address" required> -->
+            <br>
+            <label for="route-type">Route type:</label>
             <select name="route-type">
-                <option>Pick a type of route</option>
                 <option value="loop">Loop</option>
                 <option value="midpoint">To midpoint and back</option>
             </select>
             <br>
             <label for="midpoint-address">Midpoint address:</label>
             <input type="midpoint-address" id="midpoint-address" class="address" name="midpoint-address">
+            <br>
             <label for="total-miles">How many miles?</label>
             <input type="total-miles" id="total-miles" name="total-miles" required>
             <input type="submit" value="Let's ride!">

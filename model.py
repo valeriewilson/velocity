@@ -39,7 +39,7 @@ class Address(db.Model):
 
     def __repr__(self):
         return "<Address id=%s name=%s user=%s>" % \
-            (self.address_id, self.name, self.user.user_id)
+            (self.address_id, self.label, self.user.user_id)
 
 
 class Route(db.Model):

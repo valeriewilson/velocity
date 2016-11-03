@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, flash, session, render_template
 from flask_debugtoolbar import DebugToolbarExtension
-from model import connect_to_db, db, User, Route, Waypoint
+from sqlalchemy import desc
+from model import connect_to_db, db, User, Route, Waypoint, Address
 from math import cos, sin, radians
 from random import randrange, choice
 import googlemaps
@@ -32,7 +33,8 @@ def log_in_user():
     password = request.form.get('password')
 
     # Find user (if any) with this email address
-    user_entry = db.session.query(User.email, User.password).filter_by(email=email).first()
+    user_entry = db.session.query(User.email, User.password).\
+        filter_by(email=email).first()
 
     # Check if user already exists and if password is correct; logs user in and
     #  redirects to homepage, or returns an error message
@@ -91,8 +93,15 @@ def display_home_page():
     """ Display homepage of the app """
 
     email = session['user_email']
+    user_id = db.session.query(User.user_id).filter_by(email=email).first()
+    addresses = Address.query.filter_by(user_id=user_id).order_by(desc("is_default"), "label").all()
 
-    return render_template("home.html", email=email)
+    # Geocode address, extract latitude & longitude for route calculations
+    # geocoded_start = gmaps.geocode(address)
+    # lat_1 = geocoded_start[0]['geometry']['location']['lat']
+    # lon_1 = geocoded_start[0]['geometry']['location']['lng']
+
+    return render_template("home.html", email=email, addresses=addresses)
 
 
 @app.route('/', methods=['POST'])
@@ -110,14 +119,14 @@ def select_preference():
 
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
-    address = request.form.get('start-address')
+
+    # Extract start position from user-selected starting point
+    address_label = request.form.get('address-options')
+    lat_1, lon_1 = db.session.query(Address.latitude, Address.longitude).\
+        filter_by(user_id=user_id).filter_by(label=address_label).first()
+
     route_type = request.form.get('route-type')
     total_miles = float(request.form.get('total-miles'))
-
-    # Geocode start address, extract latitude & longitude for route calculations
-    geocoded_start = gmaps.geocode(address)
-    lat_1 = geocoded_start[0]['geometry']['location']['lat']
-    lon_1 = geocoded_start[0]['geometry']['location']['lng']
 
     if route_type == "loop":
         # Given the unpredictable results of Google Maps API, miles / 4 as buffer
@@ -132,8 +141,6 @@ def select_preference():
         lon_2 = lon_1 + (cos(radians(angle))*miles_leg)/MILES_BETWEEN_LONS
         lat_3 = lat_2 + (sin(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LATS
         lon_3 = lon_2 + (cos(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LONS
-
-        print lat_2, lon_2
 
         r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s,%s|%s,%s|%s,%s|%s,%s&samples=%s&key=%s"
                          % (lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, lat_1,
@@ -179,7 +186,26 @@ def select_preference():
         lat_2 = geocoded_midpoint[0]['geometry']['location']['lat']
         lon_2 = geocoded_midpoint[0]['geometry']['location']['lng']
 
-        route = Route(total_ascent=0, total_descent=0, is_accepted=True, user_id=user_id)
+        r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s,%s|%s,%s|%s,%s&samples=%s&key=%s"
+                         % (lat_1, lon_1, lat_2, lon_2, lat_1, lon_1,
+                            elevation_sample_size, google_api_key))
+
+        elevation_data = r.json()
+        elevation_list = elevation_data["results"]
+
+        ascent = 0
+        descent = 0
+
+        for index, elevation_point in enumerate(elevation_list):
+            if index > 0:
+                last_ele = elevation_point["elevation"]
+                this_ele = elevation_list[index-1]["elevation"]
+                if this_ele > last_ele:
+                    ascent += (this_ele - last_ele)
+                else:
+                    descent += (last_ele - this_ele)
+
+        route = Route(total_ascent=ascent, total_descent=descent, is_accepted=True, user_id=user_id)
         db.session.add(route)
         db.session.commit()
 
