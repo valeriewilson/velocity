@@ -111,7 +111,7 @@ def create_new_address():
     default = request.form.get('default-address')
 
     if default == "true":
-        # Set current addresses to false
+        # Set current addresses to false, new address to true
         existing_addresses = Address.query.filter_by(user_id=user_id).all()
         for address in existing_addresses:
             address.is_default = False
@@ -151,8 +151,8 @@ def select_preference():
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
-    # Extract start position from user-selected starting point
-    address_label = request.form.get('address-options')
+    # Extract start position from user-selected starting point (removing default *)
+    address_label = request.form.get('address-options').strip('*')
     lat_1, lon_1 = db.session.query(Address.latitude, Address.longitude).\
         filter_by(user_id=user_id).filter_by(label=address_label).first()
 

@@ -73,7 +73,7 @@
             var formInputs = {
                 "new-address-field": $("#new-address-field").val(),
                 "label-field": $("#label-field").val(),
-                "default-address": $('#default-address.checked').val()
+                "default-address": $('#radio_button').is(':checked')
             };
             $.post("/new_address", formInputs, updateAddressDropdown);
         }
