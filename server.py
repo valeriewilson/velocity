@@ -131,13 +131,14 @@ def create_new_address():
     db.session.add(new_address)
     db.session.commit()
 
-    # return label for new address as jsonified dictionary
+    # Return label for new address as jsonified dictionary
+    # Next steps: pass whole list of addresses back to addAddress function
     return jsonify({'new_address': new_address.label})
 
 
 @app.route('/', methods=['POST'])
 def return_to_home_page():
-    """ Return to homepage (for yes/no) """
+    """ Return to homepage if user accepts route """
 
     email = session['user_email']
 
@@ -283,6 +284,7 @@ def update_accepted_status():
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
+    # Could eventually update with data attribute passed from Ajax
     route = Route.query.filter_by(user_id=user_id).order_by(Route.route_id.desc()).first()
 
     route.is_accepted = False

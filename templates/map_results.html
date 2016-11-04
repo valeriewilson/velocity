@@ -29,16 +29,13 @@
         "use strict";
 
         function alertSuccess(result) {
-            alert("Success!")
+            console.log("Success")
         }
 
         function updateAcceptedStatus(evt) {
             evt.preventDefault();
-
-            var formInputs = {
-                "is_accepted": "false",
             };
-            $.post("/update_accepted", formInputs, alertSuccess);
+            $.post("/update_accepted", alertSuccess);
         }
 
         $('#new-address-form').on("submit", updateAcceptedStatus);
