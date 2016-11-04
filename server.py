@@ -257,8 +257,11 @@ def display_saved_routes():
     """ Display routes saved by user """
 
     email = session['user_email']
+    user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
-    return render_template("saved_routes.html", email=email)
+    routes = Route.query.filter_by(user_id=user_id).all()
+
+    return render_template("saved_routes.html", email=email, routes=routes)
 
 
 @app.route('/rejected_routes')
