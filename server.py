@@ -63,6 +63,7 @@ def display_registration_form():
 def register_login_user():
     """ Register user and log them in """
 
+    # Retrieve user-input data
     first_name = request.form.get('first-name')
     last_name = request.form.get('last-name')
     email = request.form.get('email')
@@ -94,7 +95,6 @@ def display_home_page():
 
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
-
     addresses = Address.query.filter_by(user_id=user_id).order_by(desc("is_default"), "label").all()
 
     return render_template("home.html", email=email, addresses=addresses)
@@ -102,15 +102,13 @@ def display_home_page():
 
 @app.route('/new_address', methods=["POST"])
 def create_new_address():
-    print "\n\n\n", "GOT IN!", "\n\n\n"
+
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
     new_address = request.form.get('new-address-field')
     new_label = request.form.get('label-field')
     default = request.form.get('default-address')
-
-    print "\n\n\n", new_address, new_label, default, "\n\n\n"
 
     if default == "true":
         # Set current addresses to false
@@ -127,14 +125,13 @@ def create_new_address():
     latitude = geocoded_address[0]['geometry']['location']['lat']
     longitude = geocoded_address[0]['geometry']['location']['lng']
 
-    print "\n\n\n", new_address, new_label, default, latitude, longitude, user_id, "\n\n\n"
-
+    # Add new address to addresses table
     new_address = Address(user_id=user_id, label=new_label, address_str=new_address,
                           latitude=latitude, longitude=longitude, is_default=is_default)
     db.session.add(new_address)
     db.session.commit()
 
-    # return jsonify(new_address)
+    # return label for new address as jsonified dictionary
     return jsonify({'new_address': new_address.label})
 
 
@@ -195,10 +192,12 @@ def select_preference():
                 else:
                     descent += (last_ele - this_ele)
 
+        # Add route to routes table
         route = Route(total_ascent=ascent, total_descent=descent, is_accepted=True, user_id=user_id)
         db.session.add(route)
         db.session.commit()
 
+        # Add points to waypoints table with new route_id
         waypoint_1 = Waypoint(route_id=route.route_id, latitude=lat_1, longitude=lon_1)
         waypoint_2 = Waypoint(route_id=route.route_id, latitude=lat_2, longitude=lon_2)
         waypoint_3 = Waypoint(route_id=route.route_id, latitude=lat_3, longitude=lon_3)
