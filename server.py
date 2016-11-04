@@ -269,8 +269,11 @@ def display_rejected_routes():
     """ Display routes rejected by user """
 
     email = session['user_email']
+    user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
-    return render_template("rejected_routes.html", email=email)
+    routes = Route.query.filter_by(user_id=user_id).all()
+
+    return render_template("rejected_routes.html", email=email, routes=routes)
 
 
 @app.route('/logout')
