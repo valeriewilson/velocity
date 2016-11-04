@@ -14,17 +14,34 @@
         <p>{{ lat_2 }}, {{ lon_2 }}</p>
     {% endif %}
 
-    <!-- <p>{{ directions }}</p> -->
     <div>
         <p>Do you want to save this route?</p>
         <form action="/" id="selected-route-form">
             <input type="submit" value="Yes">
         </form>
-        <form action="/" id="rejected-route-form">
+        <form action="/update_accepted" id="rejected-route-form">
             <input type="submit" value="No">
         </form>
     </div>
 
-    <!-- Placeholder image until Google Maps route map is created -->
-    <img src="http://www.drodd.com/images15/maps10.jpg" width=500>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script>
+        "use strict";
+
+        function alertSuccess(result) {
+            alert("Success!")
+        }
+
+        function updateAcceptedStatus(evt) {
+            evt.preventDefault();
+
+            var formInputs = {
+                "is_accepted": "false",
+            };
+            $.post("/update_accepted", formInputs, alertSuccess);
+        }
+
+        $('#new-address-form').on("submit", updateAcceptedStatus);
+
+    </script>
 {% endblock %}

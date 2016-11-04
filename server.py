@@ -276,6 +276,21 @@ def display_rejected_routes():
     return render_template("rejected_routes.html", email=email, routes=routes)
 
 
+@app.route('/update_accepted')
+def update_accepted_status():
+    """ Updated rejected route to is_accepted = False """
+
+    email = session['user_email']
+    user_id = db.session.query(User.user_id).filter_by(email=email).first()
+
+    route = Route.query.filter_by(user_id=user_id).order_by(Route.route_id.desc()).first()
+
+    route.is_accepted = False
+    db.session.commit()
+
+    return redirect("/")
+
+
 @app.route('/logout')
 def log_user_out():
     del session['user_email']
