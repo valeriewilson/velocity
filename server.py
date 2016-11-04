@@ -1,6 +1,6 @@
-from flask import Flask, request, redirect, flash, session, render_template
+from flask import Flask, request, redirect, flash, session, render_template, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from sqlalchemy import desc
+from sqlalchemy import update, desc
 from model import connect_to_db, db, User, Route, Waypoint, Address
 from math import cos, sin, radians
 from random import randrange, choice
@@ -94,14 +94,48 @@ def display_home_page():
 
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
+
     addresses = Address.query.filter_by(user_id=user_id).order_by(desc("is_default"), "label").all()
 
-    # Geocode address, extract latitude & longitude for route calculations
-    # geocoded_start = gmaps.geocode(address)
-    # lat_1 = geocoded_start[0]['geometry']['location']['lat']
-    # lon_1 = geocoded_start[0]['geometry']['location']['lng']
-
     return render_template("home.html", email=email, addresses=addresses)
+
+
+@app.route('/new_address', methods=["POST"])
+def create_new_address():
+    print "\n\n\n", "GOT IN!", "\n\n\n"
+    email = session['user_email']
+    user_id = db.session.query(User.user_id).filter_by(email=email).first()
+
+    new_address = request.form.get('new-address-field')
+    new_label = request.form.get('label-field')
+    default = request.form.get('default-address')
+
+    print "\n\n\n", new_address, new_label, default, "\n\n\n"
+
+    if default == "true":
+        # Set current addresses to false
+        existing_addresses = Address.query.filter_by(user_id=user_id).all()
+        for address in existing_addresses:
+            address.is_default = False
+        db.session.commit()
+        is_default = True
+    else:
+        is_default = False
+
+    # Geocode address, extract latitude & longitude for route calculations
+    geocoded_address = gmaps.geocode(new_address)
+    latitude = geocoded_address[0]['geometry']['location']['lat']
+    longitude = geocoded_address[0]['geometry']['location']['lng']
+
+    print "\n\n\n", new_address, new_label, default, latitude, longitude, user_id, "\n\n\n"
+
+    new_address = Address(user_id=user_id, label=new_label, address_str=new_address,
+                          latitude=latitude, longitude=longitude, is_default=is_default)
+    db.session.add(new_address)
+    db.session.commit()
+
+    # return jsonify(new_address)
+    return jsonify({'new_address': new_address.label})
 
 
 @app.route('/', methods=['POST'])
