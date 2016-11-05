@@ -112,7 +112,6 @@ def create_new_address():
     default = request.form.get('default-address')
 
     if default == "true":
-        print "\n\n\n", "It's true: ", default, "\n\n\n"
         # Set current addresses to false, new address to true
         existing_addresses = Address.query.filter_by(user_id=user_id).all()
         for address in existing_addresses:
@@ -120,7 +119,6 @@ def create_new_address():
         db.session.commit()
         is_default = True
     else:
-        print "\n\n\n", "It's false: ", default, "\n\n\n"
         is_default = False
 
     # Geocode address, extract latitude & longitude for route calculations

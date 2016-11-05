@@ -6,11 +6,7 @@
             <select name="address-options" id="address-dropdown">
                 {% if addresses %}
                     {% for address in addresses %}
-                        {% if address[1].is_default %}
-                            <option class="address">{{ address[0] }}*</option>
-                        {% else %}
-                            <option class="address">{{ address[0] }}</option>
-                        {% endif %}
+                        <option class="address">{{ address[0] }}</option>
                     {% endfor %}
                 {% else %}
                     <option value="blank-address-option"></option>
@@ -79,7 +75,7 @@
             var formInputs = {
                 "new-address-field": $("#new-address-field").val(),
                 "label-field": $("#label-field").val(),
-                "default-address": $('#radio_button').is(':checked')
+                "default-address": $('#default-address').is(':checked')
             };
             $.post("/new_address", formInputs, updateAddressDropdown);
         }
