@@ -6,10 +6,10 @@
             <select name="address-options" id="address-dropdown">
                 {% if addresses %}
                     {% for address in addresses %}
-                        {% if address.is_default %}
-                            <option class="address">{{ address.label }}*</option>
+                        {% if address[1].is_default %}
+                            <option class="address">{{ address[0] }}*</option>
                         {% else %}
-                            <option class="address">{{ address.label }}</option>
+                            <option class="address">{{ address[0] }}</option>
                         {% endif %}
                     {% endfor %}
                 {% else %}
@@ -63,8 +63,14 @@
         "use strict";
 
         function updateAddressDropdown(result) {
-            $("#new-address-information").addClass("hidden")
-            $("#address-dropdown").append($('<option class="address">'+result.new_address+'</option>'));
+            $("#new-address-information").addClass("hidden");
+            $('#address-dropdown').empty();
+            var addresses = result.addresses;
+            
+            for (var step = 0; step < addresses.length; step++) {
+                $('#address-dropdown').append($('<option></option>').html(addresses[step][0]));
+            }
+            $('#address-dropdown').append('<option value="create-new-address">+ new address</option>');
         }
 
         function addAddress(evt) {

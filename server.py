@@ -95,7 +95,8 @@ def display_home_page():
 
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
-    addresses = Address.query.filter_by(user_id=user_id).order_by(desc("is_default"), "label").all()
+    addresses = db.session.query(Address.label, Address.is_default)\
+        .filter_by(user_id=user_id).order_by(desc("is_default"), "label").all()
 
     return render_template("home.html", email=email, addresses=addresses)
 
@@ -111,6 +112,7 @@ def create_new_address():
     default = request.form.get('default-address')
 
     if default == "true":
+        print "\n\n\n", "It's true: ", default, "\n\n\n"
         # Set current addresses to false, new address to true
         existing_addresses = Address.query.filter_by(user_id=user_id).all()
         for address in existing_addresses:
@@ -118,6 +120,7 @@ def create_new_address():
         db.session.commit()
         is_default = True
     else:
+        print "\n\n\n", "It's false: ", default, "\n\n\n"
         is_default = False
 
     # Geocode address, extract latitude & longitude for route calculations
@@ -131,9 +134,10 @@ def create_new_address():
     db.session.add(new_address)
     db.session.commit()
 
-    # Return label for new address as jsonified dictionary
-    # Next steps: pass whole list of addresses back to addAddress function
-    return jsonify({'new_address': new_address.label})
+    addresses = db.session.query(Address.label).filter_by(user_id=user_id).order_by(desc("is_default"), "label").all()
+
+    # Return list of addresses in JSON format
+    return jsonify({"addresses": addresses})
 
 
 @app.route('/', methods=['POST'])
