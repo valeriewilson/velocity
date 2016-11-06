@@ -25,16 +25,19 @@
 
             <br>
             <label for="route-type">Route type:</label>
-            <select name="route-type">
+            <select name="route-type" id="route-type">
+                <option value="unselected-value">Select a route type</option>
                 <option value="loop">Loop</option>
                 <option value="midpoint">To midpoint and back</option>
             </select>
-            <br>
-            <label for="midpoint-address">Midpoint address:</label>
-            <input type="midpoint-address" id="midpoint-address" class="address" name="midpoint-address">
-            <br>
-            <label for="total-miles">How many miles?</label>
-            <input type="total-miles" id="total-miles" name="total-miles" required>
+            <div class="hidden" id="midpoint-field">
+                <label for="midpoint-address">Midpoint address:</label>
+                <input type="midpoint-address" id="midpoint-address" class="address" name="midpoint-address">
+            </div>
+            <div class="hidden" id="miles-field">
+                <label for="total-miles">How many miles?</label>
+                <input type="total-miles" id="total-miles" name="total-miles" required>
+            </div>
             <br>
             <input type="submit" value="Let's ride!">
         </form>
@@ -57,6 +60,18 @@
     </div>
     <script>
         "use strict";
+
+        var route_dropdown = document.getElementById("route-type");
+        route_dropdown.onchange = function(){
+            $('#midpoint-field').addClass("hidden")
+            $('#miles-field').addClass("hidden")
+            if(route_dropdown.value=="loop"){
+                $('#miles-field').removeClass()
+            }
+            else if(route_dropdown.value=="midpoint"){
+                $('#midpoint-field').removeClass()
+            }
+        }
 
         function updateAddressDropdown(result) {
             $("#new-address-information").addClass("hidden");
