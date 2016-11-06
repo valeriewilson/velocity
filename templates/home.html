@@ -17,6 +17,7 @@
             <script>    
                 var dropdown = document.getElementById("address-dropdown");
                 dropdown.onchange = function(){
+                   $('#new-address-information').addClass("hidden")
                    if(dropdown.value=="create-new-address"){
                      $('#new-address-information').removeClass()
                    }
