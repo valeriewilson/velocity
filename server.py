@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, flash, session, render_template, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from sqlalchemy import update, desc
+from sqlalchemy import desc
 from model import connect_to_db, db, User, Route, Waypoint, Address
 from math import cos, sin, radians
 from random import randrange, choice
@@ -9,7 +9,7 @@ import requests
 import os
 
 app = Flask(__name__)
-app.secret_key = 'ABCSECRETABC'
+app.secret_key = os.environ["FLASK_KEY"]
 
 google_api_key = os.environ["GOOGLE_API_KEY"]
 gmaps = googlemaps.Client(key=google_api_key)
