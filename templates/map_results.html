@@ -16,9 +16,9 @@
 
     <div>
         <p>Do you want to save this route?</p>
-        <input type="radio" name="save-option" value="yes"> Yes<br>
-        <input type="radio" name="save-option" value="no"> No<br>
-        <form action="/update_accepted" id="rejected-route-form" method="POST">
+        <input type="radio" name="save-option" value="yes" id="yes-option"> Yes<br>
+        <input type="radio" name="save-option" value="no" id="no-option"> No<br>
+        <form action="/update_accepted" id="rejected-route-form" method="POST" class="hidden">
             <select name="issue" id="issue">
                 <option id="impossible">Impossible route (ex: in water)</option>
                 <option id="traffic">Major roads / traffic</option>
@@ -29,4 +29,16 @@
             </select>
         </form>
     </div>
+
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script>
+        "use strict";
+
+        var no_selected = document.getElementById("no-option");
+        no_selected.onchange = function(){
+            // $('#yes-option').addClass("hidden")
+            $('#rejected-route-form').removeClass()
+        }
+
+    </script>
 {% endblock %}
