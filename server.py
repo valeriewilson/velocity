@@ -278,8 +278,8 @@ def display_rejected_routes():
     return render_template("rejected_routes.html", email=email, routes=routes)
 
 
-@app.route('/update_accepted', methods=["POST"])
-def update_accepted_status():
+@app.route('/reject-route', methods=["POST"])
+def reject_route():
     """ Updated rejected route to is_accepted = False """
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
@@ -289,6 +289,21 @@ def update_accepted_status():
 
     route.is_accepted = False
     route.issue = issue
+    db.session.commit()
+
+    return redirect("/")
+
+
+@app.route('/add-score', methods=["POST"])
+def add_score():
+    """ Updated rejected route to is_accepted = False """
+    email = session['user_email']
+    user_id = db.session.query(User.user_id).filter_by(email=email).first()
+    rating = request.form.get('rating')
+
+    route = Route.query.filter_by(user_id=user_id).order_by(Route.route_id.desc()).first()
+
+    route.score = rating
     db.session.commit()
 
     return redirect("/")

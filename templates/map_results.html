@@ -16,27 +16,47 @@
 
     <div>
         <p>Do you want to save this route?</p>
-        <input type="radio" name="save-option" value="yes" id="yes-option"> Yes<br>
-        <input type="radio" name="save-option" value="no" id="no-option"> No<br>
-        <form action="/update_accepted" id="rejected-route-form" method="POST" class="hidden">
-            <select name="issue" id="issue">
-                <option id="impossible">Impossible route (ex: in water)</option>
-                <option id="traffic">Major roads / traffic</option>
-                <option id="no-lanes">No bike lanes</option>
-                <option id="dont-like">Not feeling it</option>
-                <option id="overlapped">Overlapped sections</option>
-                <input type="submit" value="Save" id="save-reason">
-            </select>
-        </form>
+        <div>
+            <input type="radio" name="save-option" value="yes" id="yes-option"> Yes<br>
+            <form action="/add-score" id="accepted-route-form" method="POST" class="hidden">
+                <select name="rating" id="rating">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <input type="submit" value="Save" id="save-rating">
+                </select>
+            </form>
+        </div>
+        <div>
+            <input type="radio" name="save-option" value="no" id="no-option"> No<br>
+            <form action="/reject-route" id="rejected-route-form" method="POST" class="hidden">
+                <select name="issue" id="issue">
+                    <option id="impossible">Impossible route</option>
+                    <option id="traffic">Major roads / traffic</option>
+                    <option id="no-lanes">No bike lanes</option>
+                    <option id="dont-like">Not feeling it</option>
+                    <option id="overlapped">Overlapped sections</option>
+                    <input type="submit" value="Save" id="save-reason">
+                </select>
+            </form>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery.js"></script>
     <script>
         "use strict";
 
+        var yes_selected = document.getElementById("yes-option");
+        no_selected.onchange = function(){
+            $('#accepted-route-form').removeClass()
+            $('#rejected-route-form').addClass("hidden")
+        }
+
         var no_selected = document.getElementById("no-option");
         no_selected.onchange = function(){
-            // $('#yes-option').addClass("hidden")
+            $('#accepted-route-form').addClass("hidden")
             $('#rejected-route-form').removeClass()
         }
 
