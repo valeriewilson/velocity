@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     <div>
-        <form action="/results" method="POST" id="route-form">
+        <form action="/results" method="POST" id="route-form" novalidate>
             <label for="start-address">Start address:</label>
             <select name="address-options" id="address-dropdown">
                 {% if addresses %}
@@ -14,7 +14,7 @@
                 <option value="create-new-address" id="new-address">+ new address</option>
             </select>
             <script src="https://code.jquery.com/jquery.js"></script>
-            <script>    
+            <script>
                 var dropdown = document.getElementById("address-dropdown");
                 dropdown.onchange = function(){
                    $('#new-address-information').addClass("hidden")

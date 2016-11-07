@@ -6,7 +6,7 @@
             <div>
                 <h3>Route #{{ route.route_id }}</h3>
                 <p>Elevation: {{ route.total_ascent }}</p>
-                <p>Score: {{ route.score }}</p>
+                <p>Issue: {{ route.issue }}</p>
                 {% for waypoint in route.waypoints %}
                     <p>{{ waypoint.latitude }}, {{ waypoint.longitude }}</p>
                 {% endfor %}

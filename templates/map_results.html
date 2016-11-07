@@ -16,28 +16,16 @@
 
     <div>
         <p>Do you want to save this route?</p>
-        <form action="/" id="selected-route-form">
-            <input type="submit" value="Yes">
-        </form>
-        <form action="/update_accepted" id="rejected-route-form">
-            <input type="submit" value="No">
+        <input type="radio" name="save-option" value="yes"> Yes<br>
+        <input type="radio" name="save-option" value="no"> No<br>
+        <form action="/update_accepted" id="rejected-route-form" method="POST">
+            <select name="issue" id="issue">
+                <option id="impossible">Impossible route (ex: in water)</option>
+                <option id="traffic">Major roads / traffic</option>
+                <option id="no-lanes">No bike lanes</option>
+                <option id="overlapped">Overlapped sections</option>
+                <input type="submit" value="Save" id="save-reason">
+            </select>
         </form>
     </div>
-
-    <script src="https://code.jquery.com/jquery.js"></script>
-    <script>
-        "use strict";
-
-        function alertSuccess(result) {
-            console.log("Success")
-        }
-
-        function updateAcceptedStatus(evt) {
-            evt.preventDefault();
-            $.post("/update_accepted", alertSuccess);
-        }
-
-        $('#new-address-form').on("submit", updateAcceptedStatus);
-
-    </script>
 {% endblock %}

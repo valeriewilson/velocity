@@ -160,10 +160,10 @@ def select_preference():
         filter_by(user_id=user_id).filter_by(label=address_label).first()
 
     route_type = request.form.get('route-type')
-    total_miles = float(request.form.get('total-miles'))
 
     if route_type == "loop":
         # Given the unpredictable results of Google Maps API, miles / 4 as buffer
+        total_miles = float(request.form.get('total-miles'))
         miles_leg = total_miles / 4.0
         elevation_sample_size = int(total_miles * 5)
         # Random direction for first leg of route
@@ -222,9 +222,8 @@ def select_preference():
         lat_2 = geocoded_midpoint[0]['geometry']['location']['lat']
         lon_2 = geocoded_midpoint[0]['geometry']['location']['lng']
 
-        r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s,%s|%s,%s|%s,%s&samples=%s&key=%s"
-                         % (lat_1, lon_1, lat_2, lon_2, lat_1, lon_1,
-                            elevation_sample_size, google_api_key))
+        r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s,%s|%s,%s|%s,%s&samples=20&key=%s"
+                         % (lat_1, lon_1, lat_2, lon_2, lat_1, lon_1, google_api_key))
 
         elevation_data = r.json()
         elevation_list = elevation_data["results"]
@@ -279,17 +278,17 @@ def display_rejected_routes():
     return render_template("rejected_routes.html", email=email, routes=routes)
 
 
-@app.route('/update_accepted')
+@app.route('/update_accepted', methods=["POST"])
 def update_accepted_status():
     """ Updated rejected route to is_accepted = False """
-
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
+    issue = request.form.get('issue')
 
-    # Could eventually update with data attribute passed from Ajax
     route = Route.query.filter_by(user_id=user_id).order_by(Route.route_id.desc()).first()
 
     route.is_accepted = False
+    route.issue = issue
     db.session.commit()
 
     return redirect("/")
