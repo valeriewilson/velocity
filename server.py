@@ -188,27 +188,7 @@ def select_preference():
         ascent_feet = ascent_meters * 3.28
         descent_feet = descent_meters * 3.28
 
-        # Google Maps doesn't handle round trips in the Python module, so I split the route
-        directions_1 = gmaps.directions(("{}, {}").format(lat_1, lon_1),
-                                        ("{}, {}").format(lat_3, lon_3),
-                                        waypoints=("{}, {}").format(lat_2, lon_2),
-                                        mode="bicycling")
-
-        directions_2 = gmaps.directions(("{}, {}").format(lat_3, lon_3),
-                                        ("{}, {}").format(lat_1, lon_1),
-                                        mode="bicycling")
-
-        miles_leg_1 = float(directions_1[0]["legs"][0]["distance"]["text"][:-3])
-        minutes_leg_1 = float(directions_1[0]["legs"][0]["duration"]["text"][:-5])
-
-        miles_leg_2 = float(directions_1[0]["legs"][1]["distance"]["text"][:-3])
-        minutes_leg_2 = float(directions_1[0]["legs"][1]["duration"]["text"][:-5])
-
-        miles_leg_3 = float(directions_2[0]["legs"][0]["distance"]["text"][:-3])
-        minutes_leg_3 = float(directions_2[0]["legs"][0]["duration"]["text"][:-5])
-
-        total_miles = miles_leg_1 + miles_leg_2 + miles_leg_3
-        total_minutes = minutes_leg_1 + minutes_leg_2 + minutes_leg_3
+        total_miles, total_minutes = calculate_distance_time(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3)
 
         # Add route to routes table
         route = Route(total_ascent=ascent_feet, total_descent=descent_feet,
@@ -354,6 +334,34 @@ def calculate_waypoints(lat_1, lon_1, miles):
     lon_3 = lon_2 + (cos(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LONS
 
     return lat_2, lon_2, lat_3, lon_3, elevation_sample_size
+
+
+def calculate_distance_time(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3):
+    """ Calculate total miles and minutes for route """
+
+    # Splitting route to accommodate limitations in Google Directions module
+    directions_1 = gmaps.directions(("{}, {}").format(lat_1, lon_1),
+                                    ("{}, {}").format(lat_3, lon_3),
+                                    waypoints=("{}, {}").format(lat_2, lon_2),
+                                    mode="bicycling")
+
+    directions_2 = gmaps.directions(("{}, {}").format(lat_3, lon_3),
+                                    ("{}, {}").format(lat_1, lon_1),
+                                    mode="bicycling")
+
+    miles_leg_1 = float(directions_1[0]["legs"][0]["distance"]["text"][:-3])
+    minutes_leg_1 = float(directions_1[0]["legs"][0]["duration"]["text"][:-5])
+
+    miles_leg_2 = float(directions_1[0]["legs"][1]["distance"]["text"][:-3])
+    minutes_leg_2 = float(directions_1[0]["legs"][1]["duration"]["text"][:-5])
+
+    miles_leg_3 = float(directions_2[0]["legs"][0]["distance"]["text"][:-3])
+    minutes_leg_3 = float(directions_2[0]["legs"][0]["duration"]["text"][:-5])
+
+    total_miles = miles_leg_1 + miles_leg_2 + miles_leg_3
+    total_minutes = minutes_leg_1 + minutes_leg_2 + minutes_leg_3
+
+    return total_miles, total_minutes
 
 
 if __name__ == "__main__":
