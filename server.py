@@ -164,16 +164,20 @@ def select_preference():
     if route_type == "loop":
         specified_miles = float(request.form.get('total-miles'))
 
+        # Calculate waypoints for route
         lat_2, lon_2, lat_3, lon_3, elevation_sample_size = calculate_waypoints(lat_1, lon_1, specified_miles)
 
+        # Calculate total elevation changes for route
         ascent_feet, descent_feet = calculate_elevation(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, elevation_sample_size)
 
+        # Calculate total distance and time for route
         total_miles, total_minutes = calculate_distance_time(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3)
 
         # Add route to routes table
         route = Route(total_ascent=ascent_feet, total_descent=descent_feet,
                       is_accepted=True, user_id=user_id, total_miles=total_miles,
                       total_minutes=total_minutes)
+
         db.session.add(route)
         db.session.commit()
 
@@ -181,6 +185,7 @@ def select_preference():
         waypoint_1 = Waypoint(route_id=route.route_id, latitude=lat_1, longitude=lon_1)
         waypoint_2 = Waypoint(route_id=route.route_id, latitude=lat_2, longitude=lon_2)
         waypoint_3 = Waypoint(route_id=route.route_id, latitude=lat_3, longitude=lon_3)
+
         db.session.add(waypoint_1)
         db.session.add(waypoint_2)
         db.session.add(waypoint_3)
