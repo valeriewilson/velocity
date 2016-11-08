@@ -162,19 +162,9 @@ def select_preference():
     route_type = request.form.get('route-type')
 
     if route_type == "loop":
-        # Given the unpredictable results of Google Maps API, miles / 4 as buffer
         specified_miles = float(request.form.get('total-miles'))
-        miles_leg = specified_miles / 4.0
-        elevation_sample_size = int(specified_miles * 5)
-        # Random direction for first leg of route
-        angle = randrange(0, 360)
-        # Random choice of clockwise vs. count-clockwise loop
-        angle_diff = choice([-120, 120])
 
-        lat_2 = lat_1 + (sin(radians(angle))*miles_leg)/MILES_BETWEEN_LATS
-        lon_2 = lon_1 + (cos(radians(angle))*miles_leg)/MILES_BETWEEN_LONS
-        lat_3 = lat_2 + (sin(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LATS
-        lon_3 = lon_2 + (cos(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LONS
+        lat_2, lon_2, lat_3, lon_3, elevation_sample_size = calculate_waypoints(lat_1, lon_1, specified_miles)
 
         r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s,%s|%s,%s|%s,%s|%s,%s&samples=%s&key=%s"
                          % (lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, lat_1,
@@ -341,6 +331,29 @@ def log_user_out():
     del session['user_email']
     flash('Logged out')
     return redirect('/login')
+
+
+def calculate_waypoints(lat_1, lon_1, miles):
+    """ For loop routes, come up with random route based on start location &
+        miles specified """
+
+    # Given the unpredictable results of Google Maps API, miles / 4 as buffer
+    miles_leg = miles / 4.0
+    elevation_sample_size = int(miles * 5)
+
+    # Random direction for first leg of route
+    angle = randrange(0, 360)
+
+    # Random choice of clockwise vs. count-clockwise loop
+    angle_diff = choice([-120, 120])
+
+    # Calculate waypoints based on above information
+    lat_2 = lat_1 + (sin(radians(angle))*miles_leg)/MILES_BETWEEN_LATS
+    lon_2 = lon_1 + (cos(radians(angle))*miles_leg)/MILES_BETWEEN_LONS
+    lat_3 = lat_2 + (sin(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LATS
+    lon_3 = lon_2 + (cos(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LONS
+
+    return lat_2, lon_2, lat_3, lon_3, elevation_sample_size
 
 
 if __name__ == "__main__":
