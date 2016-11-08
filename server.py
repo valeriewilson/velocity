@@ -211,7 +211,7 @@ def select_preference():
 
         return render_template("map_results.html", email=email, route_type=route_type,
                                lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2,
-                               lat_3=lat_3, lon_3=lon_3)
+                               lat_3=lat_3, lon_3=lon_3, elevation=ascent, api_key=google_api_key)
 
     elif route_type == "midpoint":
         # Geocoding address as proof of concept, will likely change with
@@ -261,7 +261,7 @@ def display_saved_routes():
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
-    routes = Route.query.filter_by(user_id=user_id).all()
+    routes = Route.query.filter((Route.user_id == user_id) & (Route.score.isnot(None))).all()
 
     return render_template("saved_routes.html", email=email, routes=routes)
 

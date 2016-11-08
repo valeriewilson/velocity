@@ -4,3 +4,7 @@
 .hidden {
     display: none;
 }
+#map {
+    height: 500px;
+    width: 700px;
+}
