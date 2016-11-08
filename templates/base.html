@@ -14,11 +14,7 @@
 <body>
     <h1>Bike Route Generator</h1>
     {% if email %}
-        <p><a href="/">Home</a></p>
-        <p><a href="/saved_routes">Saved Routes</a></p>
-        <p><a href="/rejected_routes">Rejected Routes</a></p>
-        <p>Logged in as {{ email }}</p>
-        <p><a href="/logout">Log Out</a></p>
+        <a href="/">Home</a> | <a href="/saved_routes">Saved Routes</a> | <a href="/rejected_routes">Rejected Routes</a> | Logged in as {{ email }} | <a href="/logout">Log Out</a>
     {% endif %}
     {% block content %}{% endblock %}
 </body>

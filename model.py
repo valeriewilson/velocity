@@ -54,6 +54,8 @@ class Route(db.Model):
     is_accepted = db.Column(db.Boolean, nullable=False)
     score = db.Column(db.Integer, nullable=True)
     issue = db.Column(db.String(50), nullable=True)
+    total_miles = db.Column(db.Float, nullable=False)
+    total_minutes = db.Column(db.Float, nullable=False)
 
     waypoints = db.relationship('Waypoint', backref=db.backref('route'))
     rides = db.relationship('Ride', backref=db.backref('route'))

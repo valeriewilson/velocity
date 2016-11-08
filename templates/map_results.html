@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-    <p>Total climb: {{ "{:.0f}".format(elevation * 3.28) }} ft</p>
-    <div id="map" class="work"></div>
+    <p>Miles: {{ miles }} miles</p>
+    <p>Time: {{ minutes | int }} minutes</p>
+    <p>Total climb: {{ "{:.0f}".format(elevation) }} ft</p>
 
     <div>
         <p>Do you want to save this route?</p>
@@ -14,8 +15,8 @@
                     <option>3</option>
                     <option>4</option>
                     <option>5</option>
-                    <input type="submit" value="Save" id="save-rating">
                 </select>
+                <input type="submit" value="Save" id="save-rating">
             </form>
         </div>
         <div>
@@ -27,11 +28,14 @@
                     <option id="no-lanes">No bike lanes</option>
                     <option id="dont-like">Not feeling it</option>
                     <option id="overlapped">Overlapped sections</option>
-                    <input type="submit" value="Save" id="save-reason">
                 </select>
+                <input type="submit" value="Save" id="save-reason">
             </form>
         </div>
     </div>
+    <br>
+
+    <div id="map"></div>
 
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap">
@@ -55,6 +59,8 @@
         function initMap() {
             var directionsService = new google.maps.DirectionsService;
             var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+
+            // Need to split by loop vs. midpoint
             var start = {lat: {{ lat_1 }}, lng: {{ lon_1 }}};
             var mid_1 = {lat: {{ lat_2 }}, lng: {{ lon_2 }}};
             var mid_2 = {lat: {{ lat_3 }}, lng: {{ lon_3 }}};
@@ -70,10 +76,10 @@
 
             var center_position = {lat: mid_lat, lng: mid_lon}
             var map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 25,
-              center: center_position,
-              mapTypeControl: false,
-              streetViewControl: false
+                zoom: 25,
+                center: center_position,
+                mapTypeControl: false,
+                streetViewControl: false,
             });
             var marker = new google.maps.Marker({
               position: start,
@@ -84,10 +90,17 @@
         }
 
         function displayRoute(directionsService, directionsDisplay) {
+            // Starting to accommodate midpoint maps
+            if ("{{ route_type }}" == "loop") {
+                var waypts = [{location: '{{ lat_2 }}, {{ lon_2 }}'}, {location: '{{ lat_3 }}, {{ lon_3 }}'}]
+            } else {
+                var waypts = [{location: '{{ lat_2 }}, {{ lon_2 }}'}]
+            }
+            
             directionsService.route({
             origin: '{{ lat_1 }}, {{ lon_1 }}',
             destination: '{{ lat_1 }}, {{ lon_1 }}',
-            waypoints: [{location: '{{ lat_2 }}, {{ lon_2 }}'}, {location: '{{ lat_3 }}, {{ lon_3 }}'}],
+            waypoints: waypts,
             travelMode: 'BICYCLING'
         }, function(response, status) {
             if (status === 'OK') {

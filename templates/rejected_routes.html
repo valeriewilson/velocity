@@ -5,7 +5,9 @@
         {% if not route.is_accepted %}
             <div>
                 <h3>Route #{{ route.route_id }}</h3>
-                <p>Total climb: {{ "{:.0f}".format(route.total_ascent * 3.28) }} ft</p>
+                <p>Miles: {{ route.total_miles }} miles</p>
+                <p>Time: {{ route.total_minutes | int }} minutes</p>
+                <p>Total climb: {{ "{:.0f}".format(route.total_ascent) }} ft</p>
                 <p>Issue: {{ route.issue }}</p>
                 {% for waypoint in route.waypoints %}
                     <p>{{ waypoint.latitude }}, {{ waypoint.longitude }}</p>

@@ -163,9 +163,9 @@ def select_preference():
 
     if route_type == "loop":
         # Given the unpredictable results of Google Maps API, miles / 4 as buffer
-        total_miles = float(request.form.get('total-miles'))
-        miles_leg = total_miles / 4.0
-        elevation_sample_size = int(total_miles * 5)
+        specified_miles = float(request.form.get('total-miles'))
+        miles_leg = specified_miles / 4.0
+        elevation_sample_size = int(specified_miles * 5)
         # Random direction for first leg of route
         angle = randrange(0, 360)
         # Random choice of clockwise vs. count-clockwise loop
@@ -183,20 +183,47 @@ def select_preference():
         elevation_data = r.json()
         elevation_list = elevation_data["results"]
 
-        ascent = 0
-        descent = 0
+        ascent_meters = 0
+        descent_meters = 0
 
         for index, elevation_point in enumerate(elevation_list):
             if index > 0:
                 last_ele = elevation_point["elevation"]
                 this_ele = elevation_list[index-1]["elevation"]
                 if this_ele > last_ele:
-                    ascent += (this_ele - last_ele)
+                    ascent_meters += (this_ele - last_ele)
                 else:
-                    descent += (last_ele - this_ele)
+                    descent_meters += (last_ele - this_ele)
+
+        ascent_feet = ascent_meters * 3.28
+        descent_feet = descent_meters * 3.28
+
+        # Google Maps doesn't handle round trips in the Python module, so I split the route
+        directions_1 = gmaps.directions(("{}, {}").format(lat_1, lon_1),
+                                        ("{}, {}").format(lat_3, lon_3),
+                                        waypoints=("{}, {}").format(lat_2, lon_2),
+                                        mode="bicycling")
+
+        directions_2 = gmaps.directions(("{}, {}").format(lat_3, lon_3),
+                                        ("{}, {}").format(lat_1, lon_1),
+                                        mode="bicycling")
+
+        miles_leg_1 = float(directions_1[0]["legs"][0]["distance"]["text"][:-3])
+        minutes_leg_1 = float(directions_1[0]["legs"][0]["duration"]["text"][:-5])
+
+        miles_leg_2 = float(directions_1[0]["legs"][1]["distance"]["text"][:-3])
+        minutes_leg_2 = float(directions_1[0]["legs"][1]["duration"]["text"][:-5])
+
+        miles_leg_3 = float(directions_2[0]["legs"][0]["distance"]["text"][:-3])
+        minutes_leg_3 = float(directions_2[0]["legs"][0]["duration"]["text"][:-5])
+
+        total_miles = miles_leg_1 + miles_leg_2 + miles_leg_3
+        total_minutes = minutes_leg_1 + minutes_leg_2 + minutes_leg_3
 
         # Add route to routes table
-        route = Route(total_ascent=ascent, total_descent=descent, is_accepted=True, user_id=user_id)
+        route = Route(total_ascent=ascent_feet, total_descent=descent_feet,
+                      is_accepted=True, user_id=user_id, total_miles=total_miles,
+                      total_minutes=total_minutes)
         db.session.add(route)
         db.session.commit()
 
@@ -211,7 +238,7 @@ def select_preference():
 
         return render_template("map_results.html", email=email, route_type=route_type,
                                lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2,
-                               lat_3=lat_3, lon_3=lon_3, elevation=ascent, api_key=google_api_key)
+                               lat_3=lat_3, lon_3=lon_3, elevation=ascent_feet, miles=total_miles, minutes=total_minutes, api_key=google_api_key)
 
     elif route_type == "midpoint":
         # Geocoding address as proof of concept, will likely change with
@@ -251,7 +278,7 @@ def select_preference():
         db.session.commit()
 
         return render_template("map_results.html", email=email, route_type=route_type,
-                               lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2)
+                               lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2, elevation=ascent_feet)
 
 
 @app.route('/saved_routes')
