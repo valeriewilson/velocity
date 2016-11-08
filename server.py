@@ -166,27 +166,7 @@ def select_preference():
 
         lat_2, lon_2, lat_3, lon_3, elevation_sample_size = calculate_waypoints(lat_1, lon_1, specified_miles)
 
-        r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s,%s|%s,%s|%s,%s|%s,%s&samples=%s&key=%s"
-                         % (lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, lat_1,
-                            lon_1, elevation_sample_size, google_api_key))
-
-        elevation_data = r.json()
-        elevation_list = elevation_data["results"]
-
-        ascent_meters = 0
-        descent_meters = 0
-
-        for index, elevation_point in enumerate(elevation_list):
-            if index > 0:
-                last_ele = elevation_point["elevation"]
-                this_ele = elevation_list[index-1]["elevation"]
-                if this_ele > last_ele:
-                    ascent_meters += (this_ele - last_ele)
-                else:
-                    descent_meters += (last_ele - this_ele)
-
-        ascent_feet = ascent_meters * 3.28
-        descent_feet = descent_meters * 3.28
+        ascent_feet, descent_feet = calculate_elevation(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, elevation_sample_size)
 
         total_miles, total_minutes = calculate_distance_time(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3)
 
@@ -362,6 +342,36 @@ def calculate_distance_time(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3):
     total_minutes = minutes_leg_1 + minutes_leg_2 + minutes_leg_3
 
     return total_miles, total_minutes
+
+
+def calculate_elevation(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, sample_size):
+    """ Calculate elevation (in feet) for route """
+
+    # Obtain elevation data from Google Elevation API
+    r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s,%s|%s,%s|%s,%s|%s,%s&samples=%s&key=%s"
+                     % (lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, lat_1,
+                        lon_1, sample_size, google_api_key))
+
+    elevation_data = r.json()
+    elevation_list = elevation_data["results"]
+
+    ascent_meters = 0
+    descent_meters = 0
+
+    # Calculate change in elevation between sample points
+    for index, elevation_point in enumerate(elevation_list):
+        if index > 0:
+            last_ele = elevation_point["elevation"]
+            this_ele = elevation_list[index-1]["elevation"]
+            if this_ele > last_ele:
+                ascent_meters += (this_ele - last_ele)
+            else:
+                descent_meters += (last_ele - this_ele)
+
+    ascent_feet = ascent_meters * 3.28
+    descent_feet = descent_meters * 3.28
+
+    return ascent_feet, descent_feet
 
 
 if __name__ == "__main__":
