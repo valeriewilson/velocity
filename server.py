@@ -2,8 +2,7 @@ from flask import Flask, request, redirect, flash, session, render_template, jso
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy import desc
 from model import connect_to_db, db, User, Route, Waypoint, Address
-from math import cos, sin, radians
-from random import randrange, choice
+from calculation import *
 import googlemaps
 import requests
 import os
@@ -13,9 +12,6 @@ app.secret_key = os.environ["FLASK_KEY"]
 
 google_api_key = os.environ["GOOGLE_API_KEY"]
 gmaps = googlemaps.Client(key=google_api_key)
-
-MILES_BETWEEN_LATS = 69
-MILES_BETWEEN_LONS = 55
 
 
 @app.route('/login', methods=['GET'])
@@ -189,6 +185,7 @@ def select_preference():
         db.session.add(waypoint_1)
         db.session.add(waypoint_2)
         db.session.add(waypoint_3)
+
         db.session.commit()
 
         return render_template("map_results.html", email=email, route_type=route_type,
@@ -296,100 +293,6 @@ def log_user_out():
     del session['user_email']
     flash('Logged out')
     return redirect('/login')
-
-
-def calculate_waypoints(lat_1, lon_1, miles):
-    """ For loop routes, come up with random route based on start location &
-        miles specified """
-
-    # Given the unpredictable results of Google Maps API, miles / 4 as buffer
-    miles_leg = miles / 4.0
-    elevation_sample_size = int(miles * 5)
-
-    # Random direction for first leg of route
-    angle = randrange(0, 360)
-
-    # Random choice of clockwise vs. count-clockwise loop
-    angle_diff = choice([-120, 120])
-
-    # Calculate waypoints based on above information
-    lat_2 = lat_1 + (sin(radians(angle))*miles_leg)/MILES_BETWEEN_LATS
-    lon_2 = lon_1 + (cos(radians(angle))*miles_leg)/MILES_BETWEEN_LONS
-    lat_3 = lat_2 + (sin(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LATS
-    lon_3 = lon_2 + (cos(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LONS
-
-    return lat_2, lon_2, lat_3, lon_3, elevation_sample_size
-
-
-def calculate_distance_time(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3):
-    """ Calculate total miles and minutes for route """
-
-    print "\n\n\n", lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, "\n\n\n"
-
-    # Splitting route to accommodate limitations in Google Directions module
-    directions_1 = gmaps.directions(("{}, {}").format(lat_1, lon_1),
-                                    ("{}, {}").format(lat_3, lon_3),
-                                    waypoints=("{}, {}").format(lat_2, lon_2),
-                                    mode="bicycling")
-
-    directions_2 = gmaps.directions(("{}, {}").format(lat_3, lon_3),
-                                    ("{}, {}").format(lat_1, lon_1),
-                                    mode="bicycling")
-
-    # Extract miles for each leg
-    miles_1 = float(directions_1[0]["legs"][0]["distance"]["text"][:-3])
-    miles_2 = float(directions_1[0]["legs"][1]["distance"]["text"][:-3])
-    miles_3 = float(directions_2[0]["legs"][0]["distance"]["text"][:-3])
-
-    # Extract time string, split to extract hour & minute data
-    time_1 = directions_1[0]["legs"][0]["duration"]["text"].split()
-    time_2 = directions_1[0]["legs"][1]["duration"]["text"].split()
-    time_3 = directions_2[0]["legs"][0]["duration"]["text"].split()
-
-    # Calculate minutes for hours returned (if any)
-    hour_1 = int(time_1[-4]) * 60 if len(time_1) == 4 else 0
-    hour_2 = int(time_2[-4]) * 60 if len(time_2) == 4 else 0
-    hour_3 = int(time_3[-4]) * 60 if len(time_3) == 4 else 0
-
-    # Calculate total minutes for each leg
-    min_1 = int(time_1[-2]) + hour_1
-    min_2 = int(time_2[-2]) + hour_2
-    min_3 = int(time_3[-2]) + hour_3
-
-    total_miles = miles_1 + miles_2 + miles_3
-    total_minutes = min_1 + min_2 + min_3
-
-    return total_miles, total_minutes
-
-
-def calculate_elevation(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, sample_size):
-    """ Calculate elevation (in feet) for route """
-
-    # Obtain elevation data from Google Elevation API
-    r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s,%s|%s,%s|%s,%s|%s,%s&samples=%s&key=%s"
-                     % (lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, lat_1,
-                        lon_1, sample_size, google_api_key))
-
-    elevation_data = r.json()
-    elevation_list = elevation_data["results"]
-
-    ascent_meters = 0
-    descent_meters = 0
-
-    # Calculate change in elevation between sample points
-    for index, elevation_point in enumerate(elevation_list):
-        if index > 0:
-            last_ele = elevation_point["elevation"]
-            this_ele = elevation_list[index-1]["elevation"]
-            if this_ele > last_ele:
-                ascent_meters += (this_ele - last_ele)
-            else:
-                descent_meters += (last_ele - this_ele)
-
-    ascent_feet = ascent_meters * 3.28
-    descent_feet = descent_meters * 3.28
-
-    return ascent_feet, descent_feet
 
 
 if __name__ == "__main__":

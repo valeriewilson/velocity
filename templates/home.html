@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
+
     <h2>Bike Route Inputs</h2>
+
+    <!-- Displays route fields -->
     <div>
         <form action="/results" method="POST" id="route-form" novalidate>
             <label for="start-address">Start address:</label>
+            
             <select name="address-options" id="address-dropdown">
                 {% if addresses %}
                     {% for address in addresses %}
@@ -14,49 +18,45 @@
                 {% endif %}
                 <option value="create-new-address" id="new-address">+ new address</option>
             </select>
-            <script src="https://code.jquery.com/jquery.js"></script>
-            <script>
-                var dropdown = document.getElementById("address-dropdown");
-                dropdown.onchange = function(){
-                   $('#new-address-information').addClass("hidden")
-                   if(dropdown.value=="create-new-address"){
-                     $('#new-address-information').removeClass()
-                   }
-                }
-            </script>
+            
+            <script src="https://code.jquery.com/jquery.js"></script><br>
 
-            <br>
             <label for="route-type">Route type:</label>
+            
             <select name="route-type" id="route-type">
                 <option value="unselected-value">Select a route type</option>
                 <option value="loop">Loop</option>
                 <option value="midpoint">To midpoint and back</option>
             </select>
+            
             <div class="hidden" id="midpoint-field">
                 <label for="midpoint-address">Midpoint address:</label>
                 <input type="midpoint-address" id="midpoint-address" class="address" name="midpoint-address">
             </div>
+            
             <div class="hidden" id="miles-field">
                 <label for="total-miles">How many miles?</label>
                 <input type="total-miles" id="total-miles" name="total-miles" required>
-            </div>
-            <br>
+            </div><br>
+            
             <input type="submit" value="Let's ride!">
         </form>
     </div>
 
+    <!-- Displays new address fields, hidden by default -->
     <div id="new-address-information" class="hidden">
         <h3>New address information</h3>
+        
         <form action="/new-address" method="POST" id="new-address-form">
             <label for="label-field">Name:</label>
-            <input type="label-field" id="label-field" name="label-field">
-            <br>
+            <input type="label-field" id="label-field" name="label-field"><br>
+            
             <label for="new-address-field">Address:</label>
-            <input type="new-address-field" id="new-address-field" class="address" name="new-address-field">
-            <br>
+            <input type="new-address-field" id="new-address-field" class="address" name="new-address-field"><br>
+
             <label for="radio">Default address?</label>
             <input type="radio" name="default-address" value="true" id="default-address"> Yes<br>
-            <br>
+
             <input type="submit" value="Save" id="save-button">
         </form>
     </div>
@@ -64,23 +64,46 @@
     <script>
         "use strict";
 
+        var dropdown = document.getElementById("address-dropdown");
+
+        dropdown.onchange = function(){
+           // Hide "new address" fields by default
+           $('#new-address-information').addClass("hidden")
+
+           // Display fields when "+ new address" is selected in "Start address" dropdown
+           if(dropdown.value=="create-new-address"){
+             $('#new-address-information').removeClass()
+           }
+        }
+
         var route_dropdown = document.getElementById("route-type");
+
         route_dropdown.onchange = function(){
+            // Hide midpoint & miles fields by default
             $('#midpoint-field').addClass("hidden")
             $('#miles-field').addClass("hidden")
+            
+            // Display miles field when "Loop" route is selected
             if(route_dropdown.value=="loop"){
                 $('#miles-field').removeClass()
             }
+
+            // Display midpoint field when "To midpoint and back" route is selected
             else if(route_dropdown.value=="midpoint"){
                 $('#midpoint-field').removeClass()
             }
         }
 
         function updateAddressDropdown(result) {
+            // Hide "new address" fields when triggered
             $("#new-address-information").addClass("hidden");
+            
+            // Remove current addresses from "Start address" dropdown
             $('#address-dropdown').empty();
+
             var addresses = result.addresses;
             
+            // Add all addresses (including new) to "Start address" dropdown
             for (var step = 0; step < addresses.length; step++) {
                 $('#address-dropdown').append($('<option></option>').html(addresses[step][0]));
             }
@@ -90,6 +113,7 @@
         function addAddress(evt) {
             evt.preventDefault();
 
+            // Passes new address information to server.py route for processing
             var formInputs = {
                 "new-address-field": $("#new-address-field").val(),
                 "label-field": $("#label-field").val(),
