@@ -101,7 +101,7 @@ def display_home_page():
     return render_template("home.html", email=email, addresses=addresses)
 
 
-@app.route('/new_address', methods=["POST"])
+@app.route('/new-address', methods=["POST"])
 def create_new_address():
 
     email = session['user_email']
@@ -236,7 +236,7 @@ def select_preference():
                                lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2, elevation=ascent_feet)
 
 
-@app.route('/saved_routes')
+@app.route('/saved-routes')
 def display_saved_routes():
     """ Display routes saved by user """
 
@@ -248,7 +248,7 @@ def display_saved_routes():
     return render_template("saved_routes.html", email=email, routes=routes, api_key=google_api_key)
 
 
-@app.route('/rejected_routes')
+@app.route('/rejected-routes')
 def display_rejected_routes():
     """ Display routes rejected by user """
 

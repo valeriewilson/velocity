@@ -47,7 +47,7 @@
 
     <div id="new-address-information" class="hidden">
         <h3>New address information</h3>
-        <form action="/new_address" method="POST" id="new-address-form">
+        <form action="/new-address" method="POST" id="new-address-form">
             <label for="label-field">Name:</label>
             <input type="label-field" id="label-field" name="label-field">
             <br>
@@ -95,7 +95,7 @@
                 "label-field": $("#label-field").val(),
                 "default-address": $('#default-address').is(':checked')
             };
-            $.post("/new_address", formInputs, updateAddressDropdown);
+            $.post("/new-address", formInputs, updateAddressDropdown);
         }
 
         $('#new-address-form').on("submit", addAddress);
