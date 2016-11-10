@@ -245,7 +245,7 @@ def display_saved_routes():
 
     routes = Route.query.filter((Route.user_id == user_id) & (Route.score.isnot(None))).all()
 
-    return render_template("saved_routes.html", email=email, routes=routes)
+    return render_template("saved_routes.html", email=email, routes=routes, api_key=google_api_key)
 
 
 @app.route('/rejected_routes')
@@ -257,7 +257,7 @@ def display_rejected_routes():
 
     routes = Route.query.filter_by(user_id=user_id).all()
 
-    return render_template("rejected_routes.html", email=email, routes=routes)
+    return render_template("rejected_routes.html", email=email, routes=routes, api_key=google_api_key)
 
 
 @app.route('/reject-route', methods=["POST"])

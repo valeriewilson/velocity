@@ -13,33 +13,36 @@
     {% endfor %}
 
 <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlY0gdpn-82bFjwWdaAPdQ_oOtJwd9Y3s&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap">
 </script>
 <script src="https://code.jquery.com/jquery.js"></script>
 <script>
-    console.log("Got into JS");
     "use strict";
 
     function initMap() {
-        console.log("Initialized map");
 
         var maps = document.getElementsByClassName('map');
 
         for (var i = 0; i < maps.length; i++) {
-            console.log("one time through loop")
-            lat_1 = Number(maps[i].getAttribute("data-lat-a"))
-            lon_1 = Number(maps[i].getAttribute("data-lon-a"))
-            lat_2 = Number(maps[i].getAttribute("data-lat-b"))
-            lon_2 = Number(maps[i].getAttribute("data-lon-b"))
-            lat_3 = Number(maps[i].getAttribute("data-lat-c"))
-            lon_3 = Number(maps[i].getAttribute("data-lon-c"))
+
+            var directionsService = new google.maps.DirectionsService;
+            var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+            var map_id = maps[i].id
+
+            // Pull lat/lon pairs from data attributes
+            var lat_1 = Number(maps[i].getAttribute("data-lat-a"));
+            var lon_1 = Number(maps[i].getAttribute("data-lon-a"));
+            var lat_2 = Number(maps[i].getAttribute("data-lat-b"));
+            var lon_2 = Number(maps[i].getAttribute("data-lon-b"));
+            var lat_3 = Number(maps[i].getAttribute("data-lat-c"));
+            var lon_3 = Number(maps[i].getAttribute("data-lon-c"));
 
             // Need to split by loop vs. midpoint
             var start = {lat: lat_1, lng: lon_1};
             var mid_1 = {lat: lat_2, lng: lon_2};
             var mid_2 = {lat: lat_3, lng: lon_3};
 
-            // Center map around midpoint of all lat/lon pairs, calculated below
+            // Center map around midpoint of all lat/lon pairs
             var max_lat = Math.max(lat_1, lat_2, lat_3)
             var min_lat = Math.min(lat_1, lat_2, lat_3)
             var mid_lat = min_lat + ((max_lat - min_lat) / 2)
@@ -48,14 +51,9 @@
             var min_lon = Math.min(lon_1, lon_2, lon_3)
             var mid_lon = min_lon + ((max_lon - min_lon) / 2)
 
-            var directionsService = new google.maps.DirectionsService;
-            var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
-            var map_id = maps[i].id
-
             var center_position = {lat: mid_lat, lng: mid_lon}
 
-            console.log(center_position)
-
+            // Configure map, pass lat/lon pairs to displayRoute
             var map = new google.maps.Map(document.getElementById(map_id), {
                 zoom: 25,
                 center: center_position,
