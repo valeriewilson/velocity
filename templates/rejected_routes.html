@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Rejected Routes{% endblock %}
 {% block content %}
+    <h2>Rejected Routes</h2>
     {% for route in routes %}
         {% if not route.is_accepted %}
             <div>

@@ -324,6 +324,8 @@ def calculate_waypoints(lat_1, lon_1, miles):
 def calculate_distance_time(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3):
     """ Calculate total miles and minutes for route """
 
+    print "\n\n\n", lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, "\n\n\n"
+
     # Splitting route to accommodate limitations in Google Directions module
     directions_1 = gmaps.directions(("{}, {}").format(lat_1, lon_1),
                                     ("{}, {}").format(lat_3, lon_3),
@@ -334,17 +336,28 @@ def calculate_distance_time(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3):
                                     ("{}, {}").format(lat_1, lon_1),
                                     mode="bicycling")
 
-    miles_leg_1 = float(directions_1[0]["legs"][0]["distance"]["text"][:-3])
-    minutes_leg_1 = float(directions_1[0]["legs"][0]["duration"]["text"][:-5])
+    # Extract miles for each leg
+    miles_1 = float(directions_1[0]["legs"][0]["distance"]["text"][:-3])
+    miles_2 = float(directions_1[0]["legs"][1]["distance"]["text"][:-3])
+    miles_3 = float(directions_2[0]["legs"][0]["distance"]["text"][:-3])
 
-    miles_leg_2 = float(directions_1[0]["legs"][1]["distance"]["text"][:-3])
-    minutes_leg_2 = float(directions_1[0]["legs"][1]["duration"]["text"][:-5])
+    # Extract time string, split to extract hour & minute data
+    time_1 = directions_1[0]["legs"][0]["duration"]["text"].split()
+    time_2 = directions_1[0]["legs"][1]["duration"]["text"].split()
+    time_3 = directions_2[0]["legs"][0]["duration"]["text"].split()
 
-    miles_leg_3 = float(directions_2[0]["legs"][0]["distance"]["text"][:-3])
-    minutes_leg_3 = float(directions_2[0]["legs"][0]["duration"]["text"][:-5])
+    # Calculate minutes for hours returned (if any)
+    hour_1 = int(time_1[-4]) * 60 if len(time_1) == 4 else 0
+    hour_2 = int(time_2[-4]) * 60 if len(time_2) == 4 else 0
+    hour_3 = int(time_3[-4]) * 60 if len(time_3) == 4 else 0
 
-    total_miles = miles_leg_1 + miles_leg_2 + miles_leg_3
-    total_minutes = minutes_leg_1 + minutes_leg_2 + minutes_leg_3
+    # Calculate total minutes for each leg
+    min_1 = int(time_1[-2]) + hour_1
+    min_2 = int(time_2[-2]) + hour_2
+    min_3 = int(time_3[-2]) + hour_3
+
+    total_miles = miles_1 + miles_2 + miles_3
+    total_minutes = min_1 + min_2 + min_3
 
     return total_miles, total_minutes
 

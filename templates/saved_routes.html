@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Saved Routes{% endblock %}
 {% block content %}
+    <h2>Saved Routes</h2>
     {% for route in routes %}
         {% if route.is_accepted %}
             <div>

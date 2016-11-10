@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+    <h2>Bike Route Inputs</h2>
     <div>
         <form action="/results" method="POST" id="route-form" novalidate>
             <label for="start-address">Start address:</label>
@@ -47,11 +48,11 @@
     <div id="new-address-information" class="hidden">
         <h3>New address information</h3>
         <form action="/new_address" method="POST" id="new-address-form">
-            <label for="new-address-field">Address:</label>
-            <input type="new-address-field" id="new-address-field" class="address" name="new-address-field">
-            <br>
             <label for="label-field">Name:</label>
             <input type="label-field" id="label-field" name="label-field">
+            <br>
+            <label for="new-address-field">Address:</label>
+            <input type="new-address-field" id="new-address-field" class="address" name="new-address-field">
             <br>
             <label for="radio">Default address?</label>
             <input type="radio" name="default-address" value="true" id="default-address"> Yes<br>

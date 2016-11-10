@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-    <p>Miles: {{ miles }} miles</p>
-    <p>Time: {{ minutes | int }} minutes</p>
-    <p>Total climb: {{ "{:.0f}".format(elevation) }} ft</p>
+    <h2>Results</h2>
+    <p>Miles: {{ miles }} miles | Time: {{ minutes | int }} minutes | Total climb: {{ "{:.0f}".format(elevation) }} ft</p>
 
     <div>
         <p>Do you want to save this route?</p>
@@ -97,6 +96,7 @@
                 var waypts = [{location: '{{ lat_2 }}, {{ lon_2 }}'}]
             }
             
+            // Create route, starting & ending at origin, passing through waypoints
             directionsService.route({
             origin: '{{ lat_1 }}, {{ lon_1 }}',
             destination: '{{ lat_1 }}, {{ lon_1 }}',
