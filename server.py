@@ -160,21 +160,17 @@ def select_preference():
         # Calculate waypoints for route
         lat_2, lon_2, lat_3, lon_3, elevation_sample_size = calculate_waypoints(lat_1, lon_1, specified_miles)
 
-        # Calculate total elevation changes for route
+        # Set up waypoints for functions below
         waypoints = [(lat_1, lon_1), (lat_2, lon_2), (lat_3, lon_3)]
+
+        # Calculate total elevation changes for route
         ascent, descent = calculate_elevation(waypoints, elevation_sample_size)
 
         # Calculate total distance and time for route
-        waypoints = [lat_1, lon_1, lat_2, lon_2, lat_3, lon_3]
         total_miles, total_minutes = calculate_distance_time(waypoints)
 
-        max_lat = max(lat_1, lat_2, lat_3)
-        min_lat = min(lat_1, lat_2, lat_3)
-        mid_lat = min_lat + ((max_lat - min_lat) / 2)
-
-        max_lon = max(lon_1, lon_2, lon_3)
-        min_lon = min(lon_1, lon_2, lon_3)
-        mid_lon = min_lon + ((max_lon - min_lon) / 2)
+        # Calculate midpoint
+        mid_lat, mid_lon = calculate_midpoint(waypoints)
 
         # Add route to routes table
         route = Route(total_ascent=ascent, total_descent=descent, is_accepted=True,
@@ -211,7 +207,6 @@ def select_preference():
         ascent, descent = calculate_elevation(waypoints, 20)
 
         # Calculate total distance and time for route
-        waypoints = [lat_1, lon_1, lat_2, lon_2]
         total_miles, total_minutes = calculate_distance_time(waypoints)
 
         max_lat = max(lat_1, lat_2)
