@@ -117,10 +117,7 @@ def create_new_address():
     else:
         is_default = False
 
-    # Geocode address, extract latitude & longitude for route calculations
-    geocoded_address = gmaps.geocode(new_address)
-    latitude = geocoded_address[0]['geometry']['location']['lat']
-    longitude = geocoded_address[0]['geometry']['location']['lng']
+    latitude, longitude = geocode_address(new_address)
 
     # Add new address to addresses table
     new_address = Address(user_id=user_id, label=new_label, address_str=new_address,
@@ -164,15 +161,24 @@ def select_preference():
         lat_2, lon_2, lat_3, lon_3, elevation_sample_size = calculate_waypoints(lat_1, lon_1, specified_miles)
 
         # Calculate total elevation changes for route
-        ascent_feet, descent_feet = calculate_elevation(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3, elevation_sample_size)
+        waypoints = [(lat_1, lon_1), (lat_2, lon_2), (lat_3, lon_3)]
+        ascent, descent = calculate_elevation(waypoints, elevation_sample_size)
 
         # Calculate total distance and time for route
-        total_miles, total_minutes = calculate_distance_time(lat_1, lon_1, lat_2, lon_2, lat_3, lon_3)
+        waypoints = [lat_1, lon_1, lat_2, lon_2, lat_3, lon_3]
+        total_miles, total_minutes = calculate_distance_time(waypoints)
+
+        max_lat = max(lat_1, lat_2, lat_3)
+        min_lat = min(lat_1, lat_2, lat_3)
+        mid_lat = min_lat + ((max_lat - min_lat) / 2)
+
+        max_lon = max(lon_1, lon_2, lon_3)
+        min_lon = min(lon_1, lon_2, lon_3)
+        mid_lon = min_lon + ((max_lon - min_lon) / 2)
 
         # Add route to routes table
-        route = Route(total_ascent=ascent_feet, total_descent=descent_feet,
-                      is_accepted=True, user_id=user_id, total_miles=total_miles,
-                      total_minutes=total_minutes)
+        route = Route(total_ascent=ascent, total_descent=descent, is_accepted=True,
+                      user_id=user_id, total_miles=total_miles, total_minutes=total_minutes)
 
         db.session.add(route)
         db.session.commit()
@@ -190,47 +196,52 @@ def select_preference():
 
         return render_template("map_results.html", email=email, route_type=route_type,
                                lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2,
-                               lat_3=lat_3, lon_3=lon_3, elevation=ascent_feet, miles=total_miles, minutes=total_minutes, api_key=google_api_key)
+                               lat_3=lat_3, lon_3=lon_3, elevation=ascent, miles=total_miles,
+                               minutes=total_minutes, api_key=google_api_key, mid_lat=mid_lat, mid_lon=mid_lon)
 
     elif route_type == "midpoint":
         # Geocoding address as proof of concept, will likely change with
         #  addition of GMaps Directions API
+
         midpoint_address = request.form.get('midpoint-address')
-        geocoded_midpoint = gmaps.geocode(midpoint_address)
+        lat_2, lon_2 = geocode_address(midpoint_address)
 
-        lat_2 = geocoded_midpoint[0]['geometry']['location']['lat']
-        lon_2 = geocoded_midpoint[0]['geometry']['location']['lng']
+        # Calculate total elevation changes for route (sample size hard-coded for now)
+        waypoints = [(lat_1, lon_1), (lat_2, lon_2)]
+        ascent, descent = calculate_elevation(waypoints, 20)
 
-        r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s,%s|%s,%s|%s,%s&samples=20&key=%s"
-                         % (lat_1, lon_1, lat_2, lon_2, lat_1, lon_1, google_api_key))
+        # Calculate total distance and time for route
+        waypoints = [lat_1, lon_1, lat_2, lon_2]
+        total_miles, total_minutes = calculate_distance_time(waypoints)
 
-        elevation_data = r.json()
-        elevation_list = elevation_data["results"]
+        max_lat = max(lat_1, lat_2)
+        min_lat = min(lat_1, lat_2)
+        mid_lat = min_lat + ((max_lat - min_lat) / 2)
 
-        ascent = 0
-        descent = 0
+        max_lon = max(lon_1, lon_2)
+        min_lon = min(lon_1, lon_2)
+        mid_lon = min_lon + ((max_lon - min_lon) / 2)
 
-        for index, elevation_point in enumerate(elevation_list):
-            if index > 0:
-                last_ele = elevation_point["elevation"]
-                this_ele = elevation_list[index-1]["elevation"]
-                if this_ele > last_ele:
-                    ascent += (this_ele - last_ele)
-                else:
-                    descent += (last_ele - this_ele)
+        # Add route to routes table
+        route = Route(total_ascent=ascent, total_descent=descent, is_accepted=True,
+                      user_id=user_id, total_miles=total_miles, total_minutes=total_minutes)
 
-        route = Route(total_ascent=ascent, total_descent=descent, is_accepted=True, user_id=user_id)
         db.session.add(route)
         db.session.commit()
 
+        # Add points to waypoints table with new route_id
         waypoint_1 = Waypoint(route_id=route.route_id, latitude=lat_1, longitude=lon_1)
         waypoint_2 = Waypoint(route_id=route.route_id, latitude=lat_2, longitude=lon_2)
+
         db.session.add(waypoint_1)
         db.session.add(waypoint_2)
+
         db.session.commit()
 
         return render_template("map_results.html", email=email, route_type=route_type,
-                               lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2, elevation=ascent_feet)
+                               lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2,
+                               elevation=ascent, miles=total_miles, minutes=total_minutes,
+                               api_key=google_api_key, mid_lat=mid_lat, mid_lon=mid_lon)
 
 
 @app.route('/saved-routes')

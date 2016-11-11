@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     <h2>Results</h2>
-    <p>Miles: {{ miles }} miles | Time: {{ minutes | int }} minutes | Total climb: {{ "{:.0f}".format(elevation) }} ft</p>
-
+    <p>Miles: {{ miles }} miles | Time: {{ minutes }} minutes | Total climb: {{ "{:.0f}".format(elevation) }} ft</p>
     <div>
         <p>Do you want to save this route?</p>
         <div>
@@ -59,21 +58,10 @@
             var directionsService = new google.maps.DirectionsService;
             var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
 
-            // Need to split by loop vs. midpoint
+            // Format position
             var start = {lat: {{ lat_1 }}, lng: {{ lon_1 }}};
-            var mid_1 = {lat: {{ lat_2 }}, lng: {{ lon_2 }}};
-            var mid_2 = {lat: {{ lat_3 }}, lng: {{ lon_3 }}};
 
-            // Center map around midpoint of all lat/lon pairs, calculated below
-            var max_lat = Math.max({{lat_1}}, {{lat_2}}, {{lat_3}})
-            var min_lat = Math.min({{lat_1}}, {{lat_2}}, {{lat_3}})
-            var mid_lat = min_lat + ((max_lat - min_lat) / 2)
-
-            var max_lon = Math.max({{lon_1}}, {{lon_2}}, {{lon_3}})
-            var min_lon = Math.min({{lon_1}}, {{lon_2}}, {{lon_3}})
-            var mid_lon = min_lon + ((max_lon - min_lon) / 2)
-
-            var center_position = {lat: mid_lat, lng: mid_lon}
+            var center_position = {lat: {{ mid_lat }}, lng: {{ mid_lon }}};
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 25,
                 center: center_position,
@@ -91,9 +79,10 @@
         function displayRoute(directionsService, directionsDisplay) {
             // Starting to accommodate midpoint maps
             if ("{{ route_type }}" == "loop") {
-                var waypts = [{location: '{{ lat_2 }}, {{ lon_2 }}'}, {location: '{{ lat_3 }}, {{ lon_3 }}'}]
-            } else {
-                var waypts = [{location: '{{ lat_2 }}, {{ lon_2 }}'}]
+                var waypts = [{location: '{{ lat_2 }}, {{ lon_2 }}'}, {location: '{{ lat_3 }}, {{ lon_3 }}'}];
+                console.log(waypts);
+            } else if ("{{ route_type }}" == "midpoint") {
+                var waypts = [{location: '{{ lat_2 }}, {{ lon_2 }}'}];
             }
             
             // Create route, starting & ending at origin, passing through waypoints
