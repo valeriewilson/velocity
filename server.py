@@ -263,6 +263,36 @@ def display_rejected_routes():
     return render_template("rejected_routes.html", email=email, routes=routes, api_key=google_api_key)
 
 
+# UNDER CONSTRUCTION
+@app.route('/waypoints.json')
+def get_waypoints():
+    """ Return all waypoints for specified route_id to display on maps """
+
+    # Retrieve waypoints given route_id
+    route_id = request.args.get("route-id")
+    waypoints = Waypoint.query.filter_by(route_id=route_id).all()
+
+    route_waypoints = []
+    all_lats = []
+    all_lons = []
+
+    # Extract lat/lon pairs from query results
+    for waypoint in waypoints:
+        route_waypoints.append({"lat": waypoint.latitude, "lng": waypoint.longitude})
+        all_lats.append(waypoint.latitude)
+        all_lons.append(waypoint.longitude)
+
+    # Calculate map midpoint
+    mid_lat = min(all_lats) + ((max(all_lats) - min(all_lats)) / len(all_lats))
+    mid_lon = min(all_lons) + ((max(all_lons) - min(all_lons)) / len(all_lons))
+    route_midpoint = {"lat": mid_lat, "lng": mid_lon}
+
+    # Bundle information to pass to front-end
+    route = {"route_id": route_id, "waypoints": route_waypoints, "midpoint": route_midpoint}
+
+    return jsonify(route)
+
+
 @app.route('/reject-route', methods=["POST"])
 def reject_route():
     """ Updated rejected route to is_accepted = False """
