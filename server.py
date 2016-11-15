@@ -3,9 +3,9 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy import desc
 from model import connect_to_db, db, User, Route, Waypoint, Address
 from calculation import *
+from time import sleep
 import googlemaps
 import os
-from time import sleep
 
 app = Flask(__name__)
 app.secret_key = os.environ["FLASK_KEY"]
