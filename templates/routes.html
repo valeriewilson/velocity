@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Routes{% endblock %}
+{% block content %}
+
+    <h2>Routes</h2>
+
+    {% for route in routes %}
+        
+        {% if route.is_accepted %}
+            <div id="saved-routes">
+                <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
+                <p>Miles: {{ route.total_miles }} miles | Time: {{ route.total_minutes | int }} min. | Climb: {{ "{:.0f}".format(route.total_ascent) }} ft</p>
+                <p>Score: {{ route.score }}</p>
+            </div>
+        
+        {% else %}
+            <div id="rejected-routes" class="hidden">
+                <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
+                <p>Miles: {{ route.total_miles }} miles | Time: {{ route.total_minutes | int }} min. | Climb: {{ "{:.0f}".format(route.total_ascent) }} ft</p>
+                <p>Issue: {{ route.issue }}</p>
+            </div>
+
+        {% endif %}
+
+    {% endfor %}
+
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=retrieveWaypoints">
+</script>
+
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<script>
+
+    function retrieveWaypoints() {
+        // Get list of maps
+        var maps = document.getElementsByClassName('map');
+        
+        // Get route_id associated with each map, pass to waypoints route
+        for (var i = 0; i < maps.length; i++) {
+            var route_num = maps[i].getAttribute("data-id");
+            $.get("/waypoints.json", {"route-id": route_num}, initMap);
+        }
+    }
+
+    function initMap(data) {
+
+        // Extract data returned from waypoints endpoint
+        var waypoints = data.waypoints;
+        var midpoint = data.midpoint;
+        var route_id = data.route_id
+
+        // Instantiate map
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+        var map_id = "map" + String(route_id)
+
+        // Configure map, pass lat/lon pairs to displayRoute
+        var map = new google.maps.Map(document.getElementById(map_id), {
+            zoom: 25,
+            center: midpoint,
+            mapTypeControl: false,
+            streetViewControl: false
+        });
+        
+        // Place marker for start/end point
+        var marker = new google.maps.Marker({
+            position: waypoints[0],
+            map: map
+        });
+        
+        // Display map based on configuration
+        directionsDisplay.setMap(map);
+
+        // Call displayRoute function to display bike route
+        displayRoute(directionsService, directionsDisplay, waypoints);
+    }
+
+    function displayRoute(directionsService, directionsDisplay, waypoints) {
+
+        // Prepare start/end point
+        var start_lat = waypoints[0]["lat"];
+        var start_lng = waypoints[0]["lng"];
+        var start_point = start_lat + ', ' + start_lng;
+
+        // Prepare waypoints along route
+        var waypts = [];
+
+        for (var i = 1; i < waypoints.length; i++) {
+            waypts.push({location: String(waypoints[i]["lat"]) + ', ' + String(waypoints[i]["lng"])})
+        }
+        
+        // Create route, starting & ending at origin, passing through waypoints
+        directionsService.route({
+            origin: start_point,
+            destination: start_point,
+            waypoints: waypts,
+            travelMode: 'BICYCLING'
+        }, 
+
+        // Error handling
+        function(response, status) {
+            if (status === 'OK') {
+                directionsDisplay.setDirections(response);
+            } else {
+                console.log('Directions request failed due to ' + status);
+            }
+        });
+    }
+
+</script>
+
+{% endblock %}

@@ -80,17 +80,17 @@
 
         route_dropdown.onchange = function(){
             // Hide midpoint & miles fields by default
-            $('#midpoint-field').addClass("hidden")
-            $('#miles-field').addClass("hidden")
+            $('#midpoint-field').addClass("hidden");
+            $('#miles-field').addClass("hidden");
             
             // Display miles field when "Loop" route is selected
             if(route_dropdown.value=="loop"){
-                $('#miles-field').removeClass()
+                $('#miles-field').removeClass();
             }
 
             // Display midpoint field when "To midpoint and back" route is selected
             else if(route_dropdown.value=="midpoint"){
-                $('#midpoint-field').removeClass()
+                $('#midpoint-field').removeClass();
             }
         }
 

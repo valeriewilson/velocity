@@ -3,8 +3,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy import desc
 from model import connect_to_db, db, User, Route, Waypoint, Address
 from calculation import *
+from time import sleep
 import googlemaps
-import requests
 import os
 
 app = Flask(__name__)
@@ -239,28 +239,48 @@ def select_preference():
                                api_key=google_api_key, mid_lat=mid_lat, mid_lon=mid_lon)
 
 
-@app.route('/saved-routes')
-def display_saved_routes():
+@app.route('/routes')
+def display_routes():
     """ Display routes saved by user """
 
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
-    routes = Route.query.filter((Route.user_id == user_id) & (Route.score.isnot(None))).all()
+    routes = Route.query.filter((Route.user_id == user_id) & (Route.score.isnot(None)) | Route.issue.isnot(None)).all()
 
-    return render_template("saved_routes.html", email=email, routes=routes, api_key=google_api_key)
+    return render_template("routes.html", email=email, routes=routes, api_key=google_api_key)
 
 
-@app.route('/rejected-routes')
-def display_rejected_routes():
-    """ Display routes rejected by user """
+@app.route('/waypoints.json')
+def get_waypoints():
+    """ Return all waypoints for specified route_id to display on maps """
 
-    email = session['user_email']
-    user_id = db.session.query(User.user_id).filter_by(email=email).first()
+    # Retrieve waypoints given route_id
+    route_id = request.args.get("route-id")
+    waypoints = Waypoint.query.filter_by(route_id=route_id).all()
 
-    routes = Route.query.filter_by(user_id=user_id).all()
+    route_waypoints = []
+    all_lats = []
+    all_lons = []
 
-    return render_template("rejected_routes.html", email=email, routes=routes, api_key=google_api_key)
+    # Extract lat/lon pairs from query results
+    for waypoint in waypoints:
+        route_waypoints.append({"lat": waypoint.latitude, "lng": waypoint.longitude})
+        all_lats.append(waypoint.latitude)
+        all_lons.append(waypoint.longitude)
+
+    # Calculate map midpoint
+    mid_lat = min(all_lats) + ((max(all_lats) - min(all_lats)) / len(all_lats))
+    mid_lon = min(all_lons) + ((max(all_lons) - min(all_lons)) / len(all_lons))
+    route_midpoint = {"lat": mid_lat, "lng": mid_lon}
+
+    # Bundle information to pass to front-end
+    route = {"route_id": route_id, "waypoints": route_waypoints, "midpoint": route_midpoint}
+
+    # Throttle Google Maps API calls server-side
+    sleep(1)
+
+    return jsonify(route)
 
 
 @app.route('/reject-route', methods=["POST"])
