@@ -1,27 +1,32 @@
 {% extends 'base.html' %}
-{% block title %}Saved Routes{% endblock %}
+{% block title %}Routes{% endblock %}
 {% block content %}
     <h2>Saved Routes</h2>
     {% for route in routes %}
+        <h3>Route #{{ route.route_id }}</h3>
+        <p>Miles: {{ route.total_miles }} miles | Time: {{ route.total_minutes | int }} minutes | Total climb: {{ "{:.0f}".format(route.total_ascent) }} ft</p>
         {% if route.is_accepted %}
             <div>
-                <h3>Route #{{ route.route_id }}</h3>
-                <p>Miles: {{ route.total_miles }} miles | Time: {{ route.total_minutes | int }} minutes | Total climb: {{ "{:.0f}".format(route.total_ascent) }} ft</p>
                 <p>Score: {{ route.score }}</p>
+            </div>
+        {% else %}
+            <div>
+                <em>Rejected route</em>
+                <p>Issue: {{ route.issue }}</p>
             </div>
         {% endif %}
         <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
     {% endfor %}
 
 <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=toServer">
+    src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=retrieveWaypoints">
 </script>
 
 <script src="https://code.jquery.com/jquery.js"></script>
 
 <script>
 
-    function toServer() {
+    function retrieveWaypoints() {
         // Get list of maps
         var maps = document.getElementsByClassName('map');
         
@@ -81,10 +86,10 @@
         
         // Create route, starting & ending at origin, passing through waypoints
         directionsService.route({
-        origin: start_point,
-        destination: start_point,
-        waypoints: waypts,
-        travelMode: 'BICYCLING'
+            origin: start_point,
+            destination: start_point,
+            waypoints: waypts,
+            travelMode: 'BICYCLING'
         }, 
 
         // Error handling
@@ -94,7 +99,7 @@
             } else {
                 console.log('Directions request failed due to ' + status);
             }
-            });
+        });
     }
 
 </script>
