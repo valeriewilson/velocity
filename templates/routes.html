@@ -5,22 +5,12 @@
     <h2>Routes</h2>
 
     {% for route in routes %}
-        
-        {% if route.is_accepted %}
-            <div id="saved-routes">
-                <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
-                <p>{{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft</p>
-                <p>Score: {{ route.score }}</p>
-            </div>
-        
-        {% else %}
-            <div id="rejected-routes" class="hidden">
-                <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
-                <p>Miles: {{ route.total_miles }} miles | Time: {{ route.total_minutes | int }} min. | Climb: {{ "{:.0f}".format(route.total_ascent) }} ft</p>
-                <p>Issue: {{ route.issue }}</p>
-            </div>
 
-        {% endif %}
+        <div id="saved-routes">
+            <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
+            <p>{{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft</p>
+            <p>Score: {{ route.score }}</p>
+        </div>
 
     {% endfor %}
 

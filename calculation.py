@@ -1,5 +1,5 @@
 from math import cos, sin, radians
-from random import randrange, choice
+from random import randrange, choice, uniform
 import googlemaps
 import requests
 import os
@@ -7,31 +7,48 @@ import os
 google_api_key = os.environ["GOOGLE_API_KEY"]
 gmaps = googlemaps.Client(key=google_api_key)
 
-MILES_BETWEEN_LATS = 69
-MILES_BETWEEN_LONS = 55
+# Approximate number of miles between integer latitude / longitudes in SF
+MILES_LATS = 69
+MILES_LONS = 55
 
 
 def calculate_waypoints(lat_1, lon_1, miles):
     """ For loop routes, come up with random route based on start location &
         miles specified """
 
-    # Given the unpredictable results of Google Maps API, miles / 4 as buffer
-    miles_leg = miles / 4.0
+    # Generate a random number of waypoints
+    num_legs = randrange(3, 4)
+
+    # Calculate leg distance
+    miles_leg = miles / (num_legs + 1)
+
+    # Calculate variation in leg distance
+    mile_var = uniform((-miles_leg / 2), (miles_leg / 2))
+
+    # Calculate number of elevation samples to request for elevation data
     elevation_sample_size = int(miles * 5)
 
-    # Random direction for first leg of route
+    # Generate random direction for first leg of route, calculate waypoints
     angle = randrange(0, 360)
+    lat_2 = lat_1 + (sin(radians(angle)) * (miles_leg + mile_var)) / MILES_LATS
+    lon_2 = lon_1 + (cos(radians(angle)) * (miles_leg + mile_var)) / MILES_LONS
 
     # Random choice of clockwise vs. count-clockwise loop
-    angle_diff = choice([-120, 120])
+    angle_diff = choice([-360/num_legs, 360/num_legs])
 
-    # Calculate waypoints based on above information
-    lat_2 = lat_1 + (sin(radians(angle))*miles_leg)/MILES_BETWEEN_LATS
-    lon_2 = lon_1 + (cos(radians(angle))*miles_leg)/MILES_BETWEEN_LONS
-    lat_3 = lat_2 + (sin(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LATS
-    lon_3 = lon_2 + (cos(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LONS
+    # Initialize waypoints list with first 2 pairs of lat/lons
+    waypoints = [[lat_1, lon_1], [lat_2, lon_2]]
 
-    return lat_2, lon_2, lat_3, lon_3, elevation_sample_size
+    for index, leg in enumerate(range(num_legs - 2)):
+        prev_lat = waypoints[index - 1][0]
+        prev_lon = waypoints[index - 1][1]
+
+        lat = prev_lat + (sin(radians(angle + angle_diff)) * (miles_leg - mile_var)) / MILES_LATS
+        lon = prev_lon + (cos(radians(angle + angle_diff)) * (miles_leg - mile_var)) / MILES_LONS
+
+        waypoints.append([lat, lon])
+
+    return waypoints, elevation_sample_size
 
 
 def calculate_distance_time(waypoints):
@@ -131,6 +148,7 @@ def calculate_midpoint(waypoints):
 def geocode_address(address):
     """ Geocode address, extract latitude & longitude for route calculations """
     geocoded_address = gmaps.geocode(address)
+
     latitude = geocoded_address[0]['geometry']['location']['lat']
     longitude = geocoded_address[0]['geometry']['location']['lng']
 

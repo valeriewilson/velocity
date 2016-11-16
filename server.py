@@ -158,10 +158,13 @@ def select_preference():
         specified_miles = float(request.form.get('total-miles'))
 
         # Calculate waypoints for route
-        lat_2, lon_2, lat_3, lon_3, elevation_sample_size = calculate_waypoints(lat_1, lon_1, specified_miles)
+        midpoints, elevation_sample_size = calculate_waypoints(lat_1, lon_1, specified_miles)
 
-        # Set up waypoints for functions below
-        waypoints = [[lat_1, lon_1], [lat_2, lon_2], [lat_3, lon_3]]
+        waypoints = []
+
+        # Add all waypoints to waypoints list
+        for midpoint in midpoints:
+            waypoints.append(midpoint)
 
         # Calculate total elevation changes for route
         ascent, descent = calculate_elevation(waypoints, elevation_sample_size)
@@ -189,14 +192,19 @@ def select_preference():
 
     route_waypoints = []
 
-    # Format lat/lon pairs for results.html
+    # Format lat/lon pairs for results.html, add to waypoints table
     for waypoint in waypoints:
-        route_waypoints.append([waypoint[0], waypoint[1]])
+        lat = waypoint[0]
+        lon = waypoint[1]
+        route_waypoints.append([lat, lon])
+
+        lat_lon = Waypoint(route_id=route.route_id, latitude=lat, longitude=lon)
+        db.session.add(lat_lon)
+
+    db.session.commit()
 
     # Calculate midpoint, format for results.html
     mid_lat, mid_lon = calculate_midpoint(waypoints)
-
-    # route = {"waypoints": route_waypoints, "midpoint": route_midpoint}
 
     return render_template("results.html", email=email, route_type=route_type,
                            mid_lat=mid_lat, mid_lon=mid_lon, waypoints=route_waypoints,
@@ -211,7 +219,7 @@ def display_routes():
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
-    routes = Route.query.filter((Route.user_id == user_id) & (Route.score.isnot(None)) | Route.issue.isnot(None)).all()
+    routes = Route.query.filter((Route.user_id == user_id) & (Route.score.isnot(None) & (Route.is_accepted))).all()
 
     return render_template("routes.html", email=email, routes=routes, api_key=google_api_key)
 
