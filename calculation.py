@@ -31,7 +31,7 @@ def calculate_waypoints(lat_1, lon_1, miles):
     lat_3 = lat_2 + (sin(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LATS
     lon_3 = lon_2 + (cos(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LONS
 
-    return lat_2, lon_2, lat_3, lon_3, elevation_sample_size
+    return [[lat_2, lon_2], [lat_3, lon_3]], elevation_sample_size
 
 
 def calculate_distance_time(waypoints):

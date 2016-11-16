@@ -158,10 +158,13 @@ def select_preference():
         specified_miles = float(request.form.get('total-miles'))
 
         # Calculate waypoints for route
-        lat_2, lon_2, lat_3, lon_3, elevation_sample_size = calculate_waypoints(lat_1, lon_1, specified_miles)
+        midpoints, elevation_sample_size = calculate_waypoints(lat_1, lon_1, specified_miles)
 
-        # Set up waypoints for functions below
-        waypoints = [[lat_1, lon_1], [lat_2, lon_2], [lat_3, lon_3]]
+        # Set up initial waypoints for functions below
+        waypoints = [[lat_1, lon_1]]
+
+        for midpoint in midpoints:
+            waypoints.append(midpoint)
 
         # Calculate total elevation changes for route
         ascent, descent = calculate_elevation(waypoints, elevation_sample_size)
