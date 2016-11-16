@@ -189,14 +189,19 @@ def select_preference():
 
     route_waypoints = []
 
-    # Format lat/lon pairs for results.html
+    # Format lat/lon pairs for results.html, add to waypoints table
     for waypoint in waypoints:
-        route_waypoints.append([waypoint[0], waypoint[1]])
+        lat = waypoint[0]
+        lon = waypoint[1]
+        route_waypoints.append([lat, lon])
+
+        lat_lon = Waypoint(route_id=route.route_id, latitude=lat, longitude=lon)
+        db.session.add(lat_lon)
+
+    db.session.commit()
 
     # Calculate midpoint, format for results.html
     mid_lat, mid_lon = calculate_midpoint(waypoints)
-
-    # route = {"waypoints": route_waypoints, "midpoint": route_midpoint}
 
     return render_template("results.html", email=email, route_type=route_type,
                            mid_lat=mid_lat, mid_lon=mid_lon, waypoints=route_waypoints,

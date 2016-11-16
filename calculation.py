@@ -131,6 +131,7 @@ def calculate_midpoint(waypoints):
 def geocode_address(address):
     """ Geocode address, extract latitude & longitude for route calculations """
     geocoded_address = gmaps.geocode(address)
+
     latitude = geocoded_address[0]['geometry']['location']['lat']
     longitude = geocoded_address[0]['geometry']['location']['lng']
 
