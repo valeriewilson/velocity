@@ -1,5 +1,5 @@
 from math import cos, sin, radians
-from random import randrange, choice
+from random import randrange, choice, uniform
 import googlemaps
 import requests
 import os
@@ -7,8 +7,9 @@ import os
 google_api_key = os.environ["GOOGLE_API_KEY"]
 gmaps = googlemaps.Client(key=google_api_key)
 
-MILES_BETWEEN_LATS = 69
-MILES_BETWEEN_LONS = 55
+# Approximate number of miles between integer latitude / longitudes in SF
+MILES_LATS = 69
+MILES_LONS = 55
 
 
 def calculate_waypoints(lat_1, lon_1, miles):
@@ -16,18 +17,21 @@ def calculate_waypoints(lat_1, lon_1, miles):
         miles specified """
 
     # Generate a random number of waypoints
-    num_legs = randrange(3, 6)
+    num_legs = randrange(3, 4)
 
-    # Calculate length of each leg
+    # Calculate leg distance
     miles_leg = miles / (num_legs + 1)
+
+    # Calculate variation in leg distance
+    mile_var = uniform((-miles_leg / 2), (miles_leg / 2))
 
     # Calculate number of elevation samples to request for elevation data
     elevation_sample_size = int(miles * 5)
 
     # Generate random direction for first leg of route, calculate waypoints
     angle = randrange(0, 360)
-    lat_2 = lat_1 + (sin(radians(angle))*miles_leg)/MILES_BETWEEN_LATS
-    lon_2 = lon_1 + (cos(radians(angle))*miles_leg)/MILES_BETWEEN_LONS
+    lat_2 = lat_1 + (sin(radians(angle)) * (miles_leg + mile_var)) / MILES_LATS
+    lon_2 = lon_1 + (cos(radians(angle)) * (miles_leg + mile_var)) / MILES_LONS
 
     # Random choice of clockwise vs. count-clockwise loop
     angle_diff = choice([-360/num_legs, 360/num_legs])
@@ -39,8 +43,8 @@ def calculate_waypoints(lat_1, lon_1, miles):
         prev_lat = waypoints[index - 1][0]
         prev_lon = waypoints[index - 1][1]
 
-        lat = prev_lat + (sin(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LATS
-        lon = prev_lon + (cos(radians(angle+angle_diff))*miles_leg)/MILES_BETWEEN_LONS
+        lat = prev_lat + (sin(radians(angle + angle_diff)) * (miles_leg - mile_var)) / MILES_LATS
+        lon = prev_lon + (cos(radians(angle + angle_diff)) * (miles_leg - mile_var)) / MILES_LONS
 
         waypoints.append([lat, lon])
 
