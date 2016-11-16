@@ -15,7 +15,7 @@ class User(db.Model):
     password = db.Column(db.String(20), nullable=False)
     first_name = db.Column(db.Unicode(30), nullable=False)
     last_name = db.Column(db.Unicode(30), nullable=False)
-    phone = db.Column(db.String(15), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
 
     addresses = db.relationship('Address', backref=db.backref('user'))
     routes = db.relationship('Route', backref=db.backref('user'))
@@ -94,10 +94,17 @@ class Waypoint(db.Model):
         return "<Waypoint id=%s route=%s>" % (self.waypoint_id, self.route.route_id)
 
 
-def connect_to_db(app):
+def example_data():
+
+    test_user = User(email="test@test.com", password="test123", last_name="Cohen", first_name="Leonard", phone="1231231234")
+    db.session.add(test_user)
+    db.session.commit()
+
+
+def connect_to_db(app, db_uri='postgresql:///bike_routes'):
     """Connect the database to our Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///bike_routes'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_ECHO'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
