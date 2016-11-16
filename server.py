@@ -211,7 +211,7 @@ def display_routes():
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
-    routes = Route.query.filter((Route.user_id == user_id) & (Route.score.isnot(None)) | Route.issue.isnot(None)).all()
+    routes = Route.query.filter((Route.user_id == user_id) & (Route.score.isnot(None) & (Route.is_accepted))).all()
 
     return render_template("routes.html", email=email, routes=routes, api_key=google_api_key)
 
