@@ -161,39 +161,10 @@ def select_preference():
         lat_2, lon_2, lat_3, lon_3, elevation_sample_size = calculate_waypoints(lat_1, lon_1, specified_miles)
 
         # Set up waypoints for functions below
-        waypoints = [(lat_1, lon_1), (lat_2, lon_2), (lat_3, lon_3)]
+        waypoints = [[lat_1, lon_1], [lat_2, lon_2], [lat_3, lon_3]]
 
         # Calculate total elevation changes for route
         ascent, descent = calculate_elevation(waypoints, elevation_sample_size)
-
-        # Calculate total distance and time for route
-        total_miles, total_minutes = calculate_distance_time(waypoints)
-
-        # Calculate midpoint
-        mid_lat, mid_lon = calculate_midpoint(waypoints)
-
-        # Add route to routes table
-        route = Route(total_ascent=ascent, total_descent=descent, is_accepted=True,
-                      user_id=user_id, total_miles=total_miles, total_minutes=total_minutes)
-
-        db.session.add(route)
-        db.session.commit()
-
-        # Add points to waypoints table with new route_id
-        waypoint_1 = Waypoint(route_id=route.route_id, latitude=lat_1, longitude=lon_1)
-        waypoint_2 = Waypoint(route_id=route.route_id, latitude=lat_2, longitude=lon_2)
-        waypoint_3 = Waypoint(route_id=route.route_id, latitude=lat_3, longitude=lon_3)
-
-        db.session.add(waypoint_1)
-        db.session.add(waypoint_2)
-        db.session.add(waypoint_3)
-
-        db.session.commit()
-
-        return render_template("map_results.html", email=email, route_type=route_type,
-                               lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2,
-                               lat_3=lat_3, lon_3=lon_3, elevation=ascent, miles=total_miles,
-                               minutes=total_minutes, api_key=google_api_key, mid_lat=mid_lat, mid_lon=mid_lon)
 
     elif route_type == "midpoint":
         # Geocoding address as proof of concept, will likely change with
@@ -206,37 +177,31 @@ def select_preference():
         waypoints = [(lat_1, lon_1), (lat_2, lon_2)]
         ascent, descent = calculate_elevation(waypoints, 20)
 
-        # Calculate total distance and time for route
-        total_miles, total_minutes = calculate_distance_time(waypoints)
+    # Calculate total distance and time for route
+    total_miles, total_minutes = calculate_distance_time(waypoints)
 
-        max_lat = max(lat_1, lat_2)
-        min_lat = min(lat_1, lat_2)
-        mid_lat = min_lat + ((max_lat - min_lat) / 2)
+    # Add route to routes table
+    route = Route(total_ascent=ascent, total_descent=descent, is_accepted=True,
+                  user_id=user_id, total_miles=total_miles, total_minutes=total_minutes)
 
-        max_lon = max(lon_1, lon_2)
-        min_lon = min(lon_1, lon_2)
-        mid_lon = min_lon + ((max_lon - min_lon) / 2)
+    db.session.add(route)
+    db.session.commit()
 
-        # Add route to routes table
-        route = Route(total_ascent=ascent, total_descent=descent, is_accepted=True,
-                      user_id=user_id, total_miles=total_miles, total_minutes=total_minutes)
+    route_waypoints = []
 
-        db.session.add(route)
-        db.session.commit()
+    # Format lat/lon pairs for results.html
+    for waypoint in waypoints:
+        route_waypoints.append([waypoint[0], waypoint[1]])
 
-        # Add points to waypoints table with new route_id
-        waypoint_1 = Waypoint(route_id=route.route_id, latitude=lat_1, longitude=lon_1)
-        waypoint_2 = Waypoint(route_id=route.route_id, latitude=lat_2, longitude=lon_2)
+    # Calculate midpoint, format for results.html
+    mid_lat, mid_lon = calculate_midpoint(waypoints)
 
-        db.session.add(waypoint_1)
-        db.session.add(waypoint_2)
+    # route = {"waypoints": route_waypoints, "midpoint": route_midpoint}
 
-        db.session.commit()
-
-        return render_template("map_results.html", email=email, route_type=route_type,
-                               lat_1=lat_1, lon_1=lon_1, lat_2=lat_2, lon_2=lon_2,
-                               elevation=ascent, miles=total_miles, minutes=total_minutes,
-                               api_key=google_api_key, mid_lat=mid_lat, mid_lon=mid_lon)
+    return render_template("results.html", email=email, route_type=route_type,
+                           mid_lat=mid_lat, mid_lon=mid_lon, waypoints=route_waypoints,
+                           elevation=ascent, miles=total_miles, minutes=total_minutes,
+                           api_key=google_api_key)
 
 
 @app.route('/routes')
