@@ -160,9 +160,9 @@ def select_preference():
         # Calculate waypoints for route
         midpoints, elevation_sample_size = calculate_waypoints(lat_1, lon_1, specified_miles)
 
-        # Set up initial waypoints for functions below
-        waypoints = [[lat_1, lon_1]]
+        waypoints = []
 
+        # Add all waypoints to waypoints list
         for midpoint in midpoints:
             waypoints.append(midpoint)
 
