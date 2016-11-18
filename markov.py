@@ -1,10 +1,6 @@
-from flask import Flask
-from model import connect_to_db, Route
+from model import Route
 from math import degrees, atan
 import random
-
-app = Flask(__name__)
-connect_to_db(app)
 
 
 def calculate_route_direction(lat_1, lon_1, lat_2, lon_2):
@@ -124,13 +120,13 @@ def generate_new_angle(ratio_total, acceptance_rate):
     return new_angle
 
 
-def calculate_weighted_angle(start_lat, start_lon):
+def calculate_weighted_angle(user_id, start_lat, start_lon):
     """ Calculate angle based on user's direction preferences """
 
     # FUTURE ADDITION: make user_id dynamic
 
     # Generate a list of route objects
-    routes = Route.query.filter(Route.user_id == 1).all()
+    routes = Route.query.filter(Route.user_id == user_id).all()
 
     # For each route object, obtain score & direction of first leg
     route_info = compile_routes_and_directions(start_lat, start_lon, routes)
@@ -148,5 +144,3 @@ def calculate_weighted_angle(start_lat, start_lon):
     new_angle = generate_new_angle(ratio_total, acceptance_rate)
 
     return new_angle
-
-print calculate_weighted_angle(37.783428, -122.445079)
