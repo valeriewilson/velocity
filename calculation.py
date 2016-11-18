@@ -3,6 +3,7 @@ from random import randrange, choice, uniform
 import googlemaps
 import requests
 import os
+import markov
 
 google_api_key = os.environ["GOOGLE_API_KEY"]
 gmaps = googlemaps.Client(key=google_api_key)
@@ -12,9 +13,11 @@ MILES_LATS = 69
 MILES_LONS = 55
 
 
-def calculate_waypoints(lat_1, lon_1, miles):
-    """ For loop routes, come up with random route based on start location &
-        miles specified """
+def calculate_waypoints(user_id, lat_1, lon_1, miles):
+    """
+    For loop routes, come up with random route based on start location &
+    miles specified
+    """
 
     # Generate a random number of waypoints
     num_legs = randrange(3, 4)
@@ -29,7 +32,9 @@ def calculate_waypoints(lat_1, lon_1, miles):
     elevation_sample_size = int(miles * 5)
 
     # Generate random direction for first leg of route, calculate waypoints
-    angle = randrange(0, 360)
+    weighted_angle = markov.calculate_weighted_angle(user_id, lat_1, lon_1)
+    angle = weighted_angle if weighted_angle else randrange(0, 360)
+
     lat_2 = lat_1 + (sin(radians(angle)) * (miles_leg + mile_var)) / MILES_LATS
     lon_2 = lon_1 + (cos(radians(angle)) * (miles_leg + mile_var)) / MILES_LONS
 
