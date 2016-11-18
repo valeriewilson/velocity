@@ -3,7 +3,6 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy import desc
 from model import connect_to_db, db, User, Route, Waypoint, Address
 from calculation import *
-from time import sleep
 import googlemaps
 import os
 
@@ -219,7 +218,8 @@ def display_routes():
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
-    routes = Route.query.filter((Route.user_id == user_id) & (Route.score.isnot(None) & (Route.is_accepted))).all()
+    routes = Route.query.filter((Route.user_id == user_id) & (Route.score.isnot(None))).\
+        order_by(Route.score.desc()).limit(10).all()
 
     return render_template("routes.html", email=email, routes=routes, api_key=google_api_key)
 
@@ -249,9 +249,6 @@ def get_waypoints():
 
     # Bundle information to pass to front-end
     route = {"route_id": route_id, "waypoints": route_waypoints, "midpoint": route_midpoint}
-
-    # Throttle Google Maps API calls server-side
-    sleep(1)
 
     return jsonify(route)
 
