@@ -85,7 +85,7 @@ def generate_weighted_angles(accepted_vs_total):
     # Return None if not all cardinal directions are represented
     # Future refactor: base user 'iteritems' instead of 'range'
     for direction in range(0, 360, 45):
-        if not accepted_vs_total[direction]:
+        if direction not in accepted_vs_total:
             return None
 
         ratio = float(accepted_vs_total[direction]['accepted']) / accepted_vs_total[direction]['total']
@@ -135,7 +135,7 @@ def calculate_weighted_angle(user_id, start_lat, start_lon):
     accepted_vs_total = tally_route_by_accepted(route_info)
 
     # Determine acceptance rate for each cardinal direction, come up with weighted values
-    if not generate_weighted_angles(accepted_vs_total):
+    if generate_weighted_angles(accepted_vs_total) is None:
         return None
     else:
         ratio_total, acceptance_rate = generate_weighted_angles(accepted_vs_total)
