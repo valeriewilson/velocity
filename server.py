@@ -3,7 +3,6 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy import desc
 from model import connect_to_db, db, User, Route, Waypoint, Address
 from calculation import *
-from time import sleep
 import googlemaps
 import os
 
@@ -219,7 +218,8 @@ def display_routes():
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
-    routes = Route.query.filter((Route.user_id == user_id) & (Route.score.isnot(None) & (Route.is_accepted))).all()
+    routes = Route.query.filter((Route.user_id == user_id) & (Route.score.isnot(None))).\
+        order_by(Route.score.desc()).limit(10).all()
 
     return render_template("routes.html", email=email, routes=routes, api_key=google_api_key)
 
@@ -249,9 +249,6 @@ def get_waypoints():
 
     # Bundle information to pass to front-end
     route = {"route_id": route_id, "waypoints": route_waypoints, "midpoint": route_midpoint}
-
-    # Throttle Google Maps API calls server-side
-    sleep(1)
 
     return jsonify(route)
 
@@ -287,6 +284,43 @@ def add_score():
     return redirect("/")
 
 
+@app.route('/filter', methods=["GET"])
+def filter_results():
+    """ Filter results displayed on Routes page """
+
+    email = session['user_email']
+    user_id = db.session.query(User.user_id).filter_by(email=email).first()
+
+    # route_approved = request.form.get('route-approval')
+
+    # Extract information from "filter" form
+    min_miles = request.args.get('min-miles') if request.args.get('min-miles') else 0
+    max_miles = request.args.get('max-miles') if request.args.get('max-miles') else 1000
+
+    min_minutes = request.args.get('min-minutes') if request.args.get('min-minutes') else 0
+    max_minutes = request.args.get('max-minutes') if request.args.get('max-minutes') else 1000
+
+    min_ascent = request.args.get('min-elevation') if request.args.get('min-elevation') else 0
+    max_ascent = request.args.get('max-elevation') if request.args.get('max-elevation') else 5000
+
+    min_score = request.args.get('min-score') if request.args.get('min-score') else 1
+    max_score = request.args.get('max-score') if request.args.get('max-score') else 5
+
+    routes = Route.query.filter((Route.user_id == user_id)
+                                & (Route.score.isnot(None))
+                                & (Route.total_miles >= min_miles)
+                                & (Route.total_miles <= max_miles)
+                                & (Route.total_minutes >= min_minutes)
+                                & (Route.total_minutes <= max_minutes)
+                                & (Route.total_ascent >= min_ascent)
+                                & (Route.total_ascent <= max_ascent)
+                                & (Route.score >= min_score)
+                                & (Route.score <= max_score)).\
+        order_by(Route.score.desc()).limit(10).all()
+
+    return render_template("routes.html", email=email, routes=routes, api_key=google_api_key)
+
+
 @app.route('/logout')
 def log_user_out():
     del session['user_email']
@@ -295,7 +329,7 @@ def log_user_out():
 
 
 if __name__ == "__main__":
-    app.debug = False
+    app.debug = True
 
     connect_to_db(app)
 

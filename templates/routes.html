@@ -4,6 +4,68 @@
 
     <h2>Routes</h2>
 
+    <h3>Filter options</h3>
+
+    <form action="/filter" method="GET" id="filter-form" novalidate>
+
+        <b>Route Type</b>
+        <br>
+        <input type="radio" name="route-approval" value="true" id="accepted-routes" checked>Accepted<br>
+        <input type="radio" name="route-approval" value="true" id="rejected-routes">Rejected<br>
+        <input type="radio" name="route-approval" value="true" id="all-routes">All<br>
+
+        <br>
+        <b>Total Miles</b>
+        <div id="mile-range">
+            <label for="min-miles">Min:</label>
+            <input type="min-miles" id="min-miles" class="miles" name="min-miles">
+
+            <label for="max-miles">Max:</label>
+            <input type="max-miles" id="max-miles" class="miles" name="max-miles">
+        </div>
+
+        <br>
+        <b>Total Time (minutes)</b>
+        <div id="time-range">
+            <label for="min-minutes">Min:</label>
+            <input type="min-minutes" id="min-minutes" class="minutes" name="min-minutes">
+
+            <label for="max-minutes">Max:</label>
+            <input type="max-minutes" id="max-minutes" class="minutes" name="max-minutes">
+        </div>
+
+        <br>
+        <b>Total Elevation (feet)</b>
+        <div id="elevation-range">
+            <label for="min-elevation">Min:</label>
+            <input type="min-elevation" id="min-elevation" class="elevation" name="min-elevation">
+
+            <label for="max-elevation">Max:</label>
+            <input type="max-elevation" id="max-elevation" class="elevation" name="max-elevation">
+        </div>
+
+        <br>
+        <b>Score</b>
+        <div id="score-range">
+            <label for="min-score">Min:</label>
+            <input type="min-score" id="min-score" class="score" name="min-score">
+
+            <label for="max-score">Max:</label>
+            <input type="max-score" id="max-score" class="score" name="max-score">
+        </div>
+
+        <br>
+        <input type="submit" value="Apply" id="submit-button">
+
+    </form>
+    <br>
+
+    <!-- <h4>Sort options</h4>
+    <p>Oldest First</p>
+    <p>Newest First</p>
+    <p>Next 10</p>
+    <p>Previous 10</p> -->
+
     {% for route in routes %}
 
         <div id="saved-routes">
