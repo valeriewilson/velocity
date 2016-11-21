@@ -264,6 +264,7 @@ def reject_route():
 
     route.is_accepted = False
     route.issue = issue
+    route.score = 0
     db.session.commit()
 
     return redirect("/")
@@ -291,9 +292,18 @@ def filter_results():
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
-    # route_approved = request.form.get('route-approval')
-
     # Extract information from "filter" form
+    route_approved = request.args.get('route-approval')
+
+    print "\n\n\n", route_approved, "\n\n\n"
+
+    if route_approved == "True":
+        approved = True
+    elif route_approved == "False":
+        approved = False
+
+    print "\n\n\n Something: ", approved, "\n\n\n"
+
     min_miles = request.args.get('min-miles') if request.args.get('min-miles') else 0
     max_miles = request.args.get('max-miles') if request.args.get('max-miles') else 1000
 
@@ -303,11 +313,11 @@ def filter_results():
     min_ascent = request.args.get('min-elevation') if request.args.get('min-elevation') else 0
     max_ascent = request.args.get('max-elevation') if request.args.get('max-elevation') else 5000
 
-    min_score = request.args.get('min-score') if request.args.get('min-score') else 1
+    min_score = request.args.get('min-score') if request.args.get('min-score') else 0
     max_score = request.args.get('max-score') if request.args.get('max-score') else 5
 
     routes = Route.query.filter((Route.user_id == user_id)
-                                & (Route.score.isnot(None))
+                                & (Route.is_accepted == approved)
                                 & (Route.total_miles >= min_miles)
                                 & (Route.total_miles <= max_miles)
                                 & (Route.total_minutes >= min_minutes)
@@ -316,7 +326,9 @@ def filter_results():
                                 & (Route.total_ascent <= max_ascent)
                                 & (Route.score >= min_score)
                                 & (Route.score <= max_score)).\
-        order_by(Route.score.desc()).limit(10).all()
+        order_by(Route.score.desc()).limit(10).offset(0).all()
+
+    print "\n\n\n", routes, "\n\n\n"
 
     return render_template("routes.html", email=email, routes=routes, api_key=google_api_key)
 
