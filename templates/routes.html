@@ -10,9 +10,8 @@
 
         <b>Route Type</b>
         <br>
-        <input type="radio" name="route-approval" value="true" id="accepted-routes" checked>Accepted<br>
-        <input type="radio" name="route-approval" value="true" id="rejected-routes">Rejected<br>
-        <input type="radio" name="route-approval" value="true" id="all-routes">All<br>
+        <input type="radio" name="route-approval" value="True" id="accepted-routes" checked>Accepted<br>
+        <input type="radio" name="route-approval" value="False" id="rejected-routes">Rejected<br>
 
         <br>
         <b>Total Miles</b>
@@ -53,18 +52,27 @@
             <label for="max-score">Max:</label>
             <input type="max-score" id="max-score" class="score" name="max-score">
         </div>
+        <br>
+
+        <div>
+            Sort By: <select name="sort-options" id="sort-dropdown">
+                <option id="sort-option" value="score">Score</option>
+                <option id="sort-option" value="route-id">Newest</option>
+                <option id="sort-option" value="time">Time</option>
+                <option id="sort-option" value="elevation">Elevation</option>
+                <option id="sort-option" value="miles">Miles</option>
+            </select>
+
+            <input type="radio" name="sort-method" value="asc" id="asc">Asc
+            <input type="radio" name="sort-method" value="desc" id="desc" checked>Desc<br>
+        <div>
 
         <br>
         <input type="submit" value="Apply" id="submit-button">
+        <br>
 
     </form>
     <br>
-
-    <!-- <h4>Sort options</h4>
-    <p>Oldest First</p>
-    <p>Newest First</p>
-    <p>Next 10</p>
-    <p>Previous 10</p> -->
 
     {% for route in routes %}
 

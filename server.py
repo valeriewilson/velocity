@@ -147,7 +147,7 @@ def select_preference():
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
     # Extract start position from user-selected starting point (removing default *)
-    address_label = request.form.get('address-options').strip('*')
+    address_label = request.form.get('address-options')
     lat_1, lon_1 = db.session.query(Address.latitude, Address.longitude).\
         filter_by(user_id=user_id).filter_by(label=address_label).first()
 
@@ -264,6 +264,7 @@ def reject_route():
 
     route.is_accepted = False
     route.issue = issue
+    route.score = 0
     db.session.commit()
 
     return redirect("/")
@@ -291,9 +292,14 @@ def filter_results():
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
-    # route_approved = request.form.get('route-approval')
-
     # Extract information from "filter" form
+    route_approved = request.args.get('route-approval')
+
+    if route_approved == "True":
+        approved = True
+    elif route_approved == "False":
+        approved = False
+
     min_miles = request.args.get('min-miles') if request.args.get('min-miles') else 0
     max_miles = request.args.get('max-miles') if request.args.get('max-miles') else 1000
 
@@ -303,11 +309,28 @@ def filter_results():
     min_ascent = request.args.get('min-elevation') if request.args.get('min-elevation') else 0
     max_ascent = request.args.get('max-elevation') if request.args.get('max-elevation') else 5000
 
-    min_score = request.args.get('min-score') if request.args.get('min-score') else 1
+    min_score = request.args.get('min-score') if request.args.get('min-score') else 0
     max_score = request.args.get('max-score') if request.args.get('max-score') else 5
 
+    # Extract and handle sort options
+    sort_option = request.args.get('sort-options')
+
+    order = request.args.get('sort-method')
+
+    if sort_option == "score":
+        sort_column = getattr(Route.score, order)()
+    elif sort_option == "route-id":
+        sort_column = getattr(Route.route_id, order)()
+    elif sort_option == "time":
+        sort_column = getattr(Route.total_minutes, order)()
+    elif sort_option == "elevation":
+        sort_column = getattr(Route.total_ascent, order)()
+    elif sort_option == "miles":
+        sort_column = getattr(Route.total_miles, order)()
+
+    # Filter routes based on the above parameters
     routes = Route.query.filter((Route.user_id == user_id)
-                                & (Route.score.isnot(None))
+                                & (Route.is_accepted == approved)
                                 & (Route.total_miles >= min_miles)
                                 & (Route.total_miles <= max_miles)
                                 & (Route.total_minutes >= min_minutes)
@@ -316,7 +339,8 @@ def filter_results():
                                 & (Route.total_ascent <= max_ascent)
                                 & (Route.score >= min_score)
                                 & (Route.score <= max_score)).\
-        order_by(Route.score.desc()).limit(10).all()
+        order_by(sort_column).\
+        limit(10).offset(0).all()
 
     return render_template("routes.html", email=email, routes=routes, api_key=google_api_key)
 
