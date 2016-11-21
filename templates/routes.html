@@ -42,17 +42,20 @@
             <label for="max-elevation">Max:</label>
             <input type="max-elevation" id="max-elevation" class="elevation" name="max-elevation">
         </div>
-
         <br>
-        <b>Score</b>
+
         <div id="score-range">
+            <b>Score</b>
+            <br>
+
             <label for="min-score">Min:</label>
             <input type="min-score" id="min-score" class="score" name="min-score">
-
+            
             <label for="max-score">Max:</label>
             <input type="max-score" id="max-score" class="score" name="max-score">
+            <br>
+            <br>
         </div>
-        <br>
 
         <div>
             Sort By: <select name="sort-options" id="sort-dropdown">
@@ -91,6 +94,16 @@
 <script src="https://code.jquery.com/jquery.js"></script>
 
 <script>
+
+    $('#accepted-routes').on('change', function () {
+        // Display "score" fields if "Accepted" is selected for route type
+        $('#score-range').removeClass()
+    });
+
+    $('#rejected-routes').on('change', function () {
+        // Hide "score" fields if "Rejected" is selected for route type
+        $('#score-range').addClass("hidden")
+    });
 
     function retrieveWaypoints() {
         // Get list of maps
@@ -149,8 +162,6 @@
         for (var i = 1; i < waypoints.length; i++) {
             waypts.push({location: String(waypoints[i]["lat"]) + ', ' + String(waypoints[i]["lng"])})
         }
-        
-        console.log(waypts)
 
         // Create route, starting & ending at origin, passing through waypoints
         directionsService.route({
