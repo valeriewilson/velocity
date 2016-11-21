@@ -56,12 +56,15 @@
 
         <div>
             Sort By: <select name="sort-options" id="sort-dropdown">
-                <option id="sort-option" value="route-id">Newest</option>
-                <option id="sort-option" value="elevation">Time</option>
-                <option id="sort-option" value="elevation">Elevation</option>
-                <option id="sort-option" value="time">Miles</option>
                 <option id="sort-option" value="score">Score</option>
+                <option id="sort-option" value="route-id">Newest</option>
+                <option id="sort-option" value="time">Time</option>
+                <option id="sort-option" value="elevation">Elevation</option>
+                <option id="sort-option" value="miles">Miles</option>
             </select>
+
+            <input type="radio" name="sort-method" value="asc" id="asc">Asc
+            <input type="radio" name="sort-method" value="desc" id="desc" checked>Desc<br>
         <div>
 
         <br>
@@ -70,12 +73,6 @@
 
     </form>
     <br>
-
-    <!-- <h4>Sort options</h4>
-    <p>Oldest First</p>
-    <p>Newest First</p>
-    <p>Next 10</p>
-    <p>Previous 10</p> -->
 
     {% for route in routes %}
 

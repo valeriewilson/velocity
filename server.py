@@ -312,9 +312,21 @@ def filter_results():
     min_score = request.args.get('min-score') if request.args.get('min-score') else 0
     max_score = request.args.get('max-score') if request.args.get('max-score') else 5
 
+    # Extract and handle sort options
     sort_option = request.args.get('sort-options')
 
-    print "\n\n\n Value: ", sort_option, "\n\n\n"
+    order = request.args.get('sort-method')
+
+    if sort_option == "score":
+        sort_column = getattr(Route.score, order)()
+    elif sort_option == "route-id":
+        sort_column = getattr(Route.route_id, order)()
+    elif sort_option == "time":
+        sort_column = getattr(Route.total_minutes, order)()
+    elif sort_option == "elevation":
+        sort_column = getattr(Route.total_ascent, order)()
+    elif sort_option == "miles":
+        sort_column = getattr(Route.total_miles, order)()
 
     # Filter routes based on the above parameters
     routes = Route.query.filter((Route.user_id == user_id)
@@ -327,7 +339,8 @@ def filter_results():
                                 & (Route.total_ascent <= max_ascent)
                                 & (Route.score >= min_score)
                                 & (Route.score <= max_score)).\
-        order_by(Route.score.desc()).limit(10).offset(0).all()
+        order_by(sort_column).\
+        limit(10).offset(0).all()
 
     return render_template("routes.html", email=email, routes=routes, api_key=google_api_key)
 
