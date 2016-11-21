@@ -8,7 +8,8 @@ def calculate_route_direction(lat_1, lon_1, lat_2, lon_2):
 
     # Calculate the angle based on the change in latitude & longitude
     y = lat_2 - lat_1
-    x = lon_2 - lon_1
+    x = (lon_2 - lon_1) if (lon_2 - lon_1) > 0 else 0.0001
+
     angle = degrees(atan(y / x))
 
     # If latitude is less than zero, angle should be offset by 180 degrees

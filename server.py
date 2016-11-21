@@ -147,7 +147,7 @@ def select_preference():
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
     # Extract start position from user-selected starting point (removing default *)
-    address_label = request.form.get('address-options').strip('*')
+    address_label = request.form.get('address-options')
     lat_1, lon_1 = db.session.query(Address.latitude, Address.longitude).\
         filter_by(user_id=user_id).filter_by(label=address_label).first()
 
@@ -295,14 +295,10 @@ def filter_results():
     # Extract information from "filter" form
     route_approved = request.args.get('route-approval')
 
-    print "\n\n\n", route_approved, "\n\n\n"
-
     if route_approved == "True":
         approved = True
     elif route_approved == "False":
         approved = False
-
-    print "\n\n\n Something: ", approved, "\n\n\n"
 
     min_miles = request.args.get('min-miles') if request.args.get('min-miles') else 0
     max_miles = request.args.get('max-miles') if request.args.get('max-miles') else 1000
@@ -316,6 +312,11 @@ def filter_results():
     min_score = request.args.get('min-score') if request.args.get('min-score') else 0
     max_score = request.args.get('max-score') if request.args.get('max-score') else 5
 
+    sort_option = request.args.get('sort-options')
+
+    print "\n\n\n Value: ", sort_option, "\n\n\n"
+
+    # Filter routes based on the above parameters
     routes = Route.query.filter((Route.user_id == user_id)
                                 & (Route.is_accepted == approved)
                                 & (Route.total_miles >= min_miles)
@@ -327,8 +328,6 @@ def filter_results():
                                 & (Route.score >= min_score)
                                 & (Route.score <= max_score)).\
         order_by(Route.score.desc()).limit(10).offset(0).all()
-
-    print "\n\n\n", routes, "\n\n\n"
 
     return render_template("routes.html", email=email, routes=routes, api_key=google_api_key)
 
