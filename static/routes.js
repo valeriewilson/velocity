@@ -1,3 +1,52 @@
+function displayFilteredRoutes(results) {
+    // Clear previous routes
+    $('#all-routes').empty();
+
+    // Extract new information to pass to retrieveWaypoints
+    for (var i = 0; i < results.length; i++) {
+        var route_id = results[i].route_id;
+        var miles = results[i].miles;
+        var minutes = results[i].minutes;
+        var elevation = results[i].elevation;
+        var accepted = results[i].is_accepted;
+        var score = results[i].score;
+        var issue = results[i].issue;
+
+        $('#all-routes').append("<div class='map' id='map" + route_id + "' data-id='" + route_id + "'></div>");
+        $('#all-routes').append("<p>" + miles.toFixed(1) + " miles | " + Math.round(minutes) + " minutes | " + Math.round(elevation) + " ft</p>");
+
+        if (accepted) {
+            $('#all-routes').append("<p>Score: " + score + "</p>");
+        } else {
+            $('#all-routes').append("<p>Issue: " + issue + "</p>");
+        }
+    }
+
+    retrieveWaypoints();
+}
+
+function filterRoutes(evt) {
+    evt.preventDefault();
+
+    var formInputs = {
+        "min-miles": $("#min-miles").val(),
+        "max-miles": $("#max-miles").val(),
+        "min-minutes": $("#min-minutes").val(),
+        "max-minutes": $("#max-minutes").val(),
+        "min-elevation": $("#min-minutes").val(),
+        "max-elevation": $("#max-minutes").val(),
+        "min-score": $("#min-score").val(),
+        "max-score": $("#max-score").val(),
+        "route-approval": $(".route-approval[name=route-approval]:checked").val(),
+        "sort-options": $("#sort-dropdown :selected").text(),
+        "sort-method": $(".sort-method[name=sort-method]:checked").val()
+    };
+
+    $.get("/filter", formInputs, displayFilteredRoutes);
+}
+
+$('#apply-button').on("click", filterRoutes);
+
 $('#accepted-routes').on('change', function () {
     // Enable & remove formatting for "score" fields if "Accepted" is selected for route type
     $('.score').removeAttr("disabled").removeClass("disable");

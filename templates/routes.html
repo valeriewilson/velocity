@@ -10,8 +10,8 @@
 
         <b>Route Type</b>
         <br>
-        <input type="radio" name="route-approval" value="True" id="accepted-routes" checked>Accepted<br>
-        <input type="radio" name="route-approval" value="False" id="rejected-routes">Rejected<br>
+        <input type="radio" name="route-approval" value="True" class="route-approval" checked>Accepted<br>
+        <input type="radio" name="route-approval" value="False" class="route-approval">Rejected<br>
 
         <br>
         <b>Total Miles</b>
@@ -66,38 +66,40 @@
                 <option id="sort-option" value="miles">Miles</option>
             </select>
 
-            <input type="radio" name="sort-method" value="asc" id="asc">Asc
-            <input type="radio" name="sort-method" value="desc" id="desc" checked>Desc<br>
+            <input type="radio" name="sort-method" value="asc" id="asc" class="sort-method">Asc
+            <input type="radio" name="sort-method" value="desc" id="desc" class="sort-method" checked>Desc<br>
         <div>
 
         <br>
-        <input type="submit" value="Apply" id="submit-button">
+        <button value="Apply" id="apply-button">Apply</button>
         <br>
 
     </form>
     <br>
 
-    {% for route in routes %}
+    <div id="all-routes">
+        {% for route in routes %}
 
-        <div id="saved-routes">
-            <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
-            <p>{{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft</p>
-            
-            {% if route.is_accepted == True %}
-                <p>Score: {{ route.score }}</p>
-            {% else %}
-                <p>Issue: {{ route.issue }}</p>
-            {% endif %}
-        </div>
+            <div id="saved-routes">
+                <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
+                <p>{{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft</p>
+                
+                {% if route.is_accepted == True %}
+                    <p>Score: {{ route.score }}</p>
+                {% else %}
+                    <p>Issue: {{ route.issue }}</p>
+                {% endif %}
+            </div>
 
-    {% endfor %}
+        {% endfor %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery.js"></script>
 
     <script src="static/routes.js"></script>
 
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=retrieveWaypoints">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlY0gdpn-82bFjwWdaAPdQ_oOtJwd9Y3s&callback=retrieveWaypoints">
     </script>
-
-    <script src="https://code.jquery.com/jquery.js"></script>
 
 {% endblock %}
