@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <h2>Bike Route Inputs</h2>
+    <h2>Bike Route Generator</h2>
 
     <!-- Displays route fields -->
     <div>
-        <form action="/results" method="POST" id="route-form" novalidate>
+        <form action="/test-results" method="POST" id="route-form" novalidate>
             <label for="start-address">Start address:</label>
             
             <select name="address-options" id="address-dropdown">
@@ -59,6 +59,52 @@
             <input type="submit" value="Save" id="save-button">
         </form>
     </div>
+
+    <div id="results-dropdowns" class="hidden">
+        <p id="ride-stats"></p>
+        
+        <div>
+            <p>Do you want to save this route?</p>
+            
+            <div>
+                <input type="radio" name="save-option" value="yes" id="yes-option"> Yes<br>
+                <form action="/add-score" id="accepted-route-form" method="POST" class="hidden">
+                    <select name="rating" id="rating">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                    <input type="submit" value="Save" id="save-rating">
+                </form>
+            </div>
+
+            <div>
+                <input type="radio" name="save-option" value="no" id="no-option"> No<br>
+                <form action="/reject-route" id="rejected-route-form" method="POST" class="hidden">
+                    <select name="issue" id="issue">
+                        <option id="impossible">Impossible route</option>
+                        <option id="traffic">Major roads / traffic</option>
+                        <option id="no-lanes">No bike lanes</option>
+                        <option id="dont-like">Not feeling it</option>
+                        <option id="overlapped">Overlapped sections</option>
+                    </select>
+                    <input type="submit" value="Save" id="save-reason">
+                </form>
+                <br>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="map"></div>
+
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=" + {{ api_key }}>
+    </script>
+
+    <script src="https://code.jquery.com/jquery.js"></script>
     
     <script>
         "use strict";
@@ -67,11 +113,11 @@
 
         dropdown.onchange = function(){
            // Hide "new address" fields by default
-           $('#new-address-information').addClass("hidden")
+           $('#new-address-information').addClass("hidden");
 
            // Display fields when "+ new address" is selected in "Start address" dropdown
            if(dropdown.value=="create-new-address"){
-             $('#new-address-information').removeClass()
+             $('#new-address-information').removeClass();
            }
         }
 
@@ -122,6 +168,114 @@
         }
 
         $('#new-address-form').on("submit", addAddress);
+
+        var yes_selected = document.getElementById("yes-option");
+        yes_selected.onchange = function(){
+            $('#accepted-route-form').removeClass();
+            $('#rejected-route-form').addClass("hidden");
+        }
+
+        var no_selected = document.getElementById("no-option");
+        no_selected.onchange = function(){
+            $('#accepted-route-form').addClass("hidden");
+            $('#rejected-route-form').removeClass();
+        }
+
+        function initMap(waypoints, mid_lat, mid_lon) {
+            var waypoints = waypoints;
+
+            var mid_lat = mid_lat;
+            var mid_lon = mid_lon;
+
+            var midpoint = {"lat": mid_lat, "lng": mid_lon};
+            var start_point = {"lat": waypoints[0][0], "lng": waypoints[0][1]}
+
+            // Instantiate map
+            var directionsService = new google.maps.DirectionsService;
+            var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+
+            // Configure map, pass lat/lon pairs to displayRoute
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 25,
+                center: midpoint,
+                mapTypeControl: false,
+                streetViewControl: false,
+            });
+
+            // Place marker for start/end point
+            var marker = new google.maps.Marker({
+              position: start_point,
+              map: map
+            });
+
+            // Display map based on configuration
+            directionsDisplay.setMap(map);
+
+            // Call displayRoute function to display bike route
+            displayRoute(directionsService, directionsDisplay, waypoints);
+        }
+
+        function displayRoute(directionsService, directionsDisplay, waypoints) {
+
+            // Prepare start/end point
+            var start_lat = waypoints[0][0];
+            var start_lng = waypoints[0][1];
+            var start_point = start_lat + ', ' + start_lng;
+
+            // Prepare waypoints along route
+            var waypts = [];
+
+            for (var i = 1; i < waypoints.length; i++) {
+                waypts.push({location: String(waypoints[i][0]) + ', ' + String(waypoints[i][1])})
+            }
+
+            // Create route, starting & ending at origin, passing through waypoints
+            directionsService.route({
+                origin: start_point,
+                destination: start_point,
+                waypoints: waypts,
+                travelMode: 'BICYCLING'
+            },
+
+            // Error handling
+            function(response, status) {
+                if (status === 'OK') {
+                    directionsDisplay.setDirections(response);
+                } else {
+                    console.log('Directions request failed due to ' + status);
+                }
+            });
+        }
+
+        function displayResults(results) {
+            $('#results-dropdowns').removeClass();
+
+            var total_miles = results.miles;
+            var total_elevation = results.elevation;
+            var total_time = results.minutes;
+            var waypoints = results.waypoints;
+            var api_key = results.api_key;
+            var mid_lat = results.mid_lat;
+            var mid_lon = results.mid_lon;
+
+            $('#ride-stats').text("Miles "+ total_miles.toFixed(1) + " miles | Time: " + Math.round(total_time) + " minutes | Total climb: " + Math.round(total_elevation) + " ft")
+            initMap(waypoints, mid_lat, mid_lon)
+        }
+
+        function createRoute(evt) {
+            evt.preventDefault();
+
+            var formInputs = {
+                "start": $("#address-dropdown").val(),
+                "route": $("#route-type").val(),
+                "num_miles": $('#total-miles').val(),
+                "midpoint": $('#midpoint-address').val()
+            };
+            
+            $.post("/results", formInputs, displayResults)
+        }
+
+        $('#route-form').on("submit", createRoute);
 
     </script>
 

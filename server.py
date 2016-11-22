@@ -140,21 +140,18 @@ def return_to_home_page():
 
 
 @app.route('/results', methods=['POST'])
-def select_preference():
-    """ Display results based on form inputs """
-
+def display_results():
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
-    # Extract start position from user-selected starting point (removing default *)
-    address_label = request.form.get('address-options')
-    lat_1, lon_1 = db.session.query(Address.latitude, Address.longitude).\
-        filter_by(user_id=user_id).filter_by(label=address_label).first()
+    start_address = request.form.get('start')
+    route_type = request.form.get('route')
 
-    route_type = request.form.get('route-type')
+    lat_1, lon_1 = db.session.query(Address.latitude, Address.longitude).\
+        filter_by(user_id=user_id).filter_by(label=start_address).first()
 
     if route_type == "loop":
-        specified_miles = float(request.form.get('total-miles'))
+        specified_miles = float(request.form.get('num_miles'))
 
         # Calculate waypoints for route
         midpoints, elevation_sample_size = calculate_waypoints(user_id, lat_1, lon_1, specified_miles)
@@ -172,7 +169,7 @@ def select_preference():
         # Geocoding address as proof of concept, will likely change with
         #  addition of GMaps Directions API
 
-        midpoint_address = request.form.get('midpoint-address')
+        midpoint_address = request.form.get('midpoint')
         lat_2, lon_2 = geocode_address(midpoint_address)
 
         # Calculate total elevation changes for route (sample size hard-coded for now)
@@ -205,10 +202,12 @@ def select_preference():
     # Calculate midpoint, format for results.html
     mid_lat, mid_lon = calculate_midpoint(waypoints)
 
-    return render_template("results.html", email=email, route_type=route_type,
-                           mid_lat=mid_lat, mid_lon=mid_lon, waypoints=route_waypoints,
-                           elevation=ascent, miles=total_miles, minutes=total_minutes,
-                           api_key=google_api_key)
+    # Format and pass results to displayResults function
+    results = {"miles": total_miles, "elevation": ascent, "minutes": total_minutes,
+               "api_key": google_api_key, "waypoints": route_waypoints,
+               "mid_lat": mid_lat, "mid_lon": mid_lon}
+
+    return jsonify(results)
 
 
 @app.route('/routes')
