@@ -82,7 +82,12 @@
         <div id="saved-routes">
             <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
             <p>{{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft</p>
-            <p>Score: {{ route.score }}</p>
+            
+            {% if route.is_accepted == True %}
+                <p>Score: {{ route.score }}</p>
+            {% else %}
+                <p>Issue: {{ route.issue }}</p>
+            {% endif %}
         </div>
 
     {% endfor %}
