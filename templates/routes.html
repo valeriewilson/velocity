@@ -17,30 +17,30 @@
         <b>Total Miles</b>
         <div id="mile-range">
             <label for="min-miles">Min:</label>
-            <input type="min-miles" id="min-miles" class="miles" name="min-miles">
+            <input type="min-miles" id="min-miles" class="miles" name="min-miles" placeholder="0" autocomplete="off">
 
             <label for="max-miles">Max:</label>
-            <input type="max-miles" id="max-miles" class="miles" name="max-miles">
+            <input type="max-miles" id="max-miles" class="miles" name="max-miles" placeholder="1000" autocomplete="off">
         </div>
 
         <br>
         <b>Total Time (minutes)</b>
         <div id="time-range">
             <label for="min-minutes">Min:</label>
-            <input type="min-minutes" id="min-minutes" class="minutes" name="min-minutes">
+            <input type="min-minutes" id="min-minutes" class="minutes" name="min-minutes" placeholder="0" autocomplete="off">
 
             <label for="max-minutes">Max:</label>
-            <input type="max-minutes" id="max-minutes" class="minutes" name="max-minutes">
+            <input type="max-minutes" id="max-minutes" class="minutes" name="max-minutes" placeholder="1000" autocomplete="off">
         </div>
 
         <br>
         <b>Total Elevation (feet)</b>
         <div id="elevation-range">
             <label for="min-elevation">Min:</label>
-            <input type="min-elevation" id="min-elevation" class="elevation" name="min-elevation">
+            <input type="min-elevation" id="min-elevation" class="elevation" name="min-elevation" placeholder="0" autocomplete="off">
 
             <label for="max-elevation">Max:</label>
-            <input type="max-elevation" id="max-elevation" class="elevation" name="max-elevation">
+            <input type="max-elevation" id="max-elevation" class="elevation" name="max-elevation" placeholder="5000" autocomplete="off">
         </div>
         <br>
 
@@ -49,10 +49,10 @@
             <br>
 
             <label for="min-score">Min:</label>
-            <input type="min-score" id="min-score" class="score" name="min-score">
+            <input type="min-score" id="min-score" class="score" name="min-score" placeholder="0" autocomplete="off">
             
             <label for="max-score">Max:</label>
-            <input type="max-score" id="max-score" class="score" name="max-score">
+            <input type="max-score" id="max-score" class="score" name="max-score" placeholder="5" autocomplete="off">
             <br>
             <br>
         </div>
@@ -60,7 +60,7 @@
         <div>
             Sort By: <select name="sort-options" id="sort-dropdown">
                 <option id="sort-option" value="score">Score</option>
-                <option id="sort-option" value="route-id">Newest</option>
+                <option id="sort-option" value="route-id">Date created</option>
                 <option id="sort-option" value="time">Time</option>
                 <option id="sort-option" value="elevation">Elevation</option>
                 <option id="sort-option" value="miles">Miles</option>
@@ -101,13 +101,13 @@
 <script>
 
     $('#accepted-routes').on('change', function () {
-        // Display "score" fields if "Accepted" is selected for route type
-        $('#score-range').removeClass()
+        // Enable & remove formatting for "score" fields if "Accepted" is selected for route type
+        $('.score').removeAttr("disabled").removeClass("disable");
     });
 
     $('#rejected-routes').on('change', function () {
-        // Hide "score" fields if "Rejected" is selected for route type
-        $('#score-range').addClass("hidden")
+        // Disable & gray out "score" fields if "Rejected" is selected for route type
+        $('.score').attr("disabled", "disabled").addClass("disable");
     });
 
     function retrieveWaypoints() {
