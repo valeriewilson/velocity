@@ -101,13 +101,13 @@
 <script>
 
     $('#accepted-routes').on('change', function () {
-        // Display "score" fields if "Accepted" is selected for route type
-        $('#score-range').removeClass()
+        // Enable & remove formatting for "score" fields if "Accepted" is selected for route type
+        $('.score').removeAttr("disabled").removeClass("disable");
     });
 
     $('#rejected-routes').on('change', function () {
-        // Hide "score" fields if "Rejected" is selected for route type
-        $('#score-range').addClass("hidden")
+        // Disable & gray out "score" fields if "Rejected" is selected for route type
+        $('.score').attr("disabled", "disabled").addClass("disable");
     });
 
     function retrieveWaypoints() {
