@@ -155,6 +155,7 @@ function createRoute(evt) {
         "num_miles": $('#total-miles').val(),
         "midpoint": $('#midpoint-address').val()
     };
+    $('#generator-options').addClass("hidden");
     $('#loading-image').removeClass();
     $.post("/results", formInputs, displayResults);
 }
