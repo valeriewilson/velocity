@@ -204,8 +204,7 @@ def display_results():
 
     # Format and pass results to displayResults function
     results = {"miles": total_miles, "elevation": ascent, "minutes": total_minutes,
-               "api_key": google_api_key, "waypoints": route_waypoints,
-               "mid_lat": mid_lat, "mid_lon": mid_lon}
+               "waypoints": route_waypoints, "mid_lat": mid_lat, "mid_lon": mid_lon}
 
     return jsonify(results)
 

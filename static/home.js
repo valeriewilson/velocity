@@ -1,8 +1,3 @@
-var script_1 = document.createElement('script');
-script_1.src = "https://code.jquery.com/jquery.js";
-script_1.type = "text/javascript";
-
-
 var dropdown = document.getElementById("address-dropdown");
 
 dropdown.onchange = function(){
@@ -143,11 +138,11 @@ function displayResults(results) {
     var total_elevation = results.elevation;
     var total_time = results.minutes;
     var waypoints = results.waypoints;
-    var api_key = results.api_key;
     var mid_lat = results.mid_lat;
     var mid_lon = results.mid_lon;
 
-    $('#ride-stats').text("Miles "+ total_miles.toFixed(1) + " miles | Time: " + Math.round(total_time) + " minutes | Total climb: " + Math.round(total_elevation) + " ft");
+    $('#loading-image').addClass("hidden");
+    $('#ride-stats').text("Miles: "+ total_miles.toFixed(1) + " miles | Time: " + Math.round(total_time) + " minutes | Total climb: " + Math.round(total_elevation) + " ft");
     initMap(waypoints, mid_lat, mid_lon);
 }
 
@@ -160,7 +155,7 @@ function createRoute(evt) {
         "num_miles": $('#total-miles').val(),
         "midpoint": $('#midpoint-address').val()
     };
-    
+    $('#loading-image').removeClass();
     $.post("/results", formInputs, displayResults);
 }
 
