@@ -6,7 +6,7 @@
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
-              <p>{{ message }}</p>
+              <p class="flash-message">{{ message }}</p>
             {% endfor %}
         {% endif %}
     {% endwith %}
@@ -19,3 +19,10 @@
     {% block content %}{% endblock %}
 </body>
 </html>
+
+<script>
+setTimeout(function() {
+    $('.flash-message').fadeOut('fast');
+    }, 5000
+);
+</script>
