@@ -5,11 +5,15 @@
     display: none;
 }
 #map {
-    height: 500px;
+    height: 600px;
+    width: 100%;
+}
+#saved-routes {
+    margin-left: 40px;
 }
 .map {
     height: 300px;
-    width: 90%;
+    width: 100%;
     margin-bottom: 40px;
 }
 #bike-gif {
@@ -18,6 +22,14 @@
 .disable {
     background-color: #e6e6e6;
 }
-.left-hand-pane {
-    margin-left: 10px;
+.sidebar {
+    position: fixed;
+    margin-left: -250px;
+}
+#wrapper {
+  padding-left: 250px;
+  transition: all 0.4s ease 0s;
+}
+body {
+    padding-top: 70px;
 }

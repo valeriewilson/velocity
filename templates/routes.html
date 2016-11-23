@@ -2,91 +2,93 @@
 {% block title %}Routes{% endblock %}
 {% block content %}
 
-<div class="container row col-xs-2 left-hand-pane">
+<div class="container" id="wrapper">
+    <div class="row">
 
-    <h3>Filter options</h3>
+        <div class="col-xs-2 sidebar-nav sidebar">
 
-    <form action="/filter" method="GET" id="filter-form" novalidate>
+            <h3>Filter options</h3>
 
-        <b>Route Type</b>
-        <br>
-        <input type="radio" name="route-approval" value="True" class="radio-inline route-approval" id="accepted-routes" checked>   Accepted<br>
-        <input type="radio" name="route-approval" value="False" class="radio-inline route-approval" id="rejected-routes">   Rejected<br>
+            <form action="/filter" method="GET" id="filter-form" novalidate>
 
-        <br>
-        <b>Total Miles</b>
-        <div id="mile-range">
-            <input type="min-miles" id="min-miles" class="miles form-control" name="min-miles" placeholder="Minimum" autocomplete="off">
+                <b>Route Type</b>
+                <br>
+                <input type="radio" name="route-approval" value="True" class="radio-inline route-approval" id="accepted-routes" checked>   Accepted<br>
+                <input type="radio" name="route-approval" value="False" class="radio-inline route-approval" id="rejected-routes">   Rejected<br>
 
-            <input type="max-miles" id="max-miles" class="miles form-control" name="max-miles" placeholder="Maximum" autocomplete="off">
-        </div>
+                <br>
+                <b>Total Miles</b>
+                <div id="mile-range">
+                    <input type="min-miles" id="min-miles" class="miles form-control" name="min-miles" placeholder="Minimum" autocomplete="off">
 
-        <br>
-        <b>Total Time (minutes)</b>
-        <div id="time-range">
-            <input type="min-minutes" id="min-minutes" class="minutes form-control" name="min-minutes" placeholder="Minimum" autocomplete="off">
+                    <input type="max-miles" id="max-miles" class="miles form-control" name="max-miles" placeholder="Maximum" autocomplete="off">
+                </div>
 
-            <input type="max-minutes" id="max-minutes" class="minutes form-control" name="max-minutes" placeholder="Maximum" autocomplete="off">
-        </div>
+                <br>
+                <b>Total Time (minutes)</b>
+                <div id="time-range">
+                    <input type="min-minutes" id="min-minutes" class="minutes form-control" name="min-minutes" placeholder="Minimum" autocomplete="off">
 
-        <br>
-        <b>Total Climb (ft)</b>
-        <div id="elevation-range">
-            <input type="min-elevation" id="min-elevation" class="elevation form-control" name="min-elevation" placeholder="Minimum" autocomplete="off">
+                    <input type="max-minutes" id="max-minutes" class="minutes form-control" name="max-minutes" placeholder="Maximum" autocomplete="off">
+                </div>
 
-            <input type="max-elevation" id="max-elevation" class="elevation form-control" name="max-elevation" placeholder="Maximum" autocomplete="off">
-        </div>
-        <br>
+                <br>
+                <b>Total Climb (ft)</b>
+                <div id="elevation-range">
+                    <input type="min-elevation" id="min-elevation" class="elevation form-control" name="min-elevation" placeholder="Minimum" autocomplete="off">
 
-        <div id="score-range">
-            <b>Score</b>
+                    <input type="max-elevation" id="max-elevation" class="elevation form-control" name="max-elevation" placeholder="Maximum" autocomplete="off">
+                </div>
+                <br>
 
-            <input type="min-score" id="min-score" class="score form-control" name="min-score" placeholder="Minimum" autocomplete="off">
-            
-            <input type="max-score" id="max-score" class="score form-control" name="max-score" placeholder="Maximum" autocomplete="off">
+                <div id="score-range">
+                    <b>Score</b>
+
+                    <input type="min-score" id="min-score" class="score form-control" name="min-score" placeholder="Minimum" autocomplete="off">
+                    
+                    <input type="max-score" id="max-score" class="score form-control" name="max-score" placeholder="Maximum" autocomplete="off">
+                    <br>
+                </div>
+
+                <div>
+                    Sort By: <select name="sort-options" id="sort-dropdown">
+                        <option id="sort-option" value="score">Score</option>
+                        <option id="sort-option" value="route-id">Date created</option>
+                        <option id="sort-option" value="time">Time</option>
+                        <option id="sort-option" value="elevation">Elevation</option>
+                        <option id="sort-option" value="miles">Miles</option>
+                    </select><br>
+
+                    <input type="radio" name="sort-method" value="asc" id="asc" class="sort-method">   Asc
+                    <input type="radio" name="sort-method" value="desc" id="desc" class="sort-method" checked>   Desc<br>
+                </div>
+
+                <br>
+                <button value="Apply" id="apply-button" class="btn btn-primary">Apply</button>
+                <br>
+
+            </form>
             <br>
         </div>
 
-        <div>
-            Sort By: <select name="sort-options" id="sort-dropdown">
-                <option id="sort-option" value="score">Score</option>
-                <option id="sort-option" value="route-id">Date created</option>
-                <option id="sort-option" value="time">Time</option>
-                <option id="sort-option" value="elevation">Elevation</option>
-                <option id="sort-option" value="miles">Miles</option>
-            </select><br>
+        {% for route in routes %}
+            <div id="saved-routes" class="container col-xs-5">
+                
+                <p>
+                    {{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft |
+                
+                    {% if route.is_accepted == True %}
+                        Score: {{ route.score }}
+                    {% else %}
+                        Issue: {{ route.issue }}
+                    {% endif %}
+                </p>
 
-            <input type="radio" name="sort-method" value="asc" id="asc" class="sort-method">   Asc
-            <input type="radio" name="sort-method" value="desc" id="desc" class="sort-method" checked>   Desc<br>
-        </div>
+                <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
+            </div>
 
-        <br>
-        <button value="Apply" id="apply-button" class="btn btn-primary">Apply</button>
-        <br>
-
-    </form>
-    <br>
-
-</div>
-
-<div id="all-routes">
-    {% for route in routes %}
-        <div class="container row col-xs-2 left-hand-pane"></div>
-        <div id="saved-routes" class="row container col-xs-4">
-            
-            <p>
-                {{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft |
-            
-                {% if route.is_accepted == True %}
-                    Score: {{ route.score }}
-                {% else %}
-                    Issue: {{ route.issue }}
-                {% endif %}
-            </p>
-            <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
-        </div>
-
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery.js"></script>
