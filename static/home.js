@@ -3,10 +3,12 @@ var dropdown = document.getElementById("address-dropdown");
 dropdown.onchange = function(){
    // Hide "new address" fields by default
    $('#new-address-information').addClass("hidden");
+   $('#submit-button').removeAttr("disabled");
 
    // Display fields when "+ new address" is selected in "Start address" dropdown
    if(dropdown.value=="create-new-address"){
      $('#new-address-information').removeClass();
+        $('#submit-button').attr("disabled", "disabled");
    }
 };
 
