@@ -143,6 +143,8 @@ function displayResults(results) {
 
     $('#loading-image').addClass("hidden");
     $('#ride-stats').text("Miles: "+ total_miles.toFixed(1) + " miles | Time: " + Math.round(total_time) + " minutes | Total climb: " + Math.round(total_elevation) + " ft");
+    $('#map').removeClass("hidden");
+
     initMap(waypoints, mid_lat, mid_lon);
 }
 
