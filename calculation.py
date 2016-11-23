@@ -82,6 +82,12 @@ def calculate_distance_time(waypoints):
                                       ("{}, {}").format(lat_b, lon_b),
                                       mode="bicycling")
 
+        print "\n\n\n"
+        print directions
+        print "\n\n\n"
+        print directions[0]
+        print "\n\n\n"
+
         time = directions[0]["legs"][0]["duration"]["text"].split()
         hours = int(time[-4]) * 60 if len(time) == 4 else 0
 
