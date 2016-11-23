@@ -3,10 +3,12 @@ var dropdown = document.getElementById("address-dropdown");
 dropdown.onchange = function(){
    // Hide "new address" fields by default
    $('#new-address-information').addClass("hidden");
+   $('#submit-button').removeAttr("disabled");
 
    // Display fields when "+ new address" is selected in "Start address" dropdown
    if(dropdown.value=="create-new-address"){
      $('#new-address-information').removeClass();
+        $('#submit-button').attr("disabled", "disabled");
    }
 };
 
@@ -60,13 +62,13 @@ $('#new-address-form').on("submit", addAddress);
 
 var yes_selected = document.getElementById("yes-option");
 yes_selected.onchange = function(){
-    $('#accepted-route-form').removeClass();
+    $('#star-rating').removeClass();
     $('#rejected-route-form').addClass("hidden");
 };
 
 var no_selected = document.getElementById("no-option");
 no_selected.onchange = function(){
-    $('#accepted-route-form').addClass("hidden");
+    $('#star-rating').addClass("hidden");
     $('#rejected-route-form').removeClass();
 };
 
@@ -142,7 +144,11 @@ function displayResults(results) {
     var mid_lon = results.mid_lon;
 
     $('#loading-image').addClass("hidden");
-    $('#ride-stats').text("Miles: "+ total_miles.toFixed(1) + " miles | Time: " + Math.round(total_time) + " minutes | Total climb: " + Math.round(total_elevation) + " ft");
+    $('#ride-stats-miles').text("Miles: "+ total_miles.toFixed(1) + " miles");
+    $('#ride-stats-minutes').text("Time: " + Math.round(total_time) + " minutes ");
+    $('#ride-stats-elevation').text("Total climb: " + Math.round(total_elevation) + " ft");
+    $('#map').removeClass("hidden");
+
     initMap(waypoints, mid_lat, mid_lon);
 }
 
@@ -161,3 +167,108 @@ function createRoute(evt) {
 }
 
 $('#route-form').on("submit", createRoute);
+
+function returnToSearch() {
+
+    // After saving route, restore Home page to original format
+    $('#generator-options').removeClass("hidden");
+    $('#results-dropdowns').addClass("hidden");
+    $('#map').addClass("hidden");
+}
+
+function saveScore(evt) {
+    var score = evt.currentTarget.id.split("-")[1];
+
+    var formInputs = {
+        "score": score
+    };
+
+    // Pass score to /add-score route
+    $.post("/add-score", formInputs, returnToSearch);
+}
+
+// $('#accepted-route-form').on("submit", saveScore);
+$('#score-1').on("click", saveScore);
+$('#score-2').on("click", saveScore);
+$('#score-3').on("click", saveScore);
+$('#score-4').on("click", saveScore);
+$('#score-5').on("click", saveScore);
+
+function rejectRoute(evt) {
+    evt.preventDefault();
+
+    var formInputs = {
+        "issue": $("#issue").val()
+    };
+
+    // Pass issue to /reject-route route
+    $.post("/reject-route", formInputs, returnToSearch);
+}
+
+$('#rejected-route-form').on("submit", rejectRoute);
+
+// Change to filled-in star for all stars to left of & including the star the user hovers over
+$('#score-1').hover(
+    function() {
+        $(this).removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+    },
+    function() {
+        $(this).removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+    }
+);
+
+$('#score-2').hover(
+    function() {
+        $(this).removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-1').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+    },
+    function() {
+        $(this).removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-1').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+    }
+);
+
+$('#score-3').hover(
+    function() {
+        $(this).removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-1').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-2').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+    },
+    function() {
+        $(this).removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-1').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-2').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+    }
+);
+
+$('#score-4').hover(
+    function() {
+        $(this).removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-1').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-2').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-3').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+    },
+    function() {
+        $(this).removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-1').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-2').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-3').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+    }
+);
+
+$('#score-5').hover(
+    function() {
+        $(this).removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-1').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-2').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-3').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-4').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+    },
+    function() {
+        $(this).removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-1').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-2').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-3').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-4').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+    }
+);

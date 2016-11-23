@@ -265,7 +265,7 @@ def reject_route():
     route.score = 0
     db.session.commit()
 
-    return redirect("/")
+    return "Success"
 
 
 @app.route('/add-score', methods=["POST"])
@@ -273,14 +273,14 @@ def add_score():
     """ Updated rejected route to is_accepted = False """
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
-    rating = request.form.get('rating')
+    rating = request.form.get('score')
 
     route = Route.query.filter_by(user_id=user_id).order_by(Route.route_id.desc()).first()
 
     route.score = rating
     db.session.commit()
 
-    return redirect("/")
+    return "Success"
 
 
 @app.route('/filter', methods=["GET"])
@@ -325,6 +325,8 @@ def filter_results():
         sort_column = getattr(Route.total_ascent, order)()
     elif sort_option == "miles":
         sort_column = getattr(Route.total_miles, order)()
+    else:
+        sort_column = getattr(Route.score, order)()
 
     # Filter routes based on the above parameters
     routes = Route.query.filter((Route.user_id == user_id)
@@ -340,7 +342,15 @@ def filter_results():
         order_by(sort_column).\
         limit(10).offset(0).all()
 
-    return render_template("routes.html", email=email, routes=routes, api_key=google_api_key)
+    results = []
+
+    for route in routes:
+        results.append({"miles": route.total_miles, "elevation": route.total_ascent,
+                        "minutes": route.total_minutes, "route_id": route.route_id,
+                        "score": route.score, "issue": route.issue,
+                        "is_accepted": route.is_accepted})
+
+    return jsonify(results)
 
 
 @app.route('/logout')
@@ -348,6 +358,12 @@ def log_user_out():
     del session['user_email']
     flash('Logged out')
     return redirect('/login')
+
+
+@app.errorhandler(500)
+def pageNotFound(error):
+    flash("Server error: please refresh")
+    return redirect('/')
 
 
 if __name__ == "__main__":

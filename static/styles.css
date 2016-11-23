@@ -1,20 +1,37 @@
-.address {
-    width: 300px;
-}
 .hidden {
     display: none;
 }
 #map {
-    height: 500px;
-    width: 700px;
+    height: 600px;
+    width: 100%;
+}
+#saved-routes {
+    margin-left: 40px;
 }
 .map {
-    height: 200px;
-    width: 300px;
+    height: 300px;
+    width: 100%;
+    margin-bottom: 40px;
 }
 #bike-gif {
     width: 100px;
 }
 .disable {
     background-color: #e6e6e6;
+}
+.sidebar {
+    position: fixed;
+    margin-left: -250px;
+}
+#wrapper {
+  padding-left: 250px;
+  transition: all 0.4s ease 0s;
+}
+body {
+    padding-top: 70px;
+}
+#flash-message {
+    margin-left: 30px;
+    margin-top: 10px;
+    width: 95%;
 }

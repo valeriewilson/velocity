@@ -2,20 +2,50 @@
 <html>
 <head>
     <title>{% block title %}Bike Route Generator{% endblock %}</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="static/styles.css">
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
-              <p>{{ message }}</p>
+              <div id="flash-message" class="flash-message alert alert-success" role="alert">{{ message }}</div>
             {% endfor %}
         {% endif %}
     {% endwith %}
 </head>
 <body>
-    <h1>Vélocity</h1>
-    {% if email %}
-        <a href="/">Home</a> | <a href="/routes">Routes</a> | Logged in as {{ email }} | <a href="/logout">Log Out</a>
-    {% endif %}
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+       <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Vélocity</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/routes">Routes</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="navbar-text">Logged in as {{ email }}</li>
+            <li><a href="/logout">Log Out</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
     {% block content %}{% endblock %}
 </body>
 </html>
+
+<script>
+setTimeout(function() {
+    $('.flash-message').fadeOut('fast');
+    }, 5000
+);
+</script>
