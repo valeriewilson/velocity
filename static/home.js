@@ -161,3 +161,37 @@ function createRoute(evt) {
 }
 
 $('#route-form').on("submit", createRoute);
+
+function returnToSearch() {
+
+    // After saving route, restore Home page to original format
+    $('#generator-options').removeClass("hidden");
+    $('#results-dropdowns').addClass("hidden");
+    $('#map').addClass("hidden");
+}
+
+function saveScore(evt) {
+    evt.preventDefault();
+
+    var formInputs = {
+        "score": $("#rating").val()
+    };
+
+    // Pass score to /add-score route
+    $.post("/add-score", formInputs, returnToSearch);
+}
+
+$('#accepted-route-form').on("submit", saveScore);
+
+function rejectRoute(evt) {
+    evt.preventDefault();
+
+    var formInputs = {
+        "issue": $("#issue").val()
+    };
+
+    // Pass issue to /reject-route route
+    $.post("/reject-route", formInputs, returnToSearch);
+}
+
+$('#rejected-route-form').on("submit", rejectRoute);

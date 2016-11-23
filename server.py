@@ -265,7 +265,7 @@ def reject_route():
     route.score = 0
     db.session.commit()
 
-    return redirect("/")
+    return "Success"
 
 
 @app.route('/add-score', methods=["POST"])
@@ -273,14 +273,14 @@ def add_score():
     """ Updated rejected route to is_accepted = False """
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
-    rating = request.form.get('rating')
+    rating = request.form.get('score')
 
     route = Route.query.filter_by(user_id=user_id).order_by(Route.route_id.desc()).first()
 
     route.score = rating
     db.session.commit()
 
-    return redirect("/")
+    return "Success"
 
 
 @app.route('/filter', methods=["GET"])
