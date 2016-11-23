@@ -4,8 +4,6 @@
 
 <div class="container row col-xs-2 left-hand-pane">
 
-    <h2>Routes</h2>
-
     <h3>Filter options</h3>
 
     <form action="/filter" method="GET" id="filter-form" novalidate>
@@ -32,7 +30,7 @@
         </div>
 
         <br>
-        <b>Total Elevation (ft)</b>
+        <b>Total Climb (ft)</b>
         <div id="elevation-range">
             <input type="min-elevation" id="min-elevation" class="elevation form-control" name="min-elevation" placeholder="Minimum" autocomplete="off">
 
@@ -56,10 +54,10 @@
                 <option id="sort-option" value="time">Time</option>
                 <option id="sort-option" value="elevation">Elevation</option>
                 <option id="sort-option" value="miles">Miles</option>
-            </select>
+            </select><br>
 
-            <input type="radio" name="sort-method" value="asc" id="asc" class="sort-method">Asc
-            <input type="radio" name="sort-method" value="desc" id="desc" class="sort-method" checked>Desc<br>
+            <input type="radio" name="sort-method" value="asc" id="asc" class="sort-method">   Asc
+            <input type="radio" name="sort-method" value="desc" id="desc" class="sort-method" checked>   Desc<br>
         </div>
 
         <br>

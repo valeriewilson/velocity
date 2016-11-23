@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container row col-xs-4 left-hand-pane">
+<div class="container row col-xs-2 left-hand-pane">
 
-    <h2>Bike Route Generator</h2>
+    <h3>Route Generator</h3>
 
     <!-- Displays route fields -->
     <div id="generator-options">
         <form action="/test-results" method="POST" id="route-form" novalidate>
-            <label for="start-address">Start address:</label>
+            <label for="start-address">Start address</label><br>
             
             <select name="address-options" id="address-dropdown">
                 {% if addresses %}
@@ -20,27 +20,29 @@
                 {% endif %}
                 <option value="create-new-address" id="new-address">+ new address</option>
             </select>
+            <br>
             
             <script src="https://code.jquery.com/jquery.js"></script><br>
 
-            <label for="route-type">Route type:</label>
+            <label for="route-type">Route type</label><br>
             
             <select name="route-type" id="route-type">
                 <option value="loop">Loop</option>
                 <option value="midpoint">Midpoint</option>
             </select>
+            <br><br>
             
             <div class="hidden" id="midpoint-field">
-                <label for="midpoint-address">Midpoint address:</label>
-                <input type="midpoint-address" id="midpoint-address" class="address" name="midpoint-address" autocomplete="off">
+                <label for="midpoint-address">Midpoint address</label><br>
+                <input type="midpoint-address" id="midpoint-address" class="address form-control" name="midpoint-address" autocomplete="off" placeholder="683 Sutter St, San Francisco, CA">
             </div>
             
             <div id="miles-field">
-                <label for="total-miles">How many miles?</label>
-                <input type="number" id="total-miles" name="total-miles" autocomplete="off" required>
+                <label for="total-miles">How many miles?</label><br>
+                <input type="number" id="total-miles" name="total-miles" autocomplete="off" class="form-control" placeholder="10" required>
             </div><br>
             
-            <input type="submit" value="Let's ride!">
+            <input type="submit" class="btn btn-primary" value="Let's ride!">
         </form>
     </div>
 
@@ -70,16 +72,13 @@
             
             <div>
                 <input type="radio" name="save-option" value="yes" id="yes-option"> Yes<br>
-                <form action="/add-score" id="accepted-route-form" method="POST" class="hidden">
-                    <select name="rating" id="rating">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    <input type="submit" value="Save" id="save-rating">
-                </form>
+                <div id="star-rating" class="hidden">
+                    <span class="glyphicon glyphicon-star" id="score-1" value="1"></span>
+                    <span class="glyphicon glyphicon-star-empty" id="score-2" value="2"></span>
+                    <span class="glyphicon glyphicon-star-empty" id="score-3" value="3"></span>
+                    <span class="glyphicon glyphicon-star-empty" id="score-4" value="4"></span>
+                    <span class="glyphicon glyphicon-star-empty" id="score-5" value="5"></span>
+                </div>
             </div>
 
             <div>
@@ -92,7 +91,7 @@
                         <option id="dont-like">Not feeling it</option>
                         <option id="overlapped">Overlapped sections</option>
                     </select>
-                    <input type="submit" value="Save" id="save-reason">
+                    <input type="submit" class="btn btn-primary" value="Save" id="save-reason">
                 </form>
                 <br>
             </div>

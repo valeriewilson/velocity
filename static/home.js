@@ -60,13 +60,13 @@ $('#new-address-form').on("submit", addAddress);
 
 var yes_selected = document.getElementById("yes-option");
 yes_selected.onchange = function(){
-    $('#accepted-route-form').removeClass();
+    $('#star-rating').removeClass();
     $('#rejected-route-form').addClass("hidden");
 };
 
 var no_selected = document.getElementById("no-option");
 no_selected.onchange = function(){
-    $('#accepted-route-form').addClass("hidden");
+    $('#star-rating').addClass("hidden");
     $('#rejected-route-form').removeClass();
 };
 
@@ -173,17 +173,22 @@ function returnToSearch() {
 }
 
 function saveScore(evt) {
-    evt.preventDefault();
+    var score = evt.currentTarget.id.split("-")[1];
 
     var formInputs = {
-        "score": $("#rating").val()
+        "score": score
     };
 
     // Pass score to /add-score route
     $.post("/add-score", formInputs, returnToSearch);
 }
 
-$('#accepted-route-form').on("submit", saveScore);
+// $('#accepted-route-form').on("submit", saveScore);
+$('#score-1').on("click", saveScore);
+$('#score-2').on("click", saveScore);
+$('#score-3').on("click", saveScore);
+$('#score-4').on("click", saveScore);
+$('#score-5').on("click", saveScore);
 
 function rejectRoute(evt) {
     evt.preventDefault();
@@ -197,3 +202,69 @@ function rejectRoute(evt) {
 }
 
 $('#rejected-route-form').on("submit", rejectRoute);
+
+// Change to filled-in star for all stars to left of & including the star the user hovers over
+$('#score-1').hover(
+    function() {
+        $(this).removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+    },
+    function() {
+        $(this).removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+    }
+);
+
+$('#score-2').hover(
+    function() {
+        $(this).removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-1').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+    },
+    function() {
+        $(this).removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-1').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+    }
+);
+
+$('#score-3').hover(
+    function() {
+        $(this).removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-1').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-2').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+    },
+    function() {
+        $(this).removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-1').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-2').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+    }
+);
+
+$('#score-4').hover(
+    function() {
+        $(this).removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-1').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-2').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-3').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+    },
+    function() {
+        $(this).removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-1').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-2').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-3').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+    }
+);
+
+$('#score-5').hover(
+    function() {
+        $(this).removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-1').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-2').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-3').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+        $('#score-4').removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+    },
+    function() {
+        $(this).removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-1').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-2').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-3').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+        $('#score-4').removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+    }
+);
