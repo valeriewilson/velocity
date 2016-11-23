@@ -12,14 +12,15 @@ function displayFilteredRoutes(results) {
         var score = results[i].score;
         var issue = results[i].issue;
 
-        $('#all-routes').append("<div class='map' id='map" + route_id + "' data-id='" + route_id + "'></div>");
-        $('#all-routes').append("<p>" + miles.toFixed(1) + " miles | " + Math.round(minutes) + " minutes | " + Math.round(elevation) + " ft</p>");
-
         if (accepted) {
-            $('#all-routes').append("<p>Score: " + score + "</p>");
+            addendum = "Score: " + score;
         } else {
-            $('#all-routes').append("<p>Issue: " + issue + "</p>");
+            addendum = "Issue: " + issue;
         }
+
+        $('#all-routes').append("<div class='container row col-xs-4 left-hand-pane'></div><div class='row container col-xs-8'><p>" + miles.toFixed(1) + " miles | " + Math.round(minutes) + " minutes | " + Math.round(elevation) + " ft | " + addendum + "</p></div>");
+
+        $('#all-routes').append("<div class='container row col-xs-4 left-hand-pane'></div><div class='map' id='map" + route_id + "' data-id='" + route_id + "' class='row container col-xs-8'></div>");
     }
 
     retrieveWaypoints();

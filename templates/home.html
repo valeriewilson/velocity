@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<div class="container row col-xs-4 left-hand-pane">
+
     <h2>Bike Route Generator</h2>
 
     <!-- Displays route fields -->
-    <div id="generator-options" class="container-fluid">
+    <div id="generator-options">
         <form action="/test-results" method="POST" id="route-form" novalidate>
             <label for="start-address">Start address:</label>
             
@@ -103,14 +105,16 @@
         <img id="bike-gif" src="https://d13yacurqjgara.cloudfront.net/users/88825/screenshots/1134409/animated_bike-i1d1.gif">
     </div>
 
-    <div id="map"></div>
+</div>
 
-    <script src="static/home.js"></script>
+<div id="map" class="container row col-xs-8"></div>
 
-    <script src="https://code.jquery.com/jquery.js" type="text/javascript"></script>
+<script src="static/home.js"></script>
 
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlY0gdpn-82bFjwWdaAPdQ_oOtJwd9Y3s">
-    </script>
+<script src="https://code.jquery.com/jquery.js" type="text/javascript"></script>
+
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlY0gdpn-82bFjwWdaAPdQ_oOtJwd9Y3s">
+</script>
 
 {% endblock %}
