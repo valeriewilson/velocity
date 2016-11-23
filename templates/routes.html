@@ -20,6 +20,7 @@
         <div id="mile-range">
             <label for="min-miles">Min:</label>
             <input type="min-miles" id="min-miles" class="miles" name="min-miles" placeholder="0" autocomplete="off">
+            <br>
 
             <label for="max-miles">Max:</label>
             <input type="max-miles" id="max-miles" class="miles" name="max-miles" placeholder="1000" autocomplete="off">
@@ -30,6 +31,7 @@
         <div id="time-range">
             <label for="min-minutes">Min:</label>
             <input type="min-minutes" id="min-minutes" class="minutes" name="min-minutes" placeholder="0" autocomplete="off">
+            <br>
 
             <label for="max-minutes">Max:</label>
             <input type="max-minutes" id="max-minutes" class="minutes" name="max-minutes" placeholder="1000" autocomplete="off">
@@ -40,6 +42,7 @@
         <div id="elevation-range">
             <label for="min-elevation">Min:</label>
             <input type="min-elevation" id="min-elevation" class="elevation" name="min-elevation" placeholder="0" autocomplete="off">
+            <br>
 
             <label for="max-elevation">Max:</label>
             <input type="max-elevation" id="max-elevation" class="elevation" name="max-elevation" placeholder="5000" autocomplete="off">
@@ -52,6 +55,7 @@
 
             <label for="min-score">Min:</label>
             <input type="min-score" id="min-score" class="score" name="min-score" placeholder="0" autocomplete="off">
+            <br>
             
             <label for="max-score">Max:</label>
             <input type="max-score" id="max-score" class="score" name="max-score" placeholder="5" autocomplete="off">
@@ -67,6 +71,7 @@
                 <option id="sort-option" value="elevation">Elevation</option>
                 <option id="sort-option" value="miles">Miles</option>
             </select>
+            <br>
 
             <input type="radio" name="sort-method" value="asc" id="asc" class="sort-method">Asc
             <input type="radio" name="sort-method" value="desc" id="desc" class="sort-method" checked>Desc<br>
@@ -83,8 +88,8 @@
 
 <div id="all-routes">
     {% for route in routes %}
-        <div class="container row col-xs-4 left-hand-pane"></div>
-        <div id="saved-routes" class="row container col-xs-8">
+        <div class="container row col-xs-3 left-hand-pane"></div>
+        <div id="saved-routes" class="row container col-xs-4">
             
             <p>
                 {{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft |
