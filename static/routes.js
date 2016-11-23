@@ -18,9 +18,9 @@ function displayFilteredRoutes(results) {
             addendum = "Issue: " + issue;
         }
 
-        $('#all-routes').append("<div class='container row col-xs-4 left-hand-pane'></div><div class='row container col-xs-8'><p>" + miles.toFixed(1) + " miles | " + Math.round(minutes) + " minutes | " + Math.round(elevation) + " ft | " + addendum + "</p></div>");
+        $('#all-routes').append("<div class='container row col-xs-2 left-hand-pane'></div><div class='row container col-xs-4'><p>" + miles.toFixed(1) + " miles | " + Math.round(minutes) + " minutes | " + Math.round(elevation) + " ft | " + addendum + "</p></div>");
 
-        $('#all-routes').append("<div class='container row col-xs-4 left-hand-pane'></div><div class='map' id='map" + route_id + "' data-id='" + route_id + "' class='row container col-xs-8'></div>");
+        $('#all-routes').append("<div class='container row col-xs-2 left-hand-pane'></div><div class='map' id='map" + route_id + "' data-id='" + route_id + "' class='row container col-xs-4'></div>");
     }
 
     retrieveWaypoints();
