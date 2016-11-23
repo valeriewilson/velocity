@@ -360,8 +360,14 @@ def log_user_out():
     return redirect('/login')
 
 
+@app.errorhandler(500)
+def pageNotFound(error):
+    flash("Server error: please refresh")
+    return redirect('/')
+
+
 if __name__ == "__main__":
-    app.debug = True
+    app.debug = False
 
     connect_to_db(app)
 
