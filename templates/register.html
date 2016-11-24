@@ -1,18 +1,24 @@
 {% extends 'base.html' %}
 {% block title %}Register{% endblock %}
 {% block content %}
-    <h2><a href="/login">Log In</a> / Register</h2>
-    <form action="/register" method="POST" id="registration-form">
-        <label for="first-name">First name:</label>
-        <input type="first-name" id="first-name" class="form-control" name="first-name" autocomplete="off" placeholder="Jane" required>
-        <label for="last-name">Last name:</label>
-        <input type="last-name" id="last-name" class="form-control" name="last-name" autocomplete="off" placeholder="Doe" required>
-        <label for="email">Email address:</label>
-        <input type="email" id="email" class="form-control" name="email" autocomplete="off" placeholder="user@email.com" required>
-        <label for="phone-number">Phone number:</label>
-        <input type="phone-number" id="phone-number" class="form-control" name="phone-number" autocomplete="off" placeholder="4152223333" required>
-        <label for "password">Password</label>
-        <input type="password" id="password" class="form-control" name="password" autocomplete="off" placeholder="*******" required>
-        <input type="submit" class="btn btn-primary" value="Let's ride!">
-    </form>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-offset-3 col-xs-6 main-page">
+            <h2><a href="/login">Log In</a> / Register</h2>
+            <form action="/register" method="POST" id="registration-form">
+                <label for="first-name">First name</label>
+                <input type="first-name" id="first-name" class="form-control" name="first-name" autocomplete="off" placeholder="Jane" required>
+                <label for="last-name">Last name</label>
+                <input type="last-name" id="last-name" class="form-control" name="last-name" autocomplete="off" placeholder="Doe" required>
+                <label for="email">Email address</label>
+                <input type="email" id="email" class="form-control" name="email" autocomplete="off" placeholder="user@email.com" required>
+                <label for="phone-number">Phone number</label>
+                <input type="phone-number" id="phone-number" class="form-control" name="phone-number" autocomplete="off" placeholder="4152223333" required>
+                <label for "password">Password</label>
+                <input type="password" id="password" class="form-control" name="password" autocomplete="off" placeholder="*******" required>
+                <input type="submit" class="btn btn-primary" value="Let's ride!">
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
