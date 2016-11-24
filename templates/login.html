@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Log In{% endblock %}
 {% block content %}
+<div class="main-page">
     <h2>Log In / <a href="/register">Register</a></h2>
     <form action="/login" method="POST" id="login-form">
         <label for="email">Email address:</label>
@@ -9,4 +10,5 @@
         <input type="password" id="password" class="form-control" name="password" autocomplete="off" placeholder="*******" required>
         <input type="submit" class="btn btn-primary" value="Let's ride!">
     </form>
+</div>
 {% endblock %}

@@ -29,6 +29,9 @@
 }
 body {
     padding-top: 70px;
+    background-image: url(/static/images/login_background.jpg);
+    background-attachment: fixed;
+    width: 100%;
 }
 #flash-message {
     margin-left: 30px;
