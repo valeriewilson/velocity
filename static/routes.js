@@ -60,6 +60,7 @@ $('#rejected-routes').on('change', function () {
 
 function retrieveWaypoints() {
     // Get list of maps
+
     var maps = document.getElementsByClassName('map');
     
     // Get route_id associated with each map, pass to waypoints route
