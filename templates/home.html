@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_logged_in.html' %}
 {% block content %}
 
 <div class="container" id="wrapper">
@@ -22,7 +22,6 @@
                         {% endif %}
                         <option value="create-new-address" id="new-address">+ new address</option>
                     </select>
-                    <br>
                     
                     <script src="https://code.jquery.com/jquery.js"></script><br>
 
@@ -32,7 +31,6 @@
                         <option value="loop">Loop</option>
                         <option value="midpoint">Midpoint</option>
                     </select>
-                    <br><br>
                     
                     <div class="hidden" id="midpoint-field">
                         <label for="midpoint-address">Midpoint address</label><br>
@@ -54,10 +52,10 @@
                 
                 <form action="/new-address" method="POST" id="new-address-form">
                     <label for="label-field">Name</label>
-                    <input type="label-field" id="label-field" class="form-control" name="label-field" autocomplete="off" placeholder="Hackbright"><br>
+                    <input type="label-field" id="label-field" class="form-control" name="label-field" autocomplete="off" placeholder="Hackbright">
                     
                     <label for="new-address-field">Address</label>
-                    <input type="new-address-field" id="new-address-field" class="form-control" name="new-address-field" autocomplete="off" placeholder="683 Sutter St"><br>
+                    <input type="new-address-field" id="new-address-field" class="form-control" name="new-address-field" autocomplete="off" placeholder="683 Sutter St">
 
                     <label for="radio">Default address?</label>
                     <input type="radio" name="default-address" value="true" id="default-address"> Yes<br>
@@ -75,7 +73,7 @@
                     <p>Do you want to save this route?</p>
                     
                     <div>
-                        <input type="radio" name="save-option" value="yes" id="yes-option"> Yes<br>
+                        <input type="radio" class="radio" name="save-option" value="yes" id="yes-option"> Yes<br>
                         <div id="star-rating" class="hidden">
                             <span class="glyphicon glyphicon-star" id="score-1" value="1"></span>
                             <span class="glyphicon glyphicon-star-empty" id="score-2" value="2"></span>
@@ -86,7 +84,7 @@
                     </div>
 
                     <div>
-                        <input type="radio" name="save-option" value="no" id="no-option"> No<br>
+                        <input type="radio" class="radio" name="save-option" value="no" id="no-option"> No<br>
                         <form action="/reject-route" id="rejected-route-form" method="POST" class="hidden">
                             <select name="issue" id="issue">
                                 <option id="impossible">Impossible route</option>
@@ -97,7 +95,6 @@
                             </select>
                             <input type="submit" class="btn btn-primary" value="Save" id="save-reason">
                         </form>
-                        <br>
                     </div>
                 </div>
 
