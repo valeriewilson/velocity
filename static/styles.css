@@ -27,7 +27,6 @@
 }
 body {
     padding-top: 70px;
-    /*background-image: url(/static/images/background.jpg);*/
     background-attachment: fixed;
     width: 100%;
 }
