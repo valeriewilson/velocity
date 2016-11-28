@@ -17,6 +17,7 @@ def calculate_waypoints(user_id, lat_1, lon_1, miles):
     """
     For loop routes, come up with random route based on start location &
     miles specified
+
     """
 
     # Generate a random number of waypoints
@@ -94,7 +95,14 @@ def calculate_distance_time(waypoints):
 
 
 def calculate_elevation(waypoints, sample_size):
-    """ Calculate elevation (in feet) for route """
+    """ Calculate elevation (in feet) for route
+
+    >>> waypoints = [(37.7472843749906, -122.448249748807), (37.7631673875554, -122.407395473975)]
+    >>> sample_size = 20
+    >>> calculate_elevation(waypoints, sample_size)
+    (629.9725010681151, 629.9725010681151)
+
+    """
 
     # Format lat/lon pairs according to API format
     path = ""
@@ -135,7 +143,13 @@ def calculate_elevation(waypoints, sample_size):
 
 
 def calculate_midpoint(waypoints):
-    """ Calculate midpoint of lat/lon points to center maps """
+    """ Calculate midpoint of lat/lon points to center maps
+
+    >>> waypoints = [(37.7472843749906, -122.448249748807), (37.7631673875554, -122.407395473975)]
+    >>> calculate_midpoint(waypoints)
+    (37.755225881273, -122.42782261139101)
+
+    """
 
     mid_lat = 0
     mid_lon = 0
@@ -151,7 +165,13 @@ def calculate_midpoint(waypoints):
 
 
 def geocode_address(address):
-    """ Geocode address, extract latitude & longitude for route calculations """
+    """ Geocode address, extract latitude & longitude for route calculations
+
+    >>> address = '683 Sutter St San Francisco'
+    >>> geocode_address(address)
+    (37.7886679, -122.4114987)
+
+    """
     geocoded_address = gmaps.geocode(address)
 
     latitude = geocoded_address[0]['geometry']['location']['lat']
