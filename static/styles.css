@@ -5,12 +5,12 @@
     height: 600px;
     width: 100%;
 }
-#saved-routes {
+.saved-routes {
     margin-left: 40px;
 }
 .map {
     height: 300px;
-    width: 100%;
+    width: 300px;
     margin-bottom: 40px;
 }
 #bike-gif {
@@ -30,7 +30,7 @@
 }
 body {
     padding-top: 70px;
-    background-image: url(/static/images/background.jpg);
+    /*background-image: url(/static/images/background.jpg);*/
     background-attachment: fixed;
     width: 100%;
 }

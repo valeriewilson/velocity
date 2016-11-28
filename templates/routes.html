@@ -62,24 +62,23 @@
                 <br>
 
             </form>
-            <br>
         </div>
+    </div>
 
-        <div id="all-routes">
-            {% for route in routes %}
-                {% if route.is_accepted == True %}
-                <div id="saved-routes" class="container col-xs-5">
-                    
-                    <p>
-                        {{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft | Score: {{ route.score }}
-                    </p>
+    <div id="all-routes" class="row-fluid">
+        {% for route in routes %}
+            {% if route.is_accepted == True %}
+            <div class="saved-routes" class="col-xs-3">
+                
+                <p>
+                    {{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft | Score: {{ route.score }}
+                </p>
 
-                    <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
-                </div>
+                <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
+            </div>
 
-                {% endif %}
-            {% endfor %}
-        </div>
+            {% endif %}
+        {% endfor %}
     </div>
 </div>
 
