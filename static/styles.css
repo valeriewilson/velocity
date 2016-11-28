@@ -5,12 +5,9 @@
     height: 600px;
     width: 100%;
 }
-.saved-routes {
-    margin-left: 40px;
-}
 .map {
-    height: 300px;
-    width: 300px;
+    height: 350px;
+    width: 350px;
     margin-bottom: 40px;
 }
 #bike-gif {
@@ -21,11 +18,11 @@
 }
 .sidebar {
     position: fixed;
-    margin-left: -250px;
+    margin-left: -100px;
     background-color: white;
 }
 #wrapper {
-  padding-left: 250px;
+  padding-left: 100px;
   transition: all 0.4s ease 0s;
 }
 body {
