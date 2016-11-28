@@ -11,8 +11,11 @@
 
             <form action="/filter" method="GET" id="filter-form" class="form-inline" novalidate>
 
-                <input type="radio" name="route-approval" value="True" class="radio-inline route-approval" id="accepted-routes" checked>   Accepted
-                <input type="radio" name="route-approval" value="False" class="radio-inline route-approval" id="rejected-routes">   Rejected<br><br>
+                <label class="radio-inline radio-label">Accepted</label>
+                <input type="radio" name="route-approval" value="True" class="radio-inline route-approval" id="accepted-routes" checked>
+
+                <label class="radio-inline radio-label">Rejected</label>
+                <input type="radio" name="route-approval" value="False" class="radio-inline route-approval" id="rejected-routes"><br><br>
 
                 <b>Total Miles</b>
                 <div id="mile-range" class="form-group">
@@ -53,8 +56,10 @@
                         <option id="sort-option" value="miles">Miles</option>
                     </select><br>
 
-                    <input type="radio" name="sort-method" value="asc" id="asc" class="sort-method">   Asc
-                    <input type="radio" name="sort-method" value="desc" id="desc" class="sort-method" checked>   Desc<br>
+                    <label class="radio-inline">Asc</label>
+                    <input type="radio" name="sort-method" value="asc" id="asc" class="sort-method">
+                    <label class="radio-inline">Desc</label>
+                    <input type="radio" name="sort-method" value="desc" id="desc" class="sort-method" checked><br>
                 </div>
 
                 <br>
