@@ -144,7 +144,7 @@ function displayResults(results) {
     var mid_lon = results.mid_lon;
 
     $('#loading-image').addClass("hidden");
-    $('#ride-stats-miles').text("Miles: "+ total_miles.toFixed(1) + " miles");
+    $('#ride-stats-miles').text("Distance: "+ total_miles.toFixed(1) + " miles");
     $('#ride-stats-minutes').text("Time: " + Math.round(total_time) + " minutes ");
     $('#ride-stats-elevation').text("Total climb: " + Math.round(total_elevation) + " ft");
     $('#map').removeClass("hidden");
