@@ -71,7 +71,10 @@
             <div class="col-xs-offset-2 col-xs-3 saved-routes">
                 
                 <p>
-                    {{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft | Score: {{ route.score }}
+                    {{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft
+                </p>
+                <p>
+                    Score: {{ route.score }}
                 </p>
 
                 <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
