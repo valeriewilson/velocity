@@ -1,8 +1,21 @@
 # Vélocity
 
+## Introduction
+
 Vélocity is a tool allowing cyclists to discover new and interesting bike routes.  This app dynamically generates and stores bike routes based on a user-specified location and either total distance or a midpoint location.
 
-On the backend, it uses a predictive algorithm (Markov Chain) to determine the cardinal direction for the route based on the user's historical route choices, generates a loop based on this information, and displays the route with corresponding metrics using Google Maps APIs. 
+## Statement of Purpose
+
+As an avid cyclist, I love finding new bike routes but find myself sticking to a handle of favorite rides (it's hard to beat the Marin Headlands).  Creating a bike route generator seemed like a great solution.  To keep the generator from coming up with a set number of routes, I randomized the direction the user starts out in, the number of waypoints, and the clockwise or counterclockwise direction of the route.
+
+## User Interface
+
+The homepage allows the user to create a route based on:
+  1. A saved address
+  2. A route type ("loop" generates a round-trip route, while "midpoint" allows the user to specify the halfway point)
+  3. Number of miles (for "loop" routes) or midpoint address (for "midpoint" routes)
+
+On the backend, this project uses a predictive algorithm (Markov Chain) to determine the cardinal direction for the route based on the user's historical route choices, generates a loop based on this information, and displays the route with corresponding metrics using Google Maps APIs. 
 
 
 ![Route Creator](http://g.recordit.co/9Qdooe48PV.gif)
@@ -12,7 +25,7 @@ Saved routes can be filtered and sorted to allow the user to find a route suitin
 
 ![Saved Routes](http://g.recordit.co/nDYUNEomHV.gif)
 
-I. Tech stack
+## Tech stack
 -------------------------
 * Python
 * Javascript (including jQuery, AJAX)
@@ -22,7 +35,7 @@ I. Tech stack
 * Bootstrap
 * Google Maps APIs (Elevation, Directions, Geocode)
 
-II. Getting Started
+## Getting Started
 -------------------------
 After cloning or forking this repo, do the following steps:
   1. Install and activate a virtual environment on Vagrant
