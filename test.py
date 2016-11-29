@@ -56,7 +56,14 @@ class FlaskTestsLoggedIn(TestCase):
 
         result = self.client.get("/")
         self.assertEqual(result.status_code, 200)
-        self.assertIn('<h2>Bike Route Inputs</h2>', result.data)
+        self.assertIn('<h3>Route Creator</h3>', result.data)
+
+    def test_routes_route(self):
+        """ Verify that routes page renders correctly """
+
+        result = self.client.get("/routes")
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('<h3>Filter Options</h3>', result.data)
 
 
 class FlashTestLoggingIn(TestCase):
@@ -88,6 +95,50 @@ class FlashTestLoggingIn(TestCase):
                                   follow_redirects=True)
 
         self.assertIn("Successfully logged in", result.data)
+
+    def test_login_route_post_bad_username(self):
+        """ Verify that login page processes data correctly """
+
+        result = self.client.post("/login",
+                                  data={"email": "testclient@test.com", "password": "test123"},
+                                  follow_redirects=True)
+
+        self.assertIn("Invalid email address", result.data)
+
+    def test_login_route_post_bad_password(self):
+        """ Verify that login page processes data correctly """
+
+        result = self.client.post("/login",
+                                  data={"email": "test@test.com", "password": "incorrect"},
+                                  follow_redirects=True)
+
+        self.assertIn("Incorrect password", result.data)
+
+    def test_register_route_post(self):
+        """ Verify that register page processes data correctly """
+
+        result = self.client.post("/register",
+                                  data={"email": "test@client.com",
+                                        "password": "test123",
+                                        "first-name": "Test",
+                                        "last-name": "Client",
+                                        "phone-number": "1231231234"},
+                                  follow_redirects=True)
+
+        self.assertIn("Successfully registered", result.data)
+
+    def test_register_route_post_existing(self):
+        """ Verify that previously registered user cannot be re-registered """
+
+        result = self.client.post("/register",
+                                  data={"email": "test@test.com",
+                                        "password": "test123",
+                                        "first-name": "Test",
+                                        "last-name": "Client",
+                                        "phone-number": "1231231234"},
+                                  follow_redirects=True)
+
+        self.assertIn("A user with that email address already exists", result.data)
 
 
 if __name__ == "__main__":

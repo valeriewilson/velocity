@@ -1,0 +1,25 @@
+body {
+    background-image: url(/static/images/background.jpg);
+    background-attachment: fixed;
+    padding-top: 70px;
+    width: 100%;
+    font-family: 'Lora', serif;
+    font-size: 155%;
+}
+.main-page {
+    background-color: #FFF5DA;
+}
+h2, h3 {
+    font-family: 'Lato', sans-serif;
+}
+h2 {
+    text-align: center;
+}
+input {
+    margin-bottom: 10px;
+    margin-right: 20px;
+}
+input[type=submit] {
+    margin-top: 10px;
+    margin-bottom: 13px;
+}

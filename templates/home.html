@@ -40,7 +40,7 @@
                     <div id="miles-field">
                         <label for="total-miles">How many miles?</label><br>
                         <input type="number" id="total-miles" name="total-miles" autocomplete="off" class="form-control" placeholder="10" required>
-                    </div><br>
+                    </div>
                     
                     <input type="submit" class="btn btn-primary" id="submit-button" value="Let's ride!">
                 </form>
@@ -57,23 +57,27 @@
                     <label for="new-address-field">Address</label>
                     <input type="new-address-field" id="new-address-field" class="form-control" name="new-address-field" autocomplete="off" placeholder="683 Sutter St">
 
-                    <label for="radio">Default address?</label>
-                    <input type="radio" name="default-address" value="true" id="default-address"> Yes<br>
+                    <label class="radio-label" for="radio">Default address</label>
+                    <input type="radio" name="default-address" value="true" id="default-address">
 
-                    <input type="submit" value="Save" id="save-button" class="btn btn-info">
+                    <input type="submit" value="Save" id="save-button" class="btn btn-primary">
                 </form>
             </div>
 
             <div id="results-dropdowns" class="hidden">
-                <p id="ride-stats-miles"></p>
-                <p id="ride-stats-minutes"></p>
-                <p id="ride-stats-elevation"></p>
+                <p><em>Ride Metrics</em></p>
+                <ul>
+                    <li id="ride-stats-miles"></li>
+                    <li id="ride-stats-minutes"></li>
+                    <li id="ride-stats-elevation"></li>
+                </ul>
                 
                 <div>
-                    <p>Do you want to save this route?</p>
+                    <p>Save this route?</p>
                     
                     <div>
-                        <input type="radio" class="radio" name="save-option" value="yes" id="yes-option"> Yes<br>
+                        <label class="radio-label" for="radio">Yes</label>
+                        <input type="radio" name="save-option" value="yes" id="yes-option">
                         <div id="star-rating" class="hidden">
                             <span class="glyphicon glyphicon-star" id="score-1" value="1"></span>
                             <span class="glyphicon glyphicon-star-empty" id="score-2" value="2"></span>
@@ -84,7 +88,8 @@
                     </div>
 
                     <div>
-                        <input type="radio" class="radio" name="save-option" value="no" id="no-option"> No<br>
+                        <label class="radio-label" for="radio">No</label>
+                        <input type="radio" name="save-option" value="no" id="no-option"><br>
                         <form action="/reject-route" id="rejected-route-form" method="POST" class="hidden">
                             <select name="issue" id="issue">
                                 <option id="impossible">Impossible route</option>
@@ -105,9 +110,9 @@
                 <img id="bike-gif" src="https://d13yacurqjgara.cloudfront.net/users/88825/screenshots/1134409/animated_bike-i1d1.gif">
             </div>
         </div>
+        <div id="map" class="col-xs-offset-2 col-xs-9"></div>
     </div>
 
-    <div id="map" class="container row col-xs-9"></div>
 </div>
 
 <script src="static/home.js"></script>
