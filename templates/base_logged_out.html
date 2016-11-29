@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <title>{% block title %}Bike Route Generator{% endblock %}</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato|Lora" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/styles_logged_out.css">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+              <div id="flash-message" class="flash-message alert alert-success" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<script>
+setTimeout(function() {
+    $('.flash-message').fadeOut('fast');
+    }, 5000
+);
+</script>

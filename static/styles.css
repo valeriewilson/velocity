@@ -44,6 +44,9 @@ body {
     color: #ffffff;
     font-size: 110%;
 }
+.navbar .container-fluid .white-text a:hover {
+    color: #FFF5DA;
+}
 h3 {
     font-family: 'Lato', sans-serif;
 }
