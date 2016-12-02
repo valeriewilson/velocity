@@ -25,6 +25,14 @@ Saved routes can be filtered and sorted to allow the user to find a route suitin
 
 ![Saved Routes](http://g.recordit.co/nDYUNEomHV.gif)
 
+## Behind the Scenes
+-------------------------
+
+In order to generate the largest number of unique bike routes, I perform the following:
+  1. Generate a loop starting in a randomized direction
+  2. Following the initial leg, randomize the clockwise / counter-clockwise direction of the loop
+  3. Initially, I calculated latitude/longitude pairs by forming an equilateral triangle: I took the specified miles and divided them evenly, then through some trigonometry fun derived the latitude and longitude.  Now I randomize between 3 and 4 legs on each route and with varying leg lengths.
+
 ## Tech stack
 -------------------------
 * Python
