@@ -5,7 +5,7 @@
 <div class="container" id="wrapper">
     <div class="row">
 
-        <div class="col-xs-2 sidebar-nav sidebar">
+        <div class="col-xs-offset-1 col-xs-10 col-sm-5 col-md-5 col-lg-3 sidebar-nav sidebar">
 
             <h3>Filter Options</h3>
 
@@ -17,36 +17,43 @@
 
                 <label>Rejected
                     <input type="radio" name="route-approval" value="False" id="rejected-routes" class="route-approval"><br>
-                </label>
+                </label><br>
 
-                <b>Total Miles</b>
+                <p><b>Total Miles</b></p>
                 <div id="mile-range" class="form-group">
                     <input type="min-miles" id="min-miles" class="miles form-control" name="min-miles" placeholder="Minimum" autocomplete="off">
+                </div>
 
+                <div class="form-group">
                     <input type="max-miles" id="max-miles" class="miles form-control" name="max-miles" placeholder="Maximum" autocomplete="off">
                 </div>
 
-                <b>Total Time (minutes)</b>
-                <div id="time-range">
+                <p><b>Total Time (minutes)</b></p>
+                <div id="time-range" class="form-group">
                     <input type="min-minutes" id="min-minutes" class="minutes form-control" name="min-minutes" placeholder="Minimum" autocomplete="off">
+                </div>
 
+                <div class="form-group">
                     <input type="max-minutes" id="max-minutes" class="minutes form-control" name="max-minutes" placeholder="Maximum" autocomplete="off">
                 </div>
 
-                <b>Total Climb (ft)</b>
-                <div id="elevation-range">
+                <p><b>Total Climb (ft)</b></p>
+                <div id="elevation-range" class="form-group">
                     <input type="min-elevation" id="min-elevation" class="elevation form-control" name="min-elevation" placeholder="Minimum" autocomplete="off">
+                </div>
 
+                <div class="form-group">
                     <input type="max-elevation" id="max-elevation" class="elevation form-control" name="max-elevation" placeholder="Maximum" autocomplete="off">
                 </div>
 
-                <div id="score-range">
-                    <b>Score</b>
-
+                
+                <p><b>Score</b></p>
+                <div id="score-range" class="form-group">
                     <input type="min-score" id="min-score" class="score form-control" name="min-score" placeholder="Minimum" autocomplete="off">
-                    
+                </div>
+
+                <div class="form-group">
                     <input type="max-score" id="max-score" class="score form-control" name="max-score" placeholder="Maximum" autocomplete="off">
-                    <br>
                 </div>
 
                 <div>
@@ -73,12 +80,10 @@
 
             </form>
         </div>
-    </div>
 
-    <div id="all-routes" class="row-fluid">
         {% for route in routes %}
             {% if route.is_accepted == True %}
-            <div class="col-xs-offset-2 col-xs-3 saved-routes">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-offset-1 col-lg-3 saved-routes">
                 
                 <p>
                     {{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft

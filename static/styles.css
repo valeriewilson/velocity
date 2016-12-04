@@ -7,7 +7,7 @@
 }
 .map {
     height: 350px;
-    width: 350px;
+    width: 100%;
     margin-bottom: 40px;
 }
 #bike-gif {
@@ -15,15 +15,6 @@
 }
 .disable {
     background-color: #e6e6e6;
-}
-.sidebar {
-    position: fixed;
-    margin-left: -100px;
-    background-color: #FFF5DA;
-}
-#wrapper {
-  padding-left: 100px;
-  transition: all 0.4s ease 0s;
 }
 body {
     padding-top: 70px;
@@ -60,7 +51,6 @@ h3 {
 }
 input {
     margin-bottom: 10px;
-    margin-right: 20px;
 }
 input[type=radio] {
     margin-bottom: 10px;
@@ -78,7 +68,7 @@ select {
     margin-bottom: 10px;
 }
 p {
-    width: 300px;
+    width: 100%;
 }
 .ride-stats span {
     font-weight: bold;
