@@ -62,7 +62,6 @@ def register_login_user():
     first_name = request.form.get('first-name')
     last_name = request.form.get('last-name')
     email = request.form.get('email')
-    phone = request.form.get('phone-number')
     password = request.form.get('password')
 
     # Find any user with this email address
@@ -75,7 +74,7 @@ def register_login_user():
 
     # Creates new user in users table, logs user in, redirects to homepage
     new_user = User(first_name=first_name, last_name=last_name,
-                    email=email, phone=phone, password=password)
+                    email=email, password=password)
     db.session.add(new_user)
     db.session.commit()
     session['user_email'] = email
