@@ -19,6 +19,7 @@
 body {
     padding-top: 70px;
     background-attachment: fixed;
+    margin-left: -50px;
     width: 100%;
     background-color: #def7df;
     font-family: 'Lora', serif;
@@ -42,7 +43,7 @@ h3 {
     font-family: 'Lato', sans-serif;
 }
 #flash-message {
-    margin-left: 30px;
+    margin-left: 80px;
     margin-top: 10px;
     width: 95%;
 }
