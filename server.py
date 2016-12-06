@@ -5,6 +5,7 @@ from model import connect_to_db, db, User, Route, Waypoint, Address
 from calculation import *
 import googlemaps
 import os
+import bcrypt
 
 app = Flask(__name__)
 app.secret_key = os.environ["FLASK_KEY"]
@@ -26,6 +27,7 @@ def log_in_user():
 
     email = request.form.get('email')
     password = request.form.get('password')
+    password_given = password.encode('utf-8')
 
     # Find user (if any) with this email address
     user_entry = db.session.query(User.email, User.password).\
@@ -35,7 +37,8 @@ def log_in_user():
     #  redirects to homepage, or returns an error message
     if user_entry:
         actual_email, actual_password = user_entry
-        if actual_password == password:
+        password_stored = actual_password.encode('utf-8')
+        if password_stored == password_given:
             session['user_email'] = actual_email
             flash('Successfully logged in')
             return redirect('/')
@@ -63,6 +66,7 @@ def register_login_user():
     last_name = request.form.get('last-name')
     email = request.form.get('email')
     password = request.form.get('password')
+    password_stored = password.encode('utf-8')
 
     # Find any user with this email address
     user_email = db.session.query(User.email).filter_by(email=email).first()
@@ -74,7 +78,7 @@ def register_login_user():
 
     # Creates new user in users table, logs user in, redirects to homepage
     new_user = User(first_name=first_name, last_name=last_name,
-                    email=email, password=password)
+                    email=email, password=password_stored)
     db.session.add(new_user)
     db.session.commit()
     session['user_email'] = email
