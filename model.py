@@ -15,7 +15,6 @@ class User(db.Model):
     password = db.Column(db.String(20), nullable=False)
     first_name = db.Column(db.Unicode(30), nullable=False)
     last_name = db.Column(db.Unicode(30), nullable=False)
-    phone = db.Column(db.String(20), nullable=False)
 
     addresses = db.relationship('Address', backref=db.backref('user'))
     routes = db.relationship('Route', backref=db.backref('user'))
