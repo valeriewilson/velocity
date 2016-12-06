@@ -81,22 +81,25 @@
             </form>
         </div>
 
-        {% for route in routes %}
-            {% if route.is_accepted == True %}
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-offset-1 col-lg-3 saved-routes">
-                
-                <p>
-                    {{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft
-                </p>
-                <p>
-                    Score: {{ route.score }}
-                </p>
+        <div id="all-routes">
 
-                <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
-            </div>
+            {% for route in routes %}
+                {% if route.is_accepted == True %}
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-offset-1 col-lg-3 saved-routes">
+                    
+                    <p>
+                        {{ route.total_miles }} miles | {{ route.total_minutes | int }} minutes | {{ "{:.0f}".format(route.total_ascent) }} ft
+                    </p>
+                    <p>
+                        Score: {{ route.score }}
+                    </p>
 
-            {% endif %}
-        {% endfor %}
+                    <div class="map" id="map{{ route.route_id }}" data-id="{{ route.route_id }}"></div>
+                </div>
+
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
 </div>
 
