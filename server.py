@@ -314,15 +314,15 @@ def filter_results():
 
     order = request.args.get('sort-method')
 
-    if sort_option == "score":
+    if sort_option == "Score":
         sort_column = getattr(Route.score, order)()
-    elif sort_option == "route-id":
+    elif sort_option == "Date created":
         sort_column = getattr(Route.route_id, order)()
-    elif sort_option == "time":
+    elif sort_option == "Time":
         sort_column = getattr(Route.total_minutes, order)()
-    elif sort_option == "elevation":
+    elif sort_option == "Elevation":
         sort_column = getattr(Route.total_ascent, order)()
-    elif sort_option == "miles":
+    elif sort_option == "Miles":
         sort_column = getattr(Route.total_miles, order)()
     else:
         sort_column = getattr(Route.score, order)()
