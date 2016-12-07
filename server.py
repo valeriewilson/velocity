@@ -38,7 +38,8 @@ def log_in_user():
     if user_entry:
         actual_email, actual_password = user_entry
         password_stored = actual_password.encode('utf-8')
-        if password_stored == password_given:
+
+        if bcrypt.checkpw(password_given, password_stored):
             session['user_email'] = actual_email
             flash('Successfully logged in')
             return redirect('/')
@@ -66,7 +67,9 @@ def register_login_user():
     last_name = request.form.get('last-name')
     email = request.form.get('email')
     password = request.form.get('password')
-    password_stored = password.encode('utf-8')
+    password = password.encode('utf-8')
+
+    password_stored = bcrypt.hashpw(password, bcrypt.gensalt())
 
     # Find any user with this email address
     user_email = db.session.query(User.email).filter_by(email=email).first()
@@ -79,6 +82,7 @@ def register_login_user():
     # Creates new user in users table, logs user in, redirects to homepage
     new_user = User(first_name=first_name, last_name=last_name,
                     email=email, password=password_stored)
+
     db.session.add(new_user)
     db.session.commit()
     session['user_email'] = email
