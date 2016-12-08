@@ -4,6 +4,7 @@
 #map {
     height: 400px;
     width: 100%;
+    margin-bottom: 20px;
 }
 .map {
     height: 350px;
@@ -74,8 +75,11 @@ p {
 .ride-stats span {
     font-weight: bold;
 }
-@media (max-width: 480px) {
+@media (max-width: 850px) {
     body {
         margin-left: 0;
     }
+}
+#miles-field {
+    width: 200px;
 }
