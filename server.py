@@ -8,7 +8,8 @@ import os
 import bcrypt
 
 app = Flask(__name__)
-app.secret_key = os.environ["FLASK_KEY"]
+
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "FLASK_KEY")
 
 google_api_key = os.environ["GOOGLE_API_KEY"]
 gmaps = googlemaps.Client(key=google_api_key)
@@ -374,11 +375,12 @@ def pageNotFound(error):
 
 
 if __name__ == "__main__":
-    app.debug = True
 
     connect_to_db(app)
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
 
-    app.run(host="0.0.0.0")
+    DEBUG = "NO_DEBUG" not in os.environ
+
+    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
