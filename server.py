@@ -96,10 +96,14 @@ def register_login_user():
 def display_home_page():
     """ Display homepage of the app """
 
-    email = session['user_email']
-    user_id = db.session.query(User.user_id).filter_by(email=email).first()
-    addresses = db.session.query(Address.label, Address.is_default)\
-        .filter_by(user_id=user_id).order_by(desc("is_default"), "label").all()
+    try:
+        email = session['user_email']
+        user_id = db.session.query(User.user_id).filter_by(email=email).first()
+        addresses = db.session.query(Address.label, Address.is_default)\
+            .filter_by(user_id=user_id).order_by(desc("is_default"), "label").all()
+
+    except KeyError:
+        return redirect("/login")
 
     return render_template("home.html", email=email, addresses=addresses)
 
