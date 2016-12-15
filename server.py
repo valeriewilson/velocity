@@ -6,6 +6,7 @@ from calculation import *
 import googlemaps
 import os
 import bcrypt
+import psycopg2
 # import urlparse
 
 app = Flask(__name__)
@@ -19,11 +20,10 @@ gmaps = googlemaps.Client(key=google_api_key)
 # url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 # conn = psycopg2.connect(
-#     database=url.path[1:],
-#     user=url.username,
-#     password=url.password,
-#     host=url.hostname,
-#     port=url.port
+#     database="bike_routes",
+#     user="postgres",
+#     host="/tmp",
+#     password="123"
 # )
 
 
@@ -392,7 +392,8 @@ def pageNotFound(error):
 
 if __name__ == "__main__":
 
-    connect_to_db(app)
+    connect_to_db(app, db_uri=os.environ.get("DATABASE_URL"))
+    db.create_all()
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)

@@ -100,8 +100,11 @@ def example_data():
     db.session.commit()
 
 
-def connect_to_db(app, db_uri='postgresql:///bike_routes'):
+def connect_to_db(app, db_uri):
     """Connect the database to our Flask app."""
+
+    if not db_uri:
+        db_uri = 'postgresql:///bike_routes'
 
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_ECHO'] = True
