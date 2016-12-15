@@ -6,7 +6,7 @@ from calculation import *
 import googlemaps
 import os
 import bcrypt
-import urlparse
+# import urlparse
 
 app = Flask(__name__)
 
@@ -15,16 +15,16 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "FLASK_KEY")
 google_api_key = os.environ["GOOGLE_API_KEY"]
 gmaps = googlemaps.Client(key=google_api_key)
 
-urlparse.uses_netloc.append("postgres")
-url = urlparse.urlparse(os.environ["DATABASE_URL"])
+# urlparse.uses_netloc.append("postgres")
+# url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
-conn = psycopg2.connect(
-    database=url.path[1:],
-    user=url.username,
-    password=url.password,
-    host=url.hostname,
-    port=url.port
-)
+# conn = psycopg2.connect(
+#     database=url.path[1:],
+#     user=url.username,
+#     password=url.password,
+#     host=url.hostname,
+#     port=url.port
+# )
 
 
 @app.route('/login', methods=['GET'])
