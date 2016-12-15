@@ -6,6 +6,7 @@ from calculation import *
 import googlemaps
 import os
 import bcrypt
+import urlparse
 
 app = Flask(__name__)
 
