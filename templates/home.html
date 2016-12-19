@@ -35,7 +35,7 @@
                     
                     <div class="hidden" id="midpoint-field">
                         <label for="midpoint-address">Midpoint address</label><br>
-                        <input type="midpoint-address" id="midpoint-address" class="form-control" name="midpoint-address" autocomplete="off" placeholder="683 Sutter St">
+                        <input type="midpoint-address" id="midpoint-address" class="form-control" name="midpoint-address" autocomplete="off" placeholder="Enter address here">
                     </div>
                     
                     <div id="miles-field">
@@ -53,10 +53,10 @@
                 
                 <form action="/new-address" method="POST" id="new-address-form">
                     <label for="label-field">Name</label>
-                    <input type="label-field" id="label-field" class="form-control" name="label-field" autocomplete="off" placeholder="Hackbright">
+                    <input type="label-field" id="label-field" class="form-control" name="label-field" autocomplete="off" placeholder="Home">
                     
                     <label for="new-address-field">Address</label>
-                    <input type="new-address-field" id="new-address-field" class="form-control" name="new-address-field" autocomplete="off" placeholder="683 Sutter St">
+                    <input type="new-address-field" id="new-address-field" class="form-control" name="new-address-field" autocomplete="off" placeholder="Enter address here">
 
                     <label class="radio-label" for="radio">Default address</label>
                     <input type="radio" name="default-address" value="true" id="default-address"><br>
@@ -93,7 +93,7 @@
                         <input type="radio" name="save-option" value="no" id="no-option">
                         <form action="/reject-route" id="rejected-route-form" method="POST" class="hidden">
                             <select name="issue" id="issue">
-                                <option id="impossible">Impossible route</option>
+                                <option id="impossible">Impossible  route</option>
                                 <option id="traffic">Major roads / traffic</option>
                                 <option id="no-lanes">No bike lanes</option>
                                 <option id="dont-like">Not feeling it</option>
@@ -124,7 +124,7 @@
 <script src="static/home.js"></script>
 
 <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlY0gdpn-82bFjwWdaAPdQ_oOtJwd9Y3s">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlY0gdpn-82bFjwWdaAPdQ_oOtJwd9Y3s&libraries=places&callback=initAutocomplete">
 </script>
 
 {% endblock %}

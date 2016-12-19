@@ -1,3 +1,13 @@
+// Incorporates Google Maps Places API to autocomplete address fields
+var autocomplete_address, autocomplete_midpoint;
+
+function initAutocomplete() {
+    autocomplete_address = new google.maps.places.Autocomplete(
+        document.getElementById('new-address-field'));
+    autocomplete_midpoint = new google.maps.places.Autocomplete(
+        document.getElementById('midpoint-address'));
+}
+
 var dropdown = document.getElementById("address-dropdown");
 
 dropdown.onchange = function(){
@@ -37,6 +47,9 @@ function updateAddressDropdown(result) {
     // Remove current addresses from "Start address" dropdown
     $('#address-dropdown').empty();
 
+    // Enable submit button
+    $('#submit-button').removeAttr("disabled");
+
     var addresses = result.addresses;
     
     // Add all addresses (including new) to "Start address" dropdown
@@ -51,7 +64,7 @@ function addAddress(evt) {
 
     // Passes new address information to server.py route for processing
     var formInputs = {
-        "new-address-field": $("#new-address-field").val(),
+        "new-address-field": $('#new-address-field').val(),
         "label-field": $("#label-field").val(),
         "default-address": $('#default-address').is(':checked')
     };
