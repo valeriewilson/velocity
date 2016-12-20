@@ -44,9 +44,9 @@ h3 {
     font-family: 'Lato', sans-serif;
 }
 #flash-message {
-    margin-left: 80px;
+    margin-left: 10%;
     margin-top: 10px;
-    width: 95%;
+    width: 80%;
 }
 .main-page {
     background-color: white;
