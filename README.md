@@ -10,6 +10,10 @@ Find the deployed app here: http://velo-city.herokuapp.com/
 
 As an avid cyclist, I love finding new bike routes but find myself sticking to a handle of favorite rides (it's hard to beat the Marin Headlands).  The idea of a bike route generator was born.  To allow for the greatest variety of routes, the generator randomizes the direction of the first leg, the number of waypoints, the length of each leg, and the clockwise or counterclockwise direction of the route.  A predictive algorithm biases the routes in favor of the directions a user prefers riding.
 
+## Recent Updates
+* Now mobile-friendly!
+* Using the Google Maps Places API, I added autocomplete to address fields
+
 ## User Interface
 
 The homepage allows the user to create a route based on:
@@ -42,11 +46,11 @@ In order to generate the largest number of unique bike routes, I perform the fol
 * Flask
 * SQLAlchemy
 * Bootstrap
-* Google Maps APIs (Elevation, Directions, Geocode)
+* Google Maps APIs (Elevation, Directions, Geocode, Places)
 
 ## Getting Started
 
-After cloning or forking this repo, do the following steps:
+After cloning or forking this repo, perform the following steps:
   1. Install and activate a virtual environment on Vagrant
   2. pip install -r requirements.txt
   3. Create an account_keys.sh file, add a Flask key (export FLASK_KEY="key") and the Google API key (GOOGLE_API_KEY="key")
