@@ -152,13 +152,7 @@ def calculate_midpoint(waypoints):
 
 
 def geocode_address(address):
-    """ Geocode address, extract latitude & longitude for route calculations
-
-    >>> address = '683 Sutter St San Francisco'
-    >>> geocode_address(address)
-    (37.7886679, -122.4114987)
-
-    """
+    """ Geocode address, extract latitude & longitude for route calculations """
     geocoded_address = gmaps.geocode(address)
 
     latitude = geocoded_address[0]['geometry']['location']['lat']

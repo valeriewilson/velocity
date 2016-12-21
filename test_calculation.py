@@ -22,6 +22,12 @@ class CalculationUnitTestCase(unittest.TestCase):
         assert calculation.calculate_midpoint(waypoints) == \
             (37.755225881273, -122.42782261139101)
 
+    def test_geocode_address(self):
+        # Positive test for geocode_address function
+
+        address = '683 Sutter St San Francisco'
+        assert calculation.geocode_address(address) == (37.7886679, -122.4114987)
+
 
 if __name__ == "__main__":
     unittest.main()
