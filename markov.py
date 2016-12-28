@@ -26,7 +26,7 @@ class MarkovCalculation(object):
             ratio_total, acceptance_rate = self.generate_weighted_angles()
 
         # Generate angle based on weighted values
-        new_angle = self.generate_new_angle(ratio_total, acceptance_rate)
+        new_angle = self.generate_new_angle(ratio_total)
 
         return new_angle
 
@@ -72,7 +72,7 @@ class MarkovCalculation(object):
 
         # Calculate the angle based on the change in latitude & longitude
         y = lat_2 - lat_1
-        x = (lon_2 - lon_1) if (lon_2 - lon_1) > 0 else 0.0001
+        x = (lon_2 - lon_1) if abs(lon_2 - lon_1) > 0 else 0.0001
 
         angle = degrees(atan(y / x))
 
@@ -148,7 +148,10 @@ class MarkovCalculation(object):
             ratio_total += ratio
 
             # Create non-normalized keys for Markov Chain
-            self.acceptance_rate[ratio_total] = direction
+            if ratio_total in self.acceptance_rate:
+                continue
+            else:
+                self.acceptance_rate[ratio_total] = direction
 
         return (ratio_total, self.acceptance_rate)
 
