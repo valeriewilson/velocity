@@ -3,7 +3,7 @@ from random import randrange, choice, uniform
 import googlemaps
 import requests
 import os
-import markov
+from markov import *
 
 google_api_key = os.environ["GOOGLE_API_KEY"]
 gmaps = googlemaps.Client(key=google_api_key)
@@ -44,7 +44,9 @@ class RouteMetadata(object):
         self.elevation_sample_size = int(self.miles * 5)
 
         # Generate random direction for first leg of route, calculate waypoints
-        weighted_angle = markov.calculate_weighted_angle(self.user_id, self.lat_1, self.lon_1)
+        markov_angle = MarkovCalculation(self.user_id, self.lat_1, self.lon_1)
+
+        weighted_angle = markov_angle.calculate_weighted_angle()
         angle = weighted_angle if weighted_angle else randrange(0, 360)
 
         lat_2 = self.lat_1 + (sin(radians(angle)) * (miles_leg + mile_var)) / self.miles_lats
