@@ -64,7 +64,7 @@ class Calculation(object):
 
             self.waypoints.append([lat, lon])
 
-        return
+        return self.waypoints, self.elevation_sample_size
 
     def calculate_distance_time(self):
         """ Calculate total miles and minutes for route """
@@ -98,7 +98,7 @@ class Calculation(object):
 
             index += 1
 
-        return
+        return self.total_miles, self.total_minutes
 
     def calculate_elevation(self):
         """ Calculate elevation (in feet) for route """
@@ -117,7 +117,7 @@ class Calculation(object):
 
         # Obtain elevation data from Google Elevation API
         r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s&samples=%s&key=%s"
-                         % (path, self.sample_size, google_api_key))
+                         % (path, self.elevation_sample_size, google_api_key))
 
         elevation_data = r.json()
         elevation_list = elevation_data["results"]
@@ -138,6 +138,8 @@ class Calculation(object):
         self.ascent_feet = ascent_meters * 3.28
         self.descent_feet = descent_meters * 3.28
 
+        return self.ascent_feet, self.descent_feet
+
     def calculate_midpoint(self):
         """ Calculate midpoint of lat/lon points to center maps """
 
@@ -148,7 +150,7 @@ class Calculation(object):
         self.mid_lat = self.mid_lat / len(self.waypoints)
         self.mid_lon = self.mid_lon / len(self.waypoints)
 
-        return
+        return self.mid_lat, self.mid_lon
 
     def geocode_address(self, address):
         """ Geocode address, extract latitude & longitude for route calculations """

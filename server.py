@@ -3,6 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy import desc
 from model import connect_to_db, db, User, Route, Waypoint, Address
 from calculation import *
+from calculation2 import *
 import googlemaps
 import os
 import bcrypt
@@ -166,22 +167,15 @@ def display_results():
     if route_type == "loop":
         specified_miles = float(request.form.get('num_miles'))
 
+        loop_route = Calculation(user_id, lat_1, lon_1, specified_miles)
+
         # Calculate waypoints for route
-        midpoints, elevation_sample_size = calculate_waypoints(user_id, lat_1, lon_1, specified_miles)
-
-        waypoints = []
-
-        # Add all waypoints to waypoints list
-        for midpoint in midpoints:
-            waypoints.append(midpoint)
+        midpoints, elevation_sample_size = loop_route.calculate_waypoints()
 
         # Calculate total elevation changes for route
-        ascent, descent = calculate_elevation(waypoints, elevation_sample_size)
+        ascent, descent = loop_route.calculate_elevation()
 
     elif route_type == "midpoint":
-        # Geocoding address as proof of concept, will likely change with
-        #  addition of GMaps Directions API
-
         midpoint_address = request.form.get('midpoint')
         lat_2, lon_2 = geocode_address(midpoint_address)
 
@@ -190,11 +184,14 @@ def display_results():
         ascent, descent = calculate_elevation(waypoints, 20)
 
     # Calculate total distance and time for route
-    total_miles, total_minutes = calculate_distance_time(waypoints)
+    total_miles, total_minutes = loop_route.calculate_distance_time()
 
     # Add route to routes table
-    route = Route(total_ascent=ascent, total_descent=descent, is_accepted=True,
-                  user_id=user_id, total_miles=total_miles, total_minutes=total_minutes)
+    route = Route(total_ascent=loop_route.ascent_feet,
+                  total_descent=loop_route.descent_feet,
+                  is_accepted=True, user_id=loop_route.user_id,
+                  total_miles=loop_route.total_miles,
+                  total_minutes=loop_route.total_minutes)
 
     db.session.add(route)
     db.session.commit()
@@ -202,7 +199,7 @@ def display_results():
     route_waypoints = []
 
     # Format lat/lon pairs for results.html, add to waypoints table
-    for waypoint in waypoints:
+    for waypoint in loop_route.waypoints:
         lat = waypoint[0]
         lon = waypoint[1]
         route_waypoints.append([lat, lon])
@@ -213,11 +210,12 @@ def display_results():
     db.session.commit()
 
     # Calculate midpoint, format for results.html
-    mid_lat, mid_lon = calculate_midpoint(waypoints)
+    mid_lat, mid_lon = loop_route.calculate_midpoint()
 
     # Format and pass results to displayResults function
-    results = {"miles": total_miles, "elevation": ascent, "minutes": total_minutes,
-               "waypoints": route_waypoints, "mid_lat": mid_lat, "mid_lon": mid_lon}
+    results = {"miles": loop_route.total_miles, "elevation": loop_route.ascent_feet,
+               "minutes": loop_route.total_minutes, "waypoints": route_waypoints,
+               "mid_lat": loop_route.mid_lat, "mid_lon": loop_route.mid_lon}
 
     return jsonify(results)
 
