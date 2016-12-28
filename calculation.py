@@ -9,9 +9,10 @@ google_api_key = os.environ["GOOGLE_API_KEY"]
 gmaps = googlemaps.Client(key=google_api_key)
 
 
-class Calculation(object):
+class RouteMetadata(object):
 
-    def __init__(self, user_id, lat_1, lon_1, miles):
+    def __init__(self, user_id, route_type, lat_1, lon_1, miles):
+        self.route_type = route_type
         self.miles_lats = 69
         self.miles_lons = 55
         self.user_id = user_id
@@ -114,6 +115,9 @@ class Calculation(object):
         lat_1 = str(self.waypoints[0][0])
         lon_1 = str(self.waypoints[0][1])
         path += "%s,%s" % (lat_1, lon_1)
+
+        if self.route_type == "midpoint":
+            self.elevation_sample_size = 20
 
         # Obtain elevation data from Google Elevation API
         r = requests.get("https://maps.googleapis.com/maps/api/elevation/json?path=%s&samples=%s&key=%s"

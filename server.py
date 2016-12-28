@@ -166,31 +166,35 @@ def display_results():
     if route_type == "loop":
         specified_miles = float(request.form.get('num_miles'))
 
-        loop_route = Calculation(user_id, lat_1, lon_1, specified_miles)
+        # Instantiate route_info object
+        route_info = RouteMetadata(user_id, "loop", lat_1, lon_1, specified_miles)
 
         # Calculate waypoints for route
-        midpoints, elevation_sample_size = loop_route.calculate_waypoints()
-
-        # Calculate total elevation changes for route
-        ascent, descent = loop_route.calculate_elevation()
+        midpoints, elevation_sample_size = route_info.calculate_waypoints()
 
     elif route_type == "midpoint":
         midpoint_address = request.form.get('midpoint')
-        lat_2, lon_2 = geocode_address(midpoint_address)
 
-        # Calculate total elevation changes for route (sample size hard-coded for now)
-        waypoints = [(lat_1, lon_1), (lat_2, lon_2)]
-        ascent, descent = calculate_elevation(waypoints, 20)
+        # Instantiate route_info object
+        route_info = RouteMetadata(user_id, "midpoint", lat_1, lon_1, miles=0)
+
+        # Geocode midpoint address
+        lat_2, lon_2 = route_info.geocode_address(midpoint_address)
+
+        # Define waypoints attribute
+        route_info.waypoints = [(lat_1, lon_1), (lat_2, lon_2)]
+
+    # Calculate total elevation changes for route
+    ascent, descent = route_info.calculate_elevation()
 
     # Calculate total distance and time for route
-    total_miles, total_minutes = loop_route.calculate_distance_time()
+    total_miles, total_minutes = route_info.calculate_distance_time()
 
     # Add route to routes table
-    route = Route(total_ascent=loop_route.ascent_feet,
-                  total_descent=loop_route.descent_feet,
-                  is_accepted=True, user_id=loop_route.user_id,
-                  total_miles=loop_route.total_miles,
-                  total_minutes=loop_route.total_minutes)
+    route = Route(total_ascent=ascent, total_descent=descent,
+                  is_accepted=True, user_id=route_info.user_id,
+                  total_miles=route_info.total_miles,
+                  total_minutes=route_info.total_minutes)
 
     db.session.add(route)
     db.session.commit()
@@ -198,7 +202,7 @@ def display_results():
     route_waypoints = []
 
     # Format lat/lon pairs for results.html, add to waypoints table
-    for waypoint in loop_route.waypoints:
+    for waypoint in route_info.waypoints:
         lat = waypoint[0]
         lon = waypoint[1]
         route_waypoints.append([lat, lon])
@@ -209,12 +213,12 @@ def display_results():
     db.session.commit()
 
     # Calculate midpoint, format for results.html
-    mid_lat, mid_lon = loop_route.calculate_midpoint()
+    mid_lat, mid_lon = route_info.calculate_midpoint()
 
     # Format and pass results to displayResults function
-    results = {"miles": loop_route.total_miles, "elevation": loop_route.ascent_feet,
-               "minutes": loop_route.total_minutes, "waypoints": route_waypoints,
-               "mid_lat": loop_route.mid_lat, "mid_lon": loop_route.mid_lon}
+    results = {"miles": route_info.total_miles, "elevation": route_info.ascent_feet,
+               "minutes": route_info.total_minutes, "waypoints": route_waypoints,
+               "mid_lat": route_info.mid_lat, "mid_lon": route_info.mid_lon}
 
     return jsonify(results)
 
