@@ -3,6 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy import desc
 from model import connect_to_db, db, User, Route, Waypoint, Address
 from calculation import *
+from markov import *
 import googlemaps
 import os
 import bcrypt
@@ -105,6 +106,18 @@ def display_home_page():
 
     except KeyError:
         return redirect("/login")
+
+    # Adding in logic for eventual D3 integration
+    default_address = db.session.query(Address)\
+        .filter_by(user_id=user_id).order_by(desc("is_default"), "label").first()
+
+    markov = MarkovCalculation(user_id, default_address.latitude, default_address.longitude)
+
+    markov.calculate_weighted_angle()
+
+    print "\n\n\n"
+    print markov.acceptance_rate
+    print "\n\n\n"
 
     return render_template("home.html", email=email, addresses=addresses)
 
