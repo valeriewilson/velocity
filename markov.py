@@ -51,7 +51,7 @@ class MarkovCalculation(object):
 
         return route_info
 
-    def calculate_route_direction(lat_1, lon_1, lat_2, lon_2):
+    def calculate_route_direction(self, lat_1, lon_1, lat_2, lon_2):
         """ Calculate the angle of the route's first leg
 
         >>> lat_1 = 37.7472843749906
