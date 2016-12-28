@@ -3,7 +3,6 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy import desc
 from model import connect_to_db, db, User, Route, Waypoint, Address
 from calculation import *
-from calculation2 import *
 import googlemaps
 import os
 import bcrypt
