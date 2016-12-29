@@ -134,11 +134,12 @@ class MarkovCalculation(object):
 
         """
 
-        non_normalized_rates = {}
         ratio_total = 0
+        non_normalized_rates = {}
+        self.normalized_rates = {}
+        self.normalized_angles = {}
 
-        # Return None if not all cardinal directions are represented
-        # Future refactor: base user 'iteritems' instead of 'range'
+        # Create dictionary of non-normalized rates if all directions available
         for direction in range(0, 360, 45):
             if direction not in self.accepted_vs_total:
                 return None
@@ -146,24 +147,31 @@ class MarkovCalculation(object):
             ratio = float(self.accepted_vs_total[direction]['accepted']) / \
                 self.accepted_vs_total[direction]['total']
 
-            # Add ratio to non-normalized total
             ratio_total += ratio
 
-            # Create non-normalized values for Markov Chain
-            if ratio_total in non_normalized_rates:
-                continue
+            if ratio_total in non_normalized_rates.values():
+                self.normalized_angles[direction] = 0
             else:
                 non_normalized_rates[direction] = ratio_total
 
-        self.normalized_rates = {}
-
-        # Create normalized keys for Markov Chain
+        # Create normalized keys for Markov Chain angle calculation
         for direction in non_normalized_rates:
             normalized_ratio = non_normalized_rates[direction] / ratio_total
 
             self.normalized_rates[normalized_ratio] = direction
 
-        return (ratio_total, non_normalized_rates)
+        # Create the normalized percentage by angle for D3 integration
+        sorted_rates = sorted(self.normalized_rates)
+
+        for i in range(len(sorted_rates)):
+            direction = self.normalized_rates[sorted_rates[i]]
+
+            if i == 0:
+                self.normalized_angles[direction] = sorted_rates[i]
+            else:
+                self.normalized_angles[direction] = sorted_rates[i] - sorted_rates[i - 1]
+
+        return
 
     def generate_new_angle(self):
         """ Generate random angle based on historical user trends """
