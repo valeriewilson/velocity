@@ -116,7 +116,7 @@ def display_home_page():
     markov.calculate_weighted_angle()
 
     print "\n\n\n"
-    print markov.acceptance_rate
+    print markov.normalized_rates
     print "\n\n\n"
 
     return render_template("home.html", email=email, addresses=addresses)
