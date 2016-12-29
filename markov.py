@@ -23,10 +23,10 @@ class MarkovCalculation(object):
         if self.generate_weighted_angles() is None:
             return None
         else:
-            ratio_total, acceptance_rate = self.generate_weighted_angles()
+            self.generate_weighted_angles()
 
         # Generate angle based on weighted values
-        new_angle = self.generate_new_angle(ratio_total)
+        new_angle = self.generate_new_angle()
 
         return new_angle
 
@@ -47,11 +47,12 @@ class MarkovCalculation(object):
                 lat_2 = route.waypoints[1].latitude
                 lon_2 = route.waypoints[1].longitude
 
-                route_info.append((route.score, self.calculate_route_direction(lat_1, lon_1, lat_2, lon_2)))
+                route_info.append((route.score, self.calculate_direction(lat_1, lon_1,
+                                                                         lat_2, lon_2)))
 
         return route_info
 
-    def calculate_route_direction(self, lat_1, lon_1, lat_2, lon_2):
+    def calculate_direction(self, lat_1, lon_1, lat_2, lon_2):
         """ Calculate the angle of the route's first leg
 
         >>> lat_1 = 37.7472843749906
@@ -133,44 +134,61 @@ class MarkovCalculation(object):
 
         """
 
-        self.acceptance_rate = {}
         ratio_total = 0
+        non_normalized_rates = {}
+        self.normalized_rates = {}
+        self.normalized_angles = {}
 
-        # Return None if not all cardinal directions are represented
-        # Future refactor: base user 'iteritems' instead of 'range'
+        # Create dictionary of non-normalized rates if all directions available
         for direction in range(0, 360, 45):
             if direction not in self.accepted_vs_total:
                 return None
 
-            ratio = float(self.accepted_vs_total[direction]['accepted']) / self.accepted_vs_total[direction]['total']
+            ratio = float(self.accepted_vs_total[direction]['accepted']) / \
+                self.accepted_vs_total[direction]['total']
 
-            # Add ratio to non-normalized total
             ratio_total += ratio
 
-            # Create non-normalized keys for Markov Chain
-            if ratio_total in self.acceptance_rate:
-                continue
+            if ratio_total in non_normalized_rates.values():
+                self.normalized_angles[direction] = 0
             else:
-                self.acceptance_rate[ratio_total] = direction
+                non_normalized_rates[direction] = ratio_total
 
-        return (ratio_total, self.acceptance_rate)
+        # Create normalized keys for Markov Chain angle calculation
+        for direction in non_normalized_rates:
+            normalized_ratio = non_normalized_rates[direction] / ratio_total
 
-    def generate_new_angle(self, ratio_total):
+            self.normalized_rates[normalized_ratio] = direction
+
+        # Create the normalized percentage by angle for D3 integration
+        sorted_rates = sorted(self.normalized_rates)
+
+        for i in range(len(sorted_rates)):
+            direction = self.normalized_rates[sorted_rates[i]]
+
+            if i == 0:
+                self.normalized_angles[direction] = sorted_rates[i]
+            else:
+                self.normalized_angles[direction] = sorted_rates[i] - sorted_rates[i - 1]
+
+        return
+
+    def generate_new_angle(self):
         """ Generate random angle based on historical user trends """
 
         # Select a random float value between 0 and the non-normalized sum of ratios
-        seed = random.uniform(0, ratio_total)
+        seed = random.uniform(0, 1)
 
         # Set a generically large value that will never be approached
         closest_key = 100
 
         # Determine which key is the closest upper limit to the seed value
-        for key in self.acceptance_rate.keys():
+        for key in self.normalized_rates.keys():
             if seed < key and key < closest_key:
                 closest_key = key
 
         # Determine lower bound of angle, calculate a new angle within 45-degree range
-        degree_min = self.acceptance_rate[closest_key]
+        degree_min = self.normalized_rates[closest_key]
         self.new_angle = random.randrange(degree_min, degree_min + 45)
 
         return self.new_angle
