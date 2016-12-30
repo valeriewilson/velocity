@@ -53,23 +53,7 @@ class MarkovCalculation(object):
         return route_info
 
     def calculate_direction(self, lat_1, lon_1, lat_2, lon_2):
-        """ Calculate the angle of the route's first leg
-
-        >>> lat_1 = 37.7472843749906
-        >>> lon_1 = -122.448249748807
-        >>> lat_2 = 37.7631673875554
-        >>> lon_2 = -122.407395473975
-        >>> calculate_route_direction(lat_1, lon_1, lat_2, lon_2)
-        0
-
-        >>> lat_1 = 37.774034
-        >>> lon_1 = -122.452745
-        >>> lat_2 = 37.745577
-        >>> lon_2 = -122.452037
-        >>> calculate_route_direction(lat_1, lon_1, lat_2, lon_2)
-        270
-
-        """
+        """ Calculate the angle of the route's first leg """
 
         # Calculate the angle based on the change in latitude & longitude
         y = lat_2 - lat_1
@@ -93,13 +77,7 @@ class MarkovCalculation(object):
     def tally_route_by_accepted(self, all_routes):
         """
         Determine how often a route's direction is accepted + total number of routes
-        that go in a given direction
-
-        >>> all_routes = [(5, 270), (None, 270), (None, 90), (2, 180), (None, 180), (None, 225), (5, 90), (None, 135), (None, 45), (None, 135), (None, 270), (None, 45), (None, 45), (None, 45), (None, 45), (4, 225), (None, 45), (None, 45), (2, 135), (None, 45), (None, 270), (None, 270), (None, 0), (None, 270), (None, 45), (None, 45), (None, 45), (None, 315), (None, 270), (None, 315), (3, 315), (3, 270), (2, 270), (1, 270), (3, 270), (1, 270), (5, 45), (1, 45), (3, 45), (1, 45), (1, 270), (2, 315), (None, 0), (5, 270), (None, 315), (3, 45), (5, 45), (4, 270)]
-        >>> tally_route_by_accepted(all_routes)
-        {0: {'total': 2, 'accepted': 0}, 225: {'total': 2, 'accepted': 1}, 135: {'total': 3, 'accepted': 1}, 45: {'total': 17, 'accepted': 6}, 270: {'total': 15, 'accepted': 9}, 180: {'total': 2, 'accepted': 1}, 90: {'total': 2, 'accepted': 1}, 315: {'total': 5, 'accepted': 2}}
-
-        """
+        that go in a given direction """
 
         self.accepted_vs_total = {}
 
@@ -127,10 +105,6 @@ class MarkovCalculation(object):
         Create dictionary where:
            key = sum(accepted/total) up to that point
            value = degree range
-
-        >>> accepted_vs_total = {0: {'total': 2, 'accepted': 0}, 225: {'total': 2, 'accepted': 1}, 135: {'total': 3, 'accepted': 1}, 45: {'total': 17, 'accepted': 6}, 270: {'total': 15, 'accepted': 9}, 180: {'total': 2, 'accepted': 1}, 90: {'total': 2, 'accepted': 1}, 315: {'total': 5, 'accepted': 2}}
-        >>> generate_weighted_angles(accepted_vs_total)
-        (3.186274509803922, {0.0: 0, 1.6862745098039216: 180, 2.786274509803922: 270, 1.1862745098039216: 135, 0.8529411764705883: 90, 2.186274509803922: 225, 0.35294117647058826: 45, 3.186274509803922: 315})
 
         """
 
@@ -171,7 +145,7 @@ class MarkovCalculation(object):
             else:
                 self.normalized_angles[direction] = sorted_rates[i] - sorted_rates[i - 1]
 
-        return
+        return non_normalized_rates
 
     def generate_new_angle(self):
         """ Generate random angle based on historical user trends """
