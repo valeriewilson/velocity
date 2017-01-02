@@ -10,7 +10,7 @@ class MarkovCalculation(object):
         self.lat_1 = start_lat
         self.lon_1 = start_lon
 
-    def calculate_weighted_angle(self):
+    def calculate_weighted_angle(self, return_angle=True):
         """ Calculate angle based on user's direction preferences """
 
         # For each route object, obtain score & direction of first leg
