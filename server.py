@@ -113,13 +113,36 @@ def display_home_page():
 
     markov = MarkovCalculation(user_id, default_address.latitude, default_address.longitude)
 
-    markov.calculate_weighted_angle()
+    route_info = markov.compile_routes_and_directions()
+    markov.tally_route_by_accepted(route_info)
+    markov.generate_weighted_angles()
 
     print "\n\n\n"
     print markov.normalized_angles
     print "\n\n\n"
 
     return render_template("home.html", email=email, addresses=addresses)
+
+
+@app.route('/update-stats', methods=['POST'])
+def update_route_statistics():
+    """ Update normalized angles for chart """
+
+    start = request.form.get("start-location")
+
+    address = db.session.query(Address).filter_by(label=start).first()
+
+    markov = MarkovCalculation(address.user_id, address.latitude, address.longitude)
+
+    route_info = markov.compile_routes_and_directions()
+    markov.tally_route_by_accepted(route_info)
+    markov.generate_weighted_angles()
+
+    print "\n\n\n"
+    print markov.normalized_angles
+    print "\n\n\n"
+
+    return "Success"
 
 
 @app.route('/new-address', methods=["POST"])
