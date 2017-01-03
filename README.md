@@ -13,6 +13,7 @@ As an avid cyclist, I love finding new bike routes but find myself sticking to a
 ## Recent Updates
 * Now mobile-friendly!
 * Using the Google Maps Places API, I added autocomplete to address fields
+* Up next: Chart.js integration, displaying most common direction by start address
 
 ## User Interface
 
