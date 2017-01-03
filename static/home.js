@@ -11,15 +11,22 @@ function initAutocomplete() {
 var dropdown = document.getElementById("address-dropdown");
 
 dropdown.onchange = function(){
-   // Hide "new address" fields by default
-   $('#new-address-information').addClass("hidden");
-   $('#submit-button').removeAttr("disabled");
+    // Hide "new address" fields by default
+    $('#new-address-information').addClass("hidden");
+    $('#submit-button').removeAttr("disabled");
 
-   // Display fields when "+ new address" is selected in "Start address" dropdown
-   if(dropdown.value=="create-new-address"){
-     $('#new-address-information').removeClass();
+    // Handle updates to address dropdown
+    var formInputs = {
+        "start-location": $('#address-dropdown').val(),
+    };
+
+    $.post("/update-stats", formInputs);
+
+    // Display fields when "+ new address" is selected in "Start address" dropdown
+    if(dropdown.value=="create-new-address"){
+        $('#new-address-information').removeClass();
         $('#submit-button').attr("disabled", "disabled");
-   }
+    }
 };
 
 var route_dropdown = document.getElementById("route-type");
@@ -187,6 +194,13 @@ function returnToSearch() {
     $('#generator-options').removeClass("hidden");
     $('#results-dropdowns').addClass("hidden");
     $('#map').addClass("hidden");
+
+    // Handle updates to address dropdown
+    var formInputs = {
+        "start-location": $('#address-dropdown').val(),
+    };
+
+    $.post("/update-stats", formInputs);
 }
 
 function saveScore(evt) {

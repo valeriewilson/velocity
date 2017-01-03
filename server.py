@@ -3,6 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy import desc
 from model import connect_to_db, db, User, Route, Waypoint, Address
 from calculation import *
+from markov import *
 import googlemaps
 import os
 import bcrypt
@@ -106,7 +107,38 @@ def display_home_page():
     except KeyError:
         return redirect("/login")
 
+    # Adding in logic for eventual D3 integration
+    default_address = db.session.query(Address)\
+        .filter_by(user_id=user_id).order_by(desc("is_default"), "label").first()
+
+    # Generate directional preferences
+    markov = MarkovCalculation(user_id, default_address.latitude, default_address.longitude)
+    markov.calculate_weighted_angle(return_angle=False)
+
+    print "\n\n\n"
+    print markov.normalized_angles
+    print "\n\n\n"
+
     return render_template("home.html", email=email, addresses=addresses)
+
+
+@app.route('/update-stats', methods=['POST'])
+def update_route_statistics():
+    """ Update normalized angles for chart """
+
+    # Obtain address from home.js AJAX call
+    start = request.form.get("start-location")
+    address = db.session.query(Address).filter_by(label=start).first()
+
+    # Generate directional preferences
+    markov = MarkovCalculation(address.user_id, address.latitude, address.longitude)
+    markov.calculate_weighted_angle(return_angle=False)
+
+    print "\n\n\n"
+    print markov.normalized_angles
+    print "\n\n\n"
+
+    return "Success"
 
 
 @app.route('/new-address', methods=["POST"])
