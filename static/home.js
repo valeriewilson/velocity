@@ -15,7 +15,7 @@ dropdown.onchange = function(){
     $('#new-address-information').addClass("hidden");
     $('#submit-button').removeAttr("disabled");
 
-    // Handle updates
+    // Handle updates to address dropdown
     var formInputs = {
         "start-location": $('#address-dropdown').val(),
     };
@@ -194,6 +194,13 @@ function returnToSearch() {
     $('#generator-options').removeClass("hidden");
     $('#results-dropdowns').addClass("hidden");
     $('#map').addClass("hidden");
+
+    // Handle updates to address dropdown
+    var formInputs = {
+        "start-location": $('#address-dropdown').val(),
+    };
+
+    $.post("/update-stats", formInputs);
 }
 
 function saveScore(evt) {
