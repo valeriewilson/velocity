@@ -1,5 +1,5 @@
 // Chart.js integration
-var ctx = "myChart";
+var ctx = $("#myChart").get(0).getContext("2d");
 
 var data = {
     labels: ["N/NE", "NE/E", "E/SE", "SE/S", "S/SW", "SW/W", "W/NW", "NW/N"],
