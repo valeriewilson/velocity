@@ -19,9 +19,18 @@ var data = {
 };
 
 var myChart = new Chart(ctx, {
-  type: 'polarArea',
-  data: data
+    type: 'polarArea',
+    data: data,
+    options: {
+    legend: {
+        display: false,
+            labels: {
+                display: false
+            }
+        }
+    }
 });
+
 
 // Incorporates Google Maps Places API to autocomplete address fields
 var autocomplete_address, autocomplete_midpoint;
@@ -193,7 +202,6 @@ function displayResults(results) {
     $('#ride-stats-minutes').text("Time: " + Math.round(total_time) + " minutes ");
     $('#ride-stats-elevation').text("Total climb: " + Math.round(total_elevation) + " ft");
     $('#map').removeClass("hidden");
-    $('#myChart').addClass("hidden");
 
     initMap(waypoints, mid_lat, mid_lon);
 }
@@ -208,6 +216,7 @@ function createRoute(evt) {
         "midpoint": $('#midpoint-address').val()
     };
     $('#generator-options').addClass("hidden");
+    $('#myChart').addClass("hidden");
     $('#loading-image').removeClass();
     $.post("/results", formInputs, displayResults);
 }
