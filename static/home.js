@@ -1,5 +1,8 @@
 // Chart.js integration
-var ctx = $("#myChart").get(0).getContext("2d");
+var ctx = $("#polarChart").get(0).getContext("2d");
+
+ctx.canvas.width = 300;
+ctx.canvas.height = 300;
 
 var data = {
     labels: ["N/NE", "NE/E", "E/SE", "SE/S", "S/SW", "SW/W", "W/NW", "NW/N"],
@@ -18,16 +21,17 @@ var data = {
     }]
 };
 
-var myChart = new Chart(ctx, {
+var polarChart = new Chart(ctx, {
     type: 'polarArea',
     data: data,
     options: {
-    legend: {
-        display: false,
+        responsive: true,
+        legend: {
+            display: false,
             labels: {
                 display: false
             }
-        }
+        },
     }
 });
 
@@ -216,7 +220,7 @@ function createRoute(evt) {
         "midpoint": $('#midpoint-address').val()
     };
     $('#generator-options').addClass("hidden");
-    $('#myChart').addClass("hidden");
+    $('#polarChart').addClass("hidden");
     $('#loading-image').removeClass();
     $.post("/results", formInputs, displayResults);
 }
@@ -229,7 +233,7 @@ function returnToSearch() {
     $('#generator-options').removeClass("hidden");
     $('#results-dropdowns').addClass("hidden");
     $('#map').addClass("hidden");
-    $('#myChart').removeClass("hidden");
+    $('#polarChart').removeClass("hidden");
 
     // Handle updates to address dropdown
     var formInputs = {
