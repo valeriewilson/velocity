@@ -193,6 +193,7 @@ function displayResults(results) {
     $('#ride-stats-minutes').text("Time: " + Math.round(total_time) + " minutes ");
     $('#ride-stats-elevation').text("Total climb: " + Math.round(total_elevation) + " ft");
     $('#map').removeClass("hidden");
+    $('#myChart').addClass("hidden");
 
     initMap(waypoints, mid_lat, mid_lon);
 }
@@ -219,6 +220,7 @@ function returnToSearch() {
     $('#generator-options').removeClass("hidden");
     $('#results-dropdowns').addClass("hidden");
     $('#map').addClass("hidden");
+    $('#myChart').removeClass("hidden");
 
     // Handle updates to address dropdown
     var formInputs = {
