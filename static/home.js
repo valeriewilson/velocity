@@ -1,3 +1,37 @@
+// Chart.js integration
+var ctx = $("#myChart").get(0).getContext("2d");
+
+var data = {
+    labels: ["N/NE", "NE/E", "E/SE", "SE/S", "S/SW", "SW/W", "W/NW", "NW/N"],
+    datasets: [{
+        backgroundColor: [
+            "#2ecc71",
+            "#3498db",
+            "#95a5a6",
+            "#9b59b6",
+            "#f1c40f",
+            "#e74c3c",
+            "#34495e",
+            "#2ecc71"
+        ],
+      data: [0.1, 0.25, 0.2, 0.1, 0.2, 0.1, 0.05, 0.05]
+    }]
+};
+
+var myChart = new Chart(ctx, {
+    type: 'polarArea',
+    data: data,
+    options: {
+    legend: {
+        display: false,
+            labels: {
+                display: false
+            }
+        }
+    }
+});
+
+
 // Incorporates Google Maps Places API to autocomplete address fields
 var autocomplete_address, autocomplete_midpoint;
 
@@ -182,6 +216,7 @@ function createRoute(evt) {
         "midpoint": $('#midpoint-address').val()
     };
     $('#generator-options').addClass("hidden");
+    $('#myChart').addClass("hidden");
     $('#loading-image').removeClass();
     $.post("/results", formInputs, displayResults);
 }
@@ -194,6 +229,7 @@ function returnToSearch() {
     $('#generator-options').removeClass("hidden");
     $('#results-dropdowns').addClass("hidden");
     $('#map').addClass("hidden");
+    $('#myChart').removeClass("hidden");
 
     // Handle updates to address dropdown
     var formInputs = {
