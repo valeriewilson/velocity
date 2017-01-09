@@ -1,39 +1,46 @@
 // Chart.js integration
-var ctx = $("#polarChart").get(0).getContext("2d");
 
-ctx.canvas.width = 300;
-ctx.canvas.height = 300;
+function displayChart(result) {
+    var stats = result.stats;
 
-var data = {
-    labels: ["N/NE", "NE/E", "E/SE", "SE/S", "S/SW", "SW/W", "W/NW", "NW/N"],
-    datasets: [{
-        backgroundColor: [
-            "#2ecc71",
-            "#3498db",
-            "#95a5a6",
-            "#9b59b6",
-            "#f1c40f",
-            "#e74c3c",
-            "#34495e",
-            "#2ecc71"
-        ],
-      data: [0.1, 0.25, 0.2, 0.1, 0.2, 0.1, 0.05, 0.05]
-    }]
-};
+    console.log(stats);
 
-var polarChart = new Chart(ctx, {
-    type: 'polarArea',
-    data: data,
-    options: {
-        responsive: true,
-        legend: {
-            display: false,
-            labels: {
-                display: false
-            }
-        },
-    }
-});
+    var ctx = $("#polarChart").get(0).getContext("2d");
+
+    ctx.canvas.width = 300;
+    ctx.canvas.height = 300;
+
+    var data = {
+        labels: ["N/NE", "NE/E", "E/SE", "SE/S", "S/SW", "SW/W", "W/NW", "NW/N"],
+        datasets: [{
+            backgroundColor: [
+                "#2ecc71",
+                "#3498db",
+                "#95a5a6",
+                "#9b59b6",
+                "#f1c40f",
+                "#e74c3c",
+                "#34495e",
+                "#2ecc71"
+            ],
+          data: [stats[45], stats[0], stats[315], stats[270], stats[225], stats[180], stats[135], stats[90]]
+        }]
+    };
+
+    var polarChart = new Chart(ctx, {
+        type: 'polarArea',
+        data: data,
+        options: {
+            responsive: true,
+            legend: {
+                display: false,
+                labels: {
+                    display: false
+                }
+            },
+        }
+    });
+}
 
 
 // Incorporates Google Maps Places API to autocomplete address fields
@@ -240,7 +247,7 @@ function returnToSearch() {
         "start-location": $('#address-dropdown').val(),
     };
 
-    $.post("/update-stats", formInputs);
+    $.post("/update-stats", formInputs, displayChart);
 }
 
 function saveScore(evt) {
