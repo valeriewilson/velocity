@@ -36,8 +36,7 @@ def log_in_user():
     user_entry = db.session.query(User.email, User.password).\
         filter_by(email=email).first()
 
-    # Check if user already exists and if password is correct; logs user in and
-    #  redirects to homepage, or returns an error message
+    # Check if user already exists and if password is correct
     if user_entry:
         actual_email, actual_password = user_entry
         password_stored = actual_password.encode('utf-8')
@@ -138,7 +137,7 @@ def update_route_statistics():
     print markov.normalized_angles
     print "\n\n\n"
 
-    return "Success"
+    return jsonify({"stats": markov.normalized_angles})
 
 
 @app.route('/new-address', methods=["POST"])
