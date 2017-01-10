@@ -46,6 +46,15 @@ function displayChart(result) {
     }
 }
 
+// Load chart for default address on document load
+$(document).ready(function() {
+    var statInputs = {
+        "start-location": $('#address-dropdown').val(),
+    };
+
+    $.post("/update-stats", statInputs, displayChart);
+});
+
 
 // Incorporates Google Maps Places API to autocomplete address fields
 var autocomplete_address, autocomplete_midpoint;
@@ -244,7 +253,6 @@ function returnToSearch() {
     $('#generator-options').removeClass("hidden");
     $('#results-dropdowns').addClass("hidden");
     $('#map').addClass("hidden");
-    $('#polarChart').removeClass("hidden");
 
     // Handle updates to address dropdown
     var formInputs = {
