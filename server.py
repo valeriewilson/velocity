@@ -114,10 +114,6 @@ def display_home_page():
     markov = MarkovCalculation(user_id, default_address.latitude, default_address.longitude)
     markov.calculate_weighted_angle(return_angle=False)
 
-    print "\n\n\n"
-    print markov.normalized_angles
-    print "\n\n\n"
-
     return render_template("home.html", email=email, addresses=addresses)
 
 
@@ -133,9 +129,8 @@ def update_route_statistics():
     markov = MarkovCalculation(address.user_id, address.latitude, address.longitude)
     markov.calculate_weighted_angle(return_angle=False)
 
-    print "\n\n\n"
-    print markov.normalized_angles
-    print "\n\n\n"
+    if markov.normalized_angles == {}:
+        return jsonify({})
 
     return jsonify({"stats": markov.normalized_angles})
 
