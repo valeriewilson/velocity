@@ -3,9 +3,9 @@
 function displayChart(result) {
     var stats = result.stats;
 
-    console.log(stats);
+    if (stats) {
+        $("#polarChart").removeClass("hidden");
 
-    if (stats.length > 0) {
         var ctx = $("#polarChart").get(0).getContext("2d");
 
         ctx.canvas.width = 300;
@@ -41,6 +41,8 @@ function displayChart(result) {
                 },
             }
         });
+    } else {
+        $("#polarChart").addClass("hidden");
     }
 }
 
@@ -55,9 +57,9 @@ function initAutocomplete() {
         document.getElementById('midpoint-address'));
 }
 
-var dropdown = document.getElementById("address-dropdown");
+var address_dropdown = document.getElementById("address-dropdown");
 
-dropdown.onchange = function(){
+address_dropdown.onchange = function(){
     // Hide "new address" fields by default
     $('#new-address-information').addClass("hidden");
     $('#submit-button').removeAttr("disabled");
@@ -67,10 +69,10 @@ dropdown.onchange = function(){
         "start-location": $('#address-dropdown').val(),
     };
 
-    $.post("/update-stats", formInputs);
+    $.post("/update-stats", formInputs, displayChart);
 
     // Display fields when "+ new address" is selected in "Start address" dropdown
-    if(dropdown.value=="create-new-address"){
+    if(address_dropdown.value=="create-new-address"){
         $('#new-address-information').removeClass();
         $('#submit-button').attr("disabled", "disabled");
     }
@@ -78,7 +80,7 @@ dropdown.onchange = function(){
 
 var route_dropdown = document.getElementById("route-type");
 
-route_dropdown.onchange = function(){
+route_dropdown.onchange = function() {
     // Hide midpoint & miles fields by default
     $('#midpoint-field').addClass("hidden");
     $('#miles-field').addClass("hidden");
@@ -279,6 +281,12 @@ function rejectRoute(evt) {
 
     // Pass issue to /reject-route route
     $.post("/reject-route", formInputs, returnToSearch);
+
+    var statInputs = {
+        "start-location": $('#address-dropdown').val(),
+    };
+
+    $.post("/update-stats", statInputs, displayChart);
 }
 
 $('#rejected-route-form').on("submit", rejectRoute);
