@@ -83,3 +83,6 @@ p {
 #miles-field {
     width: 200px;
 }
+#chartHeader {
+    text-align: center;
+}

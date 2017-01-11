@@ -5,6 +5,7 @@ function displayChart(result) {
 
     if (stats) {
         $("#polarChart").removeClass("hidden");
+        $("#chartHeader").removeClass("hidden");
 
         var ctx = $("#polarChart").get(0).getContext("2d");
 
@@ -55,6 +56,7 @@ function displayChart(result) {
         });
     } else {
         $("#polarChart").addClass("hidden");
+        $("#chartHeader").addClass("hidden");
     }
 }
 
@@ -253,6 +255,7 @@ function createRoute(evt) {
     };
     $('#generator-options').addClass("hidden");
     $('#polarChart').addClass("hidden");
+    $("#chartHeader").addClass("hidden");
     $('#loading-image').removeClass();
     $.post("/results", formInputs, displayResults);
 }
