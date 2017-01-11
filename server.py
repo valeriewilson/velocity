@@ -127,13 +127,16 @@ def update_route_statistics():
     address = db.session.query(Address).filter_by(label=start).first()
 
     # Generate directional preferences
-    markov = MarkovCalculation(address.user_id, address.latitude, address.longitude)
-    markov.calculate_weighted_angle(return_angle=False)
+    if address:
+        markov = MarkovCalculation(address.user_id, address.latitude, address.longitude)
+        markov.calculate_weighted_angle(return_angle=False)
 
-    if markov.normalized_angles == {}:
+        if markov.normalized_angles == {}:
+            return jsonify({})
+
+        return jsonify({"stats": markov.normalized_angles})
+    else:
         return jsonify({})
-
-    return jsonify({"stats": markov.normalized_angles})
 
 
 @app.route('/new-address', methods=["POST"])
@@ -206,7 +209,7 @@ def display_results():
         route_info = RouteMetadata(user_id, "midpoint", lat_1, lon_1, miles=0)
 
         # Geocode midpoint address
-        lat_2, lon_2 = route_info.geocode_address(midpoint_address)
+        lat_2, lon_2 = geocode_address(midpoint_address)
 
         # Define waypoints attribute
         route_info.waypoints = [(lat_1, lon_1), (lat_2, lon_2)]

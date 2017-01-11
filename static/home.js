@@ -3,6 +3,8 @@
 function displayChart(result) {
     var stats = result.stats;
 
+    console.log(stats);
+
     if (stats) {
         $("#polarChart").removeClass("hidden");
         $("#chartHeader").removeClass("hidden");

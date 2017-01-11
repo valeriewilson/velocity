@@ -158,11 +158,12 @@ class RouteMetadata(object):
 
         return self.mid_lat, self.mid_lon
 
-    def geocode_address(self, address):
-        """ Geocode address, extract latitude & longitude for route calculations """
-        geocoded_address = gmaps.geocode(address)
 
-        self.start_lat = geocoded_address[0]['geometry']['location']['lat']
-        self.start_lon = geocoded_address[0]['geometry']['location']['lng']
+def geocode_address(address):
+    """ Geocode address, extract latitude & longitude for route calculations """
+    geocoded_address = gmaps.geocode(address)
 
-        return self.start_lat, self.start_lon
+    start_lat = geocoded_address[0]['geometry']['location']['lat']
+    start_lon = geocoded_address[0]['geometry']['location']['lng']
+
+    return start_lat, start_lon
