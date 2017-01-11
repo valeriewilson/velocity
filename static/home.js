@@ -48,10 +48,8 @@ function displayChart(result) {
                         }
                     }
                 },
-                scales: {
-                    yAxes: [{
-                        display: false
-                    }]
+                scale: {
+                    display: false
                 }
             }
         });
