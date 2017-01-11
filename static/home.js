@@ -24,7 +24,7 @@ function displayChart(result) {
                     "#34495e",
                     "#2ecc71"
                 ],
-              data: [parseInt(stats[45]*100), parseInt(stats[0]*100), parseInt(stats[315]*100), parseInt(stats[270]*100), parseInt(stats[225]*100), parseInt(stats[180]*100), parseInt(stats[135]*100), parseInt(stats[90]*100)]
+              data: [stats[45], stats[0], stats[315], stats[270], stats[225], stats[180], stats[135], stats[90]]
             }]
         };
 

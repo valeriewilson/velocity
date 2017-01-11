@@ -134,16 +134,16 @@ class MarkovCalculation(object):
 
             self.normalized_rates[normalized_ratio] = direction
 
-        # Create the normalized percentage by angle for D3 integration
+        # Create the normalized percentage by angle for Chart.js integration
         sorted_rates = sorted(self.normalized_rates)
 
         for i in range(len(sorted_rates)):
             direction = self.normalized_rates[sorted_rates[i]]
 
             if i == 0:
-                self.normalized_angles[direction] = sorted_rates[i]
+                self.normalized_angles[direction] = round(sorted_rates[i] * 100, 2)
             else:
-                self.normalized_angles[direction] = sorted_rates[i] - sorted_rates[i - 1]
+                self.normalized_angles[direction] = round((sorted_rates[i] - sorted_rates[i - 1]) * 100, 2)
 
         return non_normalized_rates
 
