@@ -5,6 +5,7 @@ function displayChart(result) {
 
     if (stats) {
         $("#polarChart").removeClass("hidden");
+        $("#chartHeader").removeClass("hidden");
 
         var ctx = $("#polarChart").get(0).getContext("2d");
 
@@ -15,14 +16,14 @@ function displayChart(result) {
             labels: ["N/NE", "NE/E", "E/SE", "SE/S", "S/SW", "SW/W", "W/NW", "NW/N"],
             datasets: [{
                 backgroundColor: [
-                    "#2ecc71",
-                    "#3498db",
-                    "#95a5a6",
-                    "#9b59b6",
-                    "#f1c40f",
-                    "#e74c3c",
-                    "#34495e",
-                    "#2ecc71"
+                    "#9BA5D0",
+                    "#DEB85F",
+                    "#B1DB68",
+                    "#914B9B",
+                    "#4B5A97",
+                    "#FFE9B5",
+                    "#10700D",
+                    "#C592CC"
                 ],
               data: [stats[45], stats[0], stats[315], stats[270], stats[225], stats[180], stats[135], stats[90]]
             }]
@@ -48,15 +49,14 @@ function displayChart(result) {
                         }
                     }
                 },
-                scales: {
-                    yAxes: [{
-                        display: false
-                    }]
+                scale: {
+                    display: false
                 }
             }
         });
     } else {
         $("#polarChart").addClass("hidden");
+        $("#chartHeader").addClass("hidden");
     }
 }
 
@@ -255,6 +255,7 @@ function createRoute(evt) {
     };
     $('#generator-options').addClass("hidden");
     $('#polarChart').addClass("hidden");
+    $("#chartHeader").addClass("hidden");
     $('#loading-image').removeClass();
     $.post("/results", formInputs, displayResults);
 }
