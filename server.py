@@ -111,8 +111,9 @@ def display_home_page():
         .filter_by(user_id=user_id).order_by(desc("is_default"), "label").first()
 
     # Generate directional preferences
-    markov = MarkovCalculation(user_id, default_address.latitude, default_address.longitude)
-    markov.calculate_weighted_angle(return_angle=False)
+    if default_address:
+        markov = MarkovCalculation(user_id, default_address.latitude, default_address.longitude)
+        markov.calculate_weighted_angle(return_angle=False)
 
     return render_template("home.html", email=email, addresses=addresses)
 
