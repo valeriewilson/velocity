@@ -5,6 +5,9 @@ function displayChart(result) {
 
     console.log(stats);
 
+    $('#polarChart').remove();
+    $('#graph-container').append('<canvas id="polarChart"><canvas>');
+
     if (stats) {
         $("#polarChart").removeClass("hidden");
         $("#chartHeader").removeClass("hidden");
@@ -57,7 +60,6 @@ function displayChart(result) {
             }
         });
     } else {
-        $("#polarChart").addClass("hidden");
         $("#chartHeader").addClass("hidden");
     }
 }
