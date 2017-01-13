@@ -22,7 +22,7 @@ The homepage allows the user to create a route based on:
   2. A route type ("loop" generates a round-trip route, while "midpoint" allows the user to specify the halfway point)
   3. Number of miles (for "loop" routes) or midpoint address (for "midpoint" routes)
 
-On the backend, this project uses a predictive algorithm (Markov Chain) to determine the cardinal direction for the route based on the user's historical route choices, generates a loop based on this information, and displays the route with corresponding metrics using Google Maps APIs. 
+On the backend, this project uses a predictive algorithm (Markov Chain) to determine the cardinal direction for the route based on the user's historical route choices, generates a loop based on this information, and displays the route with corresponding metrics using Google Maps APIs.  The Chart.js integration provides the user insight into data produced by this predictive algorithm.
 
 
 ![Route Creator](http://g.recordit.co/NpV9h2zvF5.gif)
@@ -43,6 +43,7 @@ In order to generate the largest number of unique bike routes, I perform the fol
 
 * Python
 * Javascript (including jQuery, AJAX)
+* Chart.js
 * Jinja
 * Flask
 * SQLAlchemy
