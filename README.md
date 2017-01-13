@@ -11,9 +11,9 @@ Find the deployed app here: http://velo-city.herokuapp.com/
 As an avid cyclist, I love finding new bike routes but find myself sticking to a handle of favorite rides (it's hard to beat the Marin Headlands).  The idea of a bike route generator was born.  To allow for the greatest variety of routes, the generator randomizes the direction of the first leg, the number of waypoints, the length of each leg, and the clockwise or counterclockwise direction of the route.  A predictive algorithm biases the routes in favor of the directions a user prefers riding.
 
 ## Recent Updates
+* Chart.js integration, displaying the percentage of time a user prefers a route starting in a given cardinal direction
 * Now mobile-friendly!
 * Using the Google Maps Places API, I added autocomplete to address fields
-* Up next: Chart.js integration, displaying most common direction by start address
 
 ## User Interface
 
@@ -25,12 +25,12 @@ The homepage allows the user to create a route based on:
 On the backend, this project uses a predictive algorithm (Markov Chain) to determine the cardinal direction for the route based on the user's historical route choices, generates a loop based on this information, and displays the route with corresponding metrics using Google Maps APIs. 
 
 
-![Route Creator](http://g.recordit.co/9Qdooe48PV.gif)
+![Route Creator](http://g.recordit.co/NpV9h2zvF5.gif)
 
 Saved routes can be filtered and sorted to allow the user to find a route suiting their needs.
 
 
-![Saved Routes](http://g.recordit.co/nDYUNEomHV.gif)
+![Saved Routes](http://g.recordit.co/X6JE0BUdwd.gif)
 
 ## Behind the Scenes
 
