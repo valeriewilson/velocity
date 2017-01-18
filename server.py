@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "FLASK_KEY")
 
-google_api_key = os.environ["GOOGLE_API_KEY"]
+google_api_key = "AIzaSyBlY0gdpn-82bFjwWdaAPdQ_oOtJwd9Y3s"
 gmaps = googlemaps.Client(key=google_api_key)
 
 

@@ -55,7 +55,7 @@ In order to generate the largest number of unique bike routes, I perform the fol
 After cloning or forking this repo, perform the following steps:
   1. Install and activate a virtual environment on Vagrant
   2. pip install -r requirements.txt
-  3. Create an account_keys.sh file, add a Flask key (export FLASK_KEY="key") and the Google API key (GOOGLE_API_KEY="key")
+  3. Create an account_keys.sh file and add a Flask key (export FLASK_KEY="key")
   4. source account_keys.sh
   5. Run the program:
     * python server.py
