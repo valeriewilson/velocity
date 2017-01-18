@@ -74,7 +74,7 @@ $(document).ready(function() {
 });
 
 
-// Incorporates Google Maps Places API to autocomplete address fields
+// Autocomplete address fields (Google Maps Places API integration)
 var autocomplete_address, autocomplete_midpoint;
 
 function initAutocomplete() {
@@ -84,58 +84,52 @@ function initAutocomplete() {
         document.getElementById('midpoint-address'));
 }
 
+
+// Handle user actions around address dropdown
 var address_dropdown = document.getElementById("address-dropdown");
 
 address_dropdown.onchange = function(){
-    // Hide "new address" fields by default
     $('#new-address-information').addClass("hidden");
     $('#submit-button').removeAttr("disabled");
 
-    // Handle updates to address dropdown
     var formInputs = {
         "start-location": $('#address-dropdown').val(),
     };
 
     $.post("/update-stats", formInputs, displayChart);
 
-    // Display fields when "+ new address" is selected in "Start address" dropdown
     if(address_dropdown.value=="create-new-address"){
         $('#new-address-information').removeClass();
         $('#submit-button').attr("disabled", "disabled");
     }
 };
 
+
+// Handle user actions around route type dropdown
 var route_dropdown = document.getElementById("route-type");
 
 route_dropdown.onchange = function() {
-    // Hide midpoint & miles fields by default
     $('#midpoint-field').addClass("hidden");
     $('#miles-field').addClass("hidden");
     
-    // Display miles field when "Loop" route is selected
     if(route_dropdown.value=="loop"){
         $('#miles-field').removeClass();
     }
 
-    // Display midpoint field when "To midpoint and back" route is selected
     else if(route_dropdown.value=="midpoint"){
         $('#midpoint-field').removeClass();
     }
 };
 
-function updateAddressDropdown(result) {
-    // Hide "new address" fields when triggered
-    $("#new-address-information").addClass("hidden");
-    
-    // Remove current addresses from "Start address" dropdown
-    $('#address-dropdown').empty();
 
-    // Enable submit button
+// Handle additional of new address, corresponding changes to address dropdown
+function updateAddressDropdown(result) {
+    $("#new-address-information").addClass("hidden");
+    $('#address-dropdown').empty();
     $('#submit-button').removeAttr("disabled");
 
     var addresses = result.addresses;
     
-    // Add all addresses (including new) to "Start address" dropdown
     for (var step = 0; step < addresses.length; step++) {
         $('#address-dropdown').append($('<option></option>').html(addresses[step][0]));
     }
@@ -145,7 +139,6 @@ function updateAddressDropdown(result) {
 function addAddress(evt) {
     evt.preventDefault();
 
-    // Passes new address information to server.py route for processing
     var formInputs = {
         "new-address-field": $('#new-address-field').val(),
         "label-field": $("#label-field").val(),
@@ -156,27 +149,30 @@ function addAddress(evt) {
 
 $('#new-address-form').on("submit", addAddress);
 
+
+// Handle accepting or rejecting of route
 var yes_selected = document.getElementById("yes-option");
+var no_selected = document.getElementById("no-option");
+
 yes_selected.onchange = function(){
     $('#star-rating').removeClass();
     $('#rejected-route-form').addClass("hidden");
 };
 
-var no_selected = document.getElementById("no-option");
 no_selected.onchange = function(){
     $('#star-rating').addClass("hidden");
     $('#rejected-route-form').removeClass();
 };
 
+
+// Generate results map (Google Maps Javascript API integration)
 function initMap(waypoints, mid_lat, mid_lon) {
     var midpoint = {"lat": mid_lat, "lng": mid_lon};
     var start_point = {"lat": waypoints[0][0], "lng": waypoints[0][1]};
 
-    // Instantiate map
     var directionsService = new google.maps.DirectionsService();
     var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
 
-    // Configure map, pass lat/lon pairs to displayRoute
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 25,
         center: midpoint,
@@ -184,34 +180,28 @@ function initMap(waypoints, mid_lat, mid_lon) {
         streetViewControl: false,
     });
 
-    // Place marker for start/end point
     var marker = new google.maps.Marker({
       position: start_point,
       map: map
     });
 
-    // Display map based on configuration
     directionsDisplay.setMap(map);
-
-    // Call displayRoute function to display bike route
     displayRoute(directionsService, directionsDisplay, waypoints);
 }
 
-function displayRoute(directionsService, directionsDisplay, waypoints) {
 
-    // Prepare start/end point
+// Display resulting route on map
+function displayRoute(directionsService, directionsDisplay, waypoints) {
     var start_lat = waypoints[0][0];
     var start_lng = waypoints[0][1];
     var start_point = start_lat + ', ' + start_lng;
 
-    // Prepare waypoints along route
     var waypts = [];
 
     for (var i = 1; i < waypoints.length; i++) {
         waypts.push({location: String(waypoints[i][0]) + ', ' + String(waypoints[i][1])});
     }
 
-    // Create route, starting & ending at origin, passing through waypoints
     directionsService.route({
         origin: start_point,
         destination: start_point,
@@ -219,7 +209,6 @@ function displayRoute(directionsService, directionsDisplay, waypoints) {
         travelMode: 'BICYCLING'
     },
 
-    // Error handling
     function(response, status) {
         if (status === 'OK') {
             directionsDisplay.setDirections(response);
@@ -248,6 +237,8 @@ function displayResults(results) {
     initMap(waypoints, mid_lat, mid_lon);
 }
 
+
+// Trigger creation of route once user input is submitted
 function createRoute(evt) {
     evt.preventDefault();
 
@@ -266,14 +257,13 @@ function createRoute(evt) {
 
 $('#route-form').on("submit", createRoute);
 
-function returnToSearch() {
 
-    // After saving route, restore Home page to original format
+// Handle restoring page after handling map results
+function returnToSearch() {
     $('#generator-options').removeClass("hidden");
     $('#results-dropdowns').addClass("hidden");
     $('#map').addClass("hidden");
 
-    // Handle updates to address dropdown
     var formInputs = {
         "start-location": $('#address-dropdown').val(),
     };
@@ -281,6 +271,8 @@ function returnToSearch() {
     $.post("/update-stats", formInputs, displayChart);
 }
 
+
+// Handle saving the route with a specified score
 function saveScore(evt) {
     var score = evt.currentTarget.id.split("-")[1];
 
@@ -288,11 +280,9 @@ function saveScore(evt) {
         "score": score
     };
 
-    // Pass score to /add-score route
     $.post("/add-score", formInputs, returnToSearch);
 }
 
-// $('#accepted-route-form').on("submit", saveScore);
 $('#score-1').on("click", saveScore);
 $('#score-2').on("click", saveScore);
 $('#score-3').on("click", saveScore);
@@ -306,7 +296,6 @@ function rejectRoute(evt) {
         "issue": $("#issue").val()
     };
 
-    // Pass issue to /reject-route route
     $.post("/reject-route", formInputs, returnToSearch);
 
     var statInputs = {
@@ -318,7 +307,6 @@ function rejectRoute(evt) {
 
 $('#rejected-route-form').on("submit", rejectRoute);
 
-// Change to filled-in star for all stars to left of & including the star the user hovers over
 $('#score-1').hover(
     function() {
         $(this).removeClass("glyphicon-star-empty").addClass("glyphicon-star");
