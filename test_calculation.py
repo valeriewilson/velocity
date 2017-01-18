@@ -28,10 +28,8 @@ class CalculationUnitTestCase(unittest.TestCase):
     def test_geocode_address(self):
         """ Positive test for geocode_address function """
 
-        route = RouteMetadata(1, "loop", 37.7472843749906, -122.448249748807, 12)
-
         address = '683 Sutter St San Francisco'
-        assert route.geocode_address(address) == (37.7886679, -122.4114987)
+        assert geocode_address(address) == (37.7886679, -122.4114987)
 
 
 if __name__ == "__main__":
