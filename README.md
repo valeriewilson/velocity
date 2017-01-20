@@ -1,5 +1,9 @@
 # Vélocity
 
+[![Build Status](https://circleci.com/gh/valeriewilson/velocity/tree/master.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/valeriewilson/velocity/tree/master)
+
+
+
 ## Introduction
 
 Vélocity is a tool allowing cyclists to discover new and interesting bike routes.  This app dynamically generates and stores bike routes based on a user-specified location and either total distance or a midpoint location.
