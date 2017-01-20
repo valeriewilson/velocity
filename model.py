@@ -95,7 +95,7 @@ class Waypoint(db.Model):
 
 def example_data():
 
-    test_user = User(email="test@test.com", password="test123", last_name="Cohen", first_name="Leonard", phone="1231231234")
+    test_user = User(email="test@test.com", password="test123", last_name="Cohen", first_name="Leonard")
     db.session.add(test_user)
     db.session.commit()
 
