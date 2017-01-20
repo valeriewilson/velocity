@@ -1,6 +1,7 @@
 """ Models and database functions """
 
 from flask_sqlalchemy import SQLAlchemy
+import bcrypt
 
 db = SQLAlchemy()
 
@@ -95,7 +96,11 @@ class Waypoint(db.Model):
 
 def example_data():
 
-    test_user = User(email="test@test.com", password="test123", last_name="Cohen", first_name="Leonard", phone="1231231234")
+    password = "test123"
+    # password_given = password.encode('utf-8')
+    password_given = bcrypt.hashpw(password, bcrypt.gensalt())
+
+    test_user = User(email="test@test.com", password=password_given, last_name="Cohen", first_name="Leonard")
     db.session.add(test_user)
     db.session.commit()
 
