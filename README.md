@@ -20,6 +20,7 @@ As an avid cyclist, I love finding new bike routes but find myself sticking to a
 * Chart.js integration, displaying the percentage of time a user prefers a route starting in a given cardinal direction
 * Now mobile-friendly!
 * Using the Google Maps Places API, I added autocomplete to address fields
+* Improved test coverage
 
 ## User Interface
 
