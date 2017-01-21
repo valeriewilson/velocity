@@ -9,6 +9,7 @@
 Vélocity is a tool allowing cyclists to discover new and interesting bike routes.  This app dynamically generates and stores bike routes based on a user-specified location and either total distance or a midpoint location.
 
 Find the deployed app here: http://velo-city.herokuapp.com/
+Demo account: demo@velocity.com / demoaccount
 
 ## Statement of Purpose
 
