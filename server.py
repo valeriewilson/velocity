@@ -122,9 +122,12 @@ def display_home_page():
 def update_route_statistics():
     """ Update normalized angles for chart """
 
+    email = session['user_email']
+    user_id = db.session.query(User.user_id).filter_by(email=email).first()
+
     # Obtain address from home.js AJAX call
     start = request.form.get("start-location")
-    address = db.session.query(Address).filter_by(label=start).first()
+    address = db.session.query(Address).filter_by(user_id=user_id, label=start).first()
 
     # Generate directional preferences
     if address:
