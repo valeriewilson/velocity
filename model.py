@@ -95,6 +95,7 @@ class Waypoint(db.Model):
 
 
 def example_data():
+    """ Test data for test.py """
 
     password = "test123"
 
@@ -117,6 +118,26 @@ def example_data():
                    is_accepted=False, score=0, total_miles=20, total_minutes=120)
 
     db.session.add_all([route1, route2, route3])
+
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        raise
+
+    waypoint1_1 = Waypoint(route_id=route1.route_id, latitude=37.7472843749906, longitude=-122.448249748807)
+    waypoint1_2 = Waypoint(route_id=route1.route_id, latitude=37.7694811467305, longitude=-122.399497857258)
+    waypoint1_3 = Waypoint(route_id=route1.route_id, latitude=37.7255684531721, longitude=-122.467528922137)
+    waypoint2_1 = Waypoint(route_id=route2.route_id, latitude=37.7472843749906, longitude=-122.448249748807)
+    waypoint2_2 = Waypoint(route_id=route2.route_id, latitude=37.7363830024061, longitude=-122.468924663359)
+    waypoint2_3 = Waypoint(route_id=route2.route_id, latitude=37.7444489169474, longitude=-122.396923835657)
+    waypoint3_1 = Waypoint(route_id=route3.route_id, latitude=37.7472843749906, longitude=-122.448249748807)
+    waypoint3_2 = Waypoint(route_id=route3.route_id, latitude=37.7894328096981, longitude=-122.402355494602)
+    waypoint3_3 = Waypoint(route_id=route3.route_id, latitude=37.8462084474116, longitude=-122.462122562782)
+
+    db.session.add_all([waypoint1_1, waypoint1_2, waypoint1_3, waypoint2_1,
+                       waypoint2_2, waypoint2_3, waypoint3_1, waypoint3_2,
+                       waypoint3_3])
 
     try:
         db.session.commit()

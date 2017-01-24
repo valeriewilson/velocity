@@ -186,6 +186,9 @@ class CalculationUnitTestCase(unittest.TestCase):
 class MarkovUnitTestCase(unittest.TestCase):
 
     def setUp(self):
+        db.create_all()
+        example_data()
+
         self.user_id = 1
         self.lat_1 = 37.7472843749906
         self.lon_1 = -122.448249748807
@@ -194,10 +197,16 @@ class MarkovUnitTestCase(unittest.TestCase):
 
         self.route = MarkovCalculation(self.user_id, self.lat_1, self.lon_1)
 
+    def tearDown(self):
+        """ Drop session and database following each test """
+
+        db.session.close()
+        db.drop_all()
+
     def test_compile_routes_and_directions(self):
         """ Positive test for compile_routes_and_directions method """
 
-        pass
+        assert self.route.compile_routes_and_directions() == [(4, 0), (3, 180), (0, 0)]
 
     def test_calculate_direction_1(self):
         """ 1st positive test for calculate_direction method """
@@ -212,7 +221,7 @@ class MarkovUnitTestCase(unittest.TestCase):
         self.lat_2 = 37.745577
         self.lon_2 = -122.452037
 
-        print self.route.calculate_direction(self.lat_1, self.lon_1, self.lat_2, self.lon_2)
+        assert self.route.calculate_direction(self.lat_1, self.lon_1, self.lat_2, self.lon_2) == 270
 
     def test_tally_route_by_accepted(self):
         """ Positive test for finding number accepted and total number of all_routes
