@@ -97,26 +97,32 @@ class Waypoint(db.Model):
 def example_data():
 
     password = "test123"
-    # password_given = password.encode('utf-8')
+
     password_given = bcrypt.hashpw(password, bcrypt.gensalt())
 
     test_user = User(email="test@test.com", password=password_given, last_name="Cohen", first_name="Leonard")
     db.session.add(test_user)
-    db.session.commit()
 
-    route1 = Route(user_id=1, total_ascent=1000, total_descent=1000,
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        raise
+
+    route1 = Route(user_id=test_user.user_id, total_ascent=1000, total_descent=1000,
                    is_accepted=True, score=4, total_miles=10, total_minutes=60)
-
-    route2 = Route(user_id=1, total_ascent=1500, total_descent=1500,
+    route2 = Route(user_id=test_user.user_id, total_ascent=1500, total_descent=1500,
                    is_accepted=True, score=3, total_miles=15, total_minutes=90)
-
-    route3 = Route(user_id=1, total_ascent=3500, total_descent=3500,
+    route3 = Route(user_id=test_user.user_id, total_ascent=3500, total_descent=3500,
                    is_accepted=False, score=0, total_miles=20, total_minutes=120)
 
-    db.session.add(route1)
-    db.session.add(route2)
-    db.session.add(route3)
-    db.session.commit()
+    db.session.add_all([route1, route2, route3])
+
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        raise
 
 
 def connect_to_db(app, db_uri):
