@@ -144,8 +144,19 @@ class FlashTestLoggingIn(TestCase):
 
 class CalculationUnitTestCase(unittest.TestCase):
 
+    def test_calculate_distance_time(self):
+        """ Positive test for calculate_distance_time method """
+
+        route = RouteMetadata(1, "loop", 37.7680873, -122.452986, 8)
+
+        route.waypoints = [[37.7680873, -122.452986],
+                          [37.74046240241025, -122.45724130642759],
+                          [37.75860030001992, -122.48743796849598]]
+
+        assert route.calculate_distance_time() == (8.3, 56)
+
     def test_calculate_elevation(self):
-        """ Positive test for calculate_elevation function"""
+        """ Positive test for calculate_elevation method """
 
         route = RouteMetadata(1, "loop", 37.7472843749906, -122.448249748807, 12)
 
@@ -156,7 +167,7 @@ class CalculationUnitTestCase(unittest.TestCase):
         assert route.calculate_elevation() == (629.9725010681151, 629.9725010681151)
 
     def test_calculate_midpoint(self):
-        """ Positive test for calculate_midpoint function """
+        """ Positive test for calculate_midpoint method """
 
         route = RouteMetadata(1, "loop", 37.7472843749906, -122.448249748807, 12)
 
@@ -175,7 +186,7 @@ class CalculationUnitTestCase(unittest.TestCase):
 class MarkovUnitTestCase(unittest.TestCase):
 
     def test_calculate_direction_1(self):
-        """ 1st positive test for calculate_direction function """
+        """ 1st positive test for calculate_direction method """
 
         user_id = 1
         lat_1 = 37.7472843749906
@@ -188,7 +199,7 @@ class MarkovUnitTestCase(unittest.TestCase):
         assert route.calculate_direction(lat_1, lon_1, lat_2, lon_2) == 0
 
     def test_calculate_direction_2(self):
-        """ 2nd positive test for calculate_direction function """
+        """ 2nd positive test for calculate_direction method """
 
         user_id = 1
         lat_1 = 37.774034
