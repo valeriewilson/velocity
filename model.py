@@ -104,6 +104,20 @@ def example_data():
     db.session.add(test_user)
     db.session.commit()
 
+    route1 = Route(user_id=1, total_ascent=1000, total_descent=1000,
+                   is_accepted=True, score=4, total_miles=10, total_minutes=60)
+
+    route2 = Route(user_id=1, total_ascent=1500, total_descent=1500,
+                   is_accepted=True, score=3, total_miles=15, total_minutes=90)
+
+    route3 = Route(user_id=1, total_ascent=3500, total_descent=3500,
+                   is_accepted=False, score=0, total_miles=20, total_minutes=120)
+
+    db.session.add(route1)
+    db.session.add(route2)
+    db.session.add(route3)
+    db.session.commit()
+
 
 def connect_to_db(app, db_uri):
     """Connect the database to our Flask app."""
