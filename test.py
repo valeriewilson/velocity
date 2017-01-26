@@ -87,16 +87,17 @@ class FlaskTestsLoggedIn(TestCase):
     #     self.assertEqual(result.status_code, 200)
     #     self.assertIn("blah", result.data)
 
-    # def test_new_address_route(self):
-    #     """ Verify that filter endpoint returns correct results """
+    def test_new_address_route(self):
+        """ Verify that filter endpoint returns correct results """
 
-    #     result = self.client.post("/new-address",
-    #                               data={"new-address-field": "Avenue Cyclery",
-    #                                     "label-field": "",
-    #                                     "default-address": ""},
-    #                               follow_redirects=False)
+        result = self.client.post("/new-address",
+                                  data={"new-address-field": "1073 Market St, San Francisco, CA, United States",
+                                        "label-field": "Huckleberry Bicycles",
+                                        "default-address": "False"},
+                                  follow_redirects=False)
 
-    #     self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.status_code, 200)
+        self.assertIn("Huckleberry", result.data)
 
 
 class FlashTestLoggingIn(TestCase):

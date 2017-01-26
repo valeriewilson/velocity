@@ -110,6 +110,10 @@ def example_data():
         db.session.rollback()
         raise
 
+    address = Address(user_id=test_user.user_id, label="Avenue Cyclery",
+                      address_str="756 Stanyan Street, San Francisco, CA, United States",
+                      latitude=37.7680873, longitude=-122.452986, is_default=True)
+
     route1 = Route(user_id=test_user.user_id, total_ascent=1000, total_descent=1000,
                    is_accepted=True, score=4, total_miles=10, total_minutes=60)
     route2 = Route(user_id=test_user.user_id, total_ascent=1500, total_descent=1500,
@@ -117,7 +121,7 @@ def example_data():
     route3 = Route(user_id=test_user.user_id, total_ascent=3500, total_descent=3500,
                    is_accepted=False, score=0, total_miles=20, total_minutes=120)
 
-    db.session.add_all([route1, route2, route3])
+    db.session.add_all([address, route1, route2, route3])
 
     try:
         db.session.commit()
