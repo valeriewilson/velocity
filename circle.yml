@@ -3,6 +3,6 @@ test:
     - export GOOGLE_API_KEY="AIzaSyBlY0gdpn-82bFjwWdaAPdQ_oOtJwd9Y3s"
     - createdb testdb
   override:
-    - python test.py --cov=codecov
+    - python test.py
   post:
     - bash <(curl -s https://codecov.io/bash)
