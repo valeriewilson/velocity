@@ -338,7 +338,7 @@ def filter_results():
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
 
     # Extract information from "filter" form
-    route_approved = request.args.get('route-approval')
+    route_approved = request.args.get('route-approval') or "True"
 
     if route_approved == "True":
         approved = True
@@ -358,13 +358,9 @@ def filter_results():
     max_score = request.args.get('max-score') if request.args.get('max-score') else 5
 
     # Extract and handle sort options
-    sort_option = request.args.get('sort-options')
+    sort_option = request.args.get('sort-options') or "Score"
 
-    order = request.args.get('sort-method')
-
-    print "\n\n\n"
-    print sort_option
-    print "\n\n\n"
+    order = request.args.get('sort-method') or "desc"
 
     if sort_option == "Score":
         sort_column = getattr(Route.score, order)()
