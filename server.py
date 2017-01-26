@@ -362,6 +362,10 @@ def filter_results():
 
     order = request.args.get('sort-method')
 
+    print "\n\n\n"
+    print sort_option
+    print "\n\n\n"
+
     if sort_option == "Score":
         sort_column = getattr(Route.score, order)()
     elif sort_option == "Date created":
@@ -405,12 +409,6 @@ def log_user_out():
     del session['user_email']
     flash('Logged out')
     return redirect('/login')
-
-
-@app.errorhandler(500)
-def pageNotFound(error):
-    flash("Server error: please refresh")
-    return redirect('/')
 
 
 if __name__ == "__main__":
