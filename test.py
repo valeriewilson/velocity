@@ -68,6 +68,36 @@ class FlaskTestsLoggedIn(TestCase):
         self.assertEqual(result.status_code, 200)
         self.assertIn('<h3>Filter Options</h3>', result.data)
 
+    # def test_filter_route(self):
+    #     """ Verify that filter endpoint returns correct results """
+
+    #     result = self.client.get("/filter",
+    #                              data={"max-score": "",
+    #                                    "min-score": "",
+    #                                    "max-elevation": "",
+    #                                    "min-elevation": "",
+    #                                    "max-miles": "",
+    #                                    "min-miles": "12",
+    #                                    "max-minutes": "",
+    #                                    "min-minutes": "",
+    #                                    "sort-method": "desc",
+    #                                    "sort-options": "Score",
+    #                                    "route-approval": "True"},
+    #                              follow_redirects=False)
+    #     self.assertEqual(result.status_code, 200)
+    #     self.assertIn("blah", result.data)
+
+    # def test_new_address_route(self):
+    #     """ Verify that filter endpoint returns correct results """
+
+    #     result = self.client.post("/new-address",
+    #                               data={"new-address-field": "Avenue Cyclery",
+    #                                     "label-field": "",
+    #                                     "default-address": ""},
+    #                               follow_redirects=False)
+
+    #     self.assertEqual(result.status_code, 200)
+
 
 class FlashTestLoggingIn(TestCase):
 
