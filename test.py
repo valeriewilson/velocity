@@ -78,8 +78,18 @@ class FlaskTestsLoggedIn(TestCase):
         self.assertIn("15.0", result.data)
         self.assertNotIn("10.0", result.data)
 
+    def test_update_stats_route(self):
+        """ Verify that update-stats endpoint returns no results for too few routes """
+
+        result = self.client.post("/update-stats",
+                                  data={"start-location": "Avenue Cyclery"},
+                                  follow_redirects=True)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn("{}", result.data)
+
     def test_new_address_route(self):
-        """ Verify that filter endpoint returns correct results """
+        """ Verify that new address endpoint returns correct results """
 
         result = self.client.post("/new-address",
                                   data={"new-address-field": "1073 Market St, San Francisco, CA, United States",
