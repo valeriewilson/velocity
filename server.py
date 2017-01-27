@@ -317,7 +317,7 @@ def reject_route():
 
 @app.route('/add-score', methods=["POST"])
 def add_score():
-    """ Updated rejected route to is_accepted = False """
+    """ Updated rating for accepted route """
     email = session['user_email']
     user_id = db.session.query(User.user_id).filter_by(email=email).first()
     rating = request.form.get('score')
