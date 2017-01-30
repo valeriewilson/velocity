@@ -114,6 +114,14 @@ class FlaskTestsLoggedIn(TestCase):
         self.assertIn('"lat": 37.74020601769157', result.data)
         self.assertIn('"lng": -122.44485190051067', result.data)
 
+    def test_logout_route(self):
+        """ Verify that user logs out correctly """
+
+        result = self.client.get("/logout", follow_redirects=True)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('<h3>Log In / <a href="/register">Register</a></h3>', result.data)
+
 
 class FlaskTestLoggingIn(TestCase):
 
