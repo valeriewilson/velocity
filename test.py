@@ -87,6 +87,7 @@ class FlaskTestsLoggedIn(TestCase):
 
         self.assertEqual(result.status_code, 200)
         self.assertIn("{}", result.data)
+        self.assertNotIn("270", result.data)
 
     def test_new_address_route(self):
         """ Verify that new address endpoint returns correct results """
@@ -99,8 +100,10 @@ class FlaskTestsLoggedIn(TestCase):
 
         self.assertEqual(result.status_code, 200)
         self.assertIn("Huckleberry", result.data)
+        self.assertIn("Avenue Cyclery", result.data)
 
     def test_waypoints_route(self):
+        """ Verify that waypoints endpoint returns correct waypoints """
 
         result = self.client.get("/waypoints.json?route-id=1",
                                  follow_redirects=False)
@@ -108,9 +111,19 @@ class FlaskTestsLoggedIn(TestCase):
         self.assertEqual(result.status_code, 200)
         self.assertIn('"lat": 37.7694811467305', result.data)
         self.assertIn('"lng": -122.399497857258', result.data)
+        self.assertIn('"lat": 37.74020601769157', result.data)
+        self.assertIn('"lng": -122.44485190051067', result.data)
+
+    def test_logout_route(self):
+        """ Verify that user logs out correctly """
+
+        result = self.client.get("/logout", follow_redirects=True)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('<h3>Log In / <a href="/register">Register</a></h3>', result.data)
 
 
-class FlashTestLoggingIn(TestCase):
+class FlaskTestLoggingIn(TestCase):
 
     def setUp(self):
         """ Set-up for each test """
@@ -138,6 +151,7 @@ class FlashTestLoggingIn(TestCase):
                                   data={"email": "test@test.com", "password": "test123"},
                                   follow_redirects=True)
 
+        self.assertEqual(result.status_code, 200)
         self.assertIn("Successfully logged in", result.data)
 
     def test_login_route_post_bad_username(self):
@@ -147,6 +161,7 @@ class FlashTestLoggingIn(TestCase):
                                   data={"email": "testclient@test.com", "password": "test123"},
                                   follow_redirects=True)
 
+        self.assertEqual(result.status_code, 200)
         self.assertIn("Invalid email address", result.data)
 
     def test_login_route_post_bad_password(self):
@@ -156,6 +171,7 @@ class FlashTestLoggingIn(TestCase):
                                   data={"email": "test@test.com", "password": "incorrect"},
                                   follow_redirects=True)
 
+        self.assertEqual(result.status_code, 200)
         self.assertIn("Incorrect password", result.data)
 
     def test_register_route_post(self):
@@ -168,6 +184,7 @@ class FlashTestLoggingIn(TestCase):
                                         "last-name": "Client"},
                                   follow_redirects=True)
 
+        self.assertEqual(result.status_code, 200)
         self.assertIn("Successfully registered", result.data)
 
     def test_register_route_post_existing(self):
@@ -180,6 +197,7 @@ class FlashTestLoggingIn(TestCase):
                                         "last-name": "Client"},
                                   follow_redirects=True)
 
+        self.assertEqual(result.status_code, 200)
         self.assertIn("A user with that email address already exists", result.data)
 
 
