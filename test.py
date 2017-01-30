@@ -101,6 +101,7 @@ class FlaskTestsLoggedIn(TestCase):
         self.assertIn("Huckleberry", result.data)
 
     def test_waypoints_route(self):
+        """ Verify that waypoints endpoint returns correct waypoints """
 
         result = self.client.get("/waypoints.json?route-id=1",
                                  follow_redirects=False)
@@ -108,6 +109,8 @@ class FlaskTestsLoggedIn(TestCase):
         self.assertEqual(result.status_code, 200)
         self.assertIn('"lat": 37.7694811467305', result.data)
         self.assertIn('"lng": -122.399497857258', result.data)
+        self.assertIn('"lat": 37.74020601769157', result.data)
+        self.assertIn('"lng": -122.44485190051067', result.data)
 
 
 class FlashTestLoggingIn(TestCase):
