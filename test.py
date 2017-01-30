@@ -114,6 +114,26 @@ class FlaskTestsLoggedIn(TestCase):
         self.assertIn('"lat": 37.74020601769157', result.data)
         self.assertIn('"lng": -122.44485190051067', result.data)
 
+    def test_add_score_route(self):
+        """ Verify that add_score endpoint saves route properly """
+
+        result = self.client.post("/add-score",
+                                  data={"score": "5"},
+                                  follow_redirects=False)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn("Success", result.data)
+
+    def test_reject_route_route(self):
+        """ Verify that add_score endpoint saves route properly """
+
+        result = self.client.post("/reject-route",
+                                  data={"issue": "Impossible Route"},
+                                  follow_redirects=False)
+
+        self.assertEqual(result.status_code, 200)
+        self.assertIn("Success", result.data)
+
     def test_logout_route(self):
         """ Verify that user logs out correctly """
 
