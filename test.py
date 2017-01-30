@@ -99,6 +99,7 @@ class FlaskTestsLoggedIn(TestCase):
 
         self.assertEqual(result.status_code, 200)
         self.assertIn("Huckleberry", result.data)
+        self.assertIn("Avenue Cyclery", result.data)
 
     def test_waypoints_route(self):
         """ Verify that waypoints endpoint returns correct waypoints """
