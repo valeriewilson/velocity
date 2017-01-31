@@ -1,7 +1,7 @@
 # Vélocity
 
 [![Build Status](https://circleci.com/gh/valeriewilson/velocity/tree/master.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/valeriewilson/velocity/tree/master)
-[![codecov](https://codecov.io/gh/valeriewilson/velocity/branch/master/graph/badge.svg)](https://codecov.io/gh/valeriewilson/velocity/main)
+[![codecov](https://codecov.io/gh/valeriewilson/velocity/branch/master/graph/badge.svg)](https://codecov.io/gh/valeriewilson/velocity/)
 
 
 
