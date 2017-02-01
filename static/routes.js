@@ -13,7 +13,11 @@ function displayFilteredRoutes(results) {
         var issue = results[i].issue;
 
         if (accepted) {
-            addendum = "Score: " + score;
+            addendum = '';
+
+            for (var j = 0; j < score; j++) {
+                addendum += '<span class="glyphicon glyphicon-star"></span> ';
+            }
         } else {
             addendum = "Issue: " + issue;
         }
