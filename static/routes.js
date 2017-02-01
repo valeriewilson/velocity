@@ -1,8 +1,7 @@
+// Display routes based on filter options
 function displayFilteredRoutes(results) {
-    // Clear previous routes
     $('#all-routes').empty();
 
-    // Extract new information to pass to retrieveWaypoints
     for (var i = 0; i < results.length; i++) {
         var route_id = results[i].route_id;
         var miles = results[i].miles;
@@ -28,6 +27,7 @@ function displayFilteredRoutes(results) {
     retrieveWaypoints();
 }
 
+// Extract information from filter options to send to the server
 function filterRoutes(evt) {
     evt.preventDefault();
 
@@ -48,20 +48,20 @@ function filterRoutes(evt) {
     $.get("/filter", formInputs, displayFilteredRoutes);
 }
 
+// Trigger filtering of routes displayed
 $('#apply-button').on("click", filterRoutes);
 
+// Display accepted or rejected routes, depending on selection
 $('#accepted-routes').on('change', function () {
-    // Enable & remove formatting for "score" fields if "Accepted" is selected for route type
     $('.score').removeAttr("disabled").removeClass("disable");
 });
 
 $('#rejected-routes').on('change', function () {
-    // Disable & gray out "score" fields if "Rejected" is selected for route type
     $('.score').attr("disabled", "disabled").addClass("disable");
 });
 
+// Retrieve list of maps
 function retrieveWaypoints() {
-    // Get list of maps
 
     var maps = document.getElementsByClassName('map');
     
@@ -72,54 +72,47 @@ function retrieveWaypoints() {
     }
 }
 
+// Initialize all maps
 function initMap(data) {
 
-    // Extract data returned from waypoints endpoint
     var waypoints = data.waypoints;
     var midpoint = data.midpoint;
     var route_id = data.route_id;
 
-    // Instantiate map
     var directionsService = new google.maps.DirectionsService();
     var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
     var map_id = "map" + String(route_id);
 
-    // Configure map, pass lat/lon pairs to displayRoute
     var map = new google.maps.Map(document.getElementById(map_id), {
         zoom: 25,
         center: midpoint,
         mapTypeControl: false,
         streetViewControl: false
     });
-    
-    // Place marker for start/end point
+
     var marker = new google.maps.Marker({
         position: waypoints[0],
         map: map
     });
 
-    // Display map based on configuration
     directionsDisplay.setMap(map);
 
-    // Call displayRoute function to display bike route
     displayRoute(directionsService, directionsDisplay, waypoints);
 }
 
+// Add directions to map
 function displayRoute(directionsService, directionsDisplay, waypoints) {
 
-    // Prepare start/end point
     var start_lat = waypoints[0]["lat"];
     var start_lng = waypoints[0]["lng"];
     var start_point = start_lat + ', ' + start_lng;
 
-    // Prepare waypoints along route
     var waypts = [];
 
     for (var i = 1; i < waypoints.length; i++) {
         waypts.push({location: String(waypoints[i]["lat"]) + ', ' + String(waypoints[i]["lng"])});
     }
 
-    // Create route, starting & ending at origin, passing through waypoints
     directionsService.route({
         origin: start_point,
         destination: start_point,
@@ -127,7 +120,6 @@ function displayRoute(directionsService, directionsDisplay, waypoints) {
         travelMode: 'BICYCLING'
     },
 
-    // Error handling
     function(response, status) {
         if (status === 'OK') {
             directionsDisplay.setDirections(response);
