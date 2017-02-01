@@ -38,7 +38,7 @@ On the backend, this project uses a predictive algorithm (Markov Chain) to deter
 Saved routes can be filtered and sorted to allow the user to find a route suiting their needs.
 
 
-![Saved Routes](http://g.recordit.co/X6JE0BUdwd.gif)
+![Saved Routes](http://g.recordit.co/eHELFHxjXa.gif)
 
 ## Behind the Scenes
 
