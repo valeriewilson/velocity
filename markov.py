@@ -86,7 +86,6 @@ class MarkovCalculation(object):
             angle = item[1]
 
             # Build dictionary for each new key
-            # Future refactor: dict.get
             if angle not in self.accepted_vs_total:
                 self.accepted_vs_total[angle] = {}
                 self.accepted_vs_total[angle]['accepted'] = 0
@@ -149,6 +148,15 @@ class MarkovCalculation(object):
 
     def generate_new_angle(self):
         """ Generate random angle based on historical user trends """
+
+        # Occasionally select direction that has historically not been chosen
+        if len(self.normalized_rates.keys()) != 8 and random.randint(1, 10) == 1:
+            for direction in range(0, 360, 45):
+                if direction not in self.normalized_rates.values():
+                    degree_min = direction
+                    self.new_angle = random.randrange(degree_min, degree_min + 45)
+
+                    return self.new_angle
 
         # Select a random float value between 0 and the non-normalized sum of ratios
         seed = random.uniform(0, 1)
