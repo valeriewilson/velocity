@@ -5,3 +5,4 @@ static/images/.DS_Store
 account_keys.sh
 *.pyc
 env/
+.coverage
