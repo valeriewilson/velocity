@@ -1,10 +1,3 @@
-# Vélocity
-
-[![Build Status](https://circleci.com/gh/valeriewilson/velocity/tree/master.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/valeriewilson/velocity/tree/master)
-[![codecov](https://codecov.io/gh/valeriewilson/velocity/branch/master/graph/badge.svg)](https://codecov.io/gh/valeriewilson/velocity/)
-
-
-
 ## Introduction
 
 Vélocity is a tool allowing cyclists to discover new and interesting bike routes.  This app dynamically generates and stores bike routes based on a user-specified location and either total distance or a midpoint location.
@@ -53,14 +46,3 @@ In order to generate the largest number of unique bike routes, I perform the fol
 * SQLAlchemy
 * Bootstrap
 * Google Maps APIs (Elevation, Directions, Geocode, Places)
-
-## Getting Started
-
-After cloning or forking this repo, perform the following steps:
-  1. Install and activate a virtual environment on Vagrant
-  2. pip install -r requirements.txt
-  3. Create an account_keys.sh file and add a Flask key (export FLASK_KEY="key")
-  4. source account_keys.sh
-  5. Run the program:
-    * python server.py
-    * Navigate to http://localhost:5000/
