@@ -9,10 +9,6 @@
 
 Vélocity is a tool allowing cyclists to discover new and interesting bike routes.  This app dynamically generates and stores bike routes based on a user-specified location and either total distance or a midpoint location.
 
-Find the deployed app here: http://velo-city.herokuapp.com/
-
-Demo account: demo@velocity.com / demoaccount
-
 ## Statement of Purpose
 
 As an avid cyclist, I love finding new bike routes but find myself sticking to a handle of favorite rides (it's hard to beat the Marin Headlands).  The idea of a bike route generator was born.  To allow for the greatest variety of routes, the generator randomizes the direction of the first leg, the number of waypoints, the length of each leg, and the clockwise or counterclockwise direction of the route.  A predictive algorithm biases the routes in favor of the directions a user prefers riding.
